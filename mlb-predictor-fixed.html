@@ -584,6 +584,7 @@ body{font-size:13px}
 
 <script src="js/betting.js"></script>
 <script src="js/calibration.js"></script>
+<script src="js/poisson.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -1048,29 +1049,17 @@ function predictHomeProb(home,away,sp,gid){return predictFull(home,away,sp,gid,a
 // the two cuts variance. It also yields a principled expected total (over/under).
 // ─────────────────────────────────────────────────────────────────────────────
 var LG_RUNS=4.4, LG_XFIP=4.10, POIS_W=0.33; // league avg runs/team, league avg xFIP, blend weight
-function poisPMF(k,lam){if(lam<=0)return k===0?1:0;var lp=-lam+k*Math.log(lam);for(var i=2;i<=k;i++)lp-=Math.log(i);return Math.exp(lp);}
-// How much a team's pitching (starter ~65% of innings + bullpen ~35%) suppresses the
-// opponent's scoring. 1.0 = league average; <1 = run-suppressing.
-function pitchSuppress(sp,side){
-  var p=sp[side];if(!p)return 1;
-  // Only a REAL pitcher line suppresses/inflates runs; a synthesized one is PWR-derived and the
-  // fake "bullpen fatigue" was pseudo-random — both are excluded so the Poisson model stays honest.
-  if(!p.realQ||p.synth)return 1;
-  var xf=parseFloat(p.xfip)||LG_XFIP, starter=xf/LG_XFIP;
-  return Math.max(0.62,Math.min(1.45,starter));
-}
+// poisPMF, pitchSuppress, and the win-probability math now live in js/poisson.js
+// (poissonModelCore); this remains here as thin glue to the game-state globals.
 function poissonModel(home,away,sp,gid){
   if(!sp)return null;
-  var parkF=((PARK[home]||100)/100);
-  var homeOff=(((sp.lineup&&sp.lineup.h)||100)/100);
-  var awayOff=(((sp.lineup&&sp.lineup.a)||100)/100);
-  var lamH=LG_RUNS*homeOff*pitchSuppress(sp,"a")*parkF*1.03; // home runs vs AWAY pitching, +HFA
-  var lamA=LG_RUNS*awayOff*pitchSuppress(sp,"h")*parkF*0.99; // away runs vs HOME pitching
-  lamH=Math.max(1.5,Math.min(8,lamH)); lamA=Math.max(1.5,Math.min(8,lamA));
-  var pH=0,pTie=0,MAX=18;
-  for(var i=0;i<=MAX;i++){var ph=poisPMF(i,lamH);for(var j=0;j<=MAX;j++){var pa=poisPMF(j,lamA);if(i>j)pH+=ph*pa;else if(i===j)pTie+=ph*pa;}}
-  pH+=pTie*(lamH/(lamH+lamA)); // ties -> extra innings; better offense slightly favored
-  return {pHome:Math.max(0.05,Math.min(0.95,pH)),lambdaH:lamH,lambdaA:lamA,total:Math.round((lamH+lamA)*10)/10};
+  return poissonModelCore({
+    parkFactor:(PARK[home]||100)/100,
+    homeOff:((sp.lineup&&sp.lineup.h)||100)/100,
+    awayOff:((sp.lineup&&sp.lineup.a)||100)/100,
+    hPitcher:sp.h,aPitcher:sp.a,
+    lgRuns:LG_RUNS,lgXfip:LG_XFIP
+  });
 }
 
 // Online learning: after a game resolves, nudge weights toward what predicted correctly.
