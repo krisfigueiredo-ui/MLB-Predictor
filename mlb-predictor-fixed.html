@@ -590,6 +590,7 @@ body{font-size:13px}
 <script src="js/injuries.js"></script>
 <script src="js/persistence.js"></script>
 <script src="js/espn-parse.js"></script>
+<script src="js/predict-core.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -971,10 +972,8 @@ function predictFull(home,away,sp,gid){
       // regress toward league average before differencing, and cap the spread, so one hot
       // or disastrous 3-start stretch can't hijack the whole prediction.
       var LGE=4.10, LGW=1.30, RG=0.55;
-      var hE=LGE+(parseFloat(hP.xfip)-LGE)*RG, aE=LGE+(parseFloat(aP.xfip)-LGE)*RG;
-      var hW=LGW+(parseFloat(hP.whip)-LGW)*RG, aW=LGW+(parseFloat(aP.whip)-LGW)*RG;
-      r.xfip=Math.max(-2.2,Math.min(2.2,aE-hE)); c.xfip=r.xfip*W.xfip;
-      r.whip=Math.max(-0.45,Math.min(0.45,aW-hW)); c.whip=r.whip*W.whip;
+      r.xfip=regressAndClampDiff(parseFloat(hP.xfip),parseFloat(aP.xfip),LGE,RG,2.2); c.xfip=r.xfip*W.xfip;
+      r.whip=regressAndClampDiff(parseFloat(hP.whip),parseFloat(aP.whip),LGW,RG,0.45); c.whip=r.whip*W.whip;
     }
     // xwOBA / barrel% aren't in the free feeds — only the curated DB carries them. Gate on realX.
     var realX=(hP&&hP.realX!==false)&&(aP&&aP.realX!==false);
@@ -991,11 +990,8 @@ function predictFull(home,away,sp,gid){
   // ── NEW SIGNALS from deep analytics ──
   var hs=TEAM_SPLITS[home], as=TEAM_SPLITS[away];
   if(hs&&as){
-    function l10pct(s){if(!s||!s.l10)return 0.5;var p=s.l10.split("-");return parseInt(p[0])/10;}
-    r.form=(l10pct(hs)-l10pct(as)); c.form=r.form*W.form;
-    function homeWinPct(s){var p=(s.home||"0-0").split("-");var w=parseInt(p[0])||0,l=parseInt(p[1])||0;return (w+l)>0?w/(w+l):0.5;}
-    function awayWinPct(s){var p=(s.away||"0-0").split("-");var w=parseInt(p[0])||0,l=parseInt(p[1])||0;return (w+l)>0?w/(w+l):0.5;}
-    r.split=(homeWinPct(hs)-awayWinPct(as)); c.split=r.split*W.split;
+    r.form=(l10Pct(hs.l10)-l10Pct(as.l10)); c.form=r.form*W.form;
+    r.split=(recordWinPct(hs.home,0.5)-recordWinPct(as.away,0.5)); c.split=r.split*W.split;
     r.pythag=(pythagExp(home)-pythagExp(away)); c.pythag=r.pythag*W.pythag;
   }
   if(gid){
@@ -1015,13 +1011,9 @@ function predictFull(home,away,sp,gid){
   // list) — the real home-plate ump isn't in the free feeds. A feature built on a randomly
   // assigned umpire is noise, so it contributes 0. The zone visual remains illustrative only.
   var umpHomeNudge=0;
-  // sum contributions, treating any NaN/undefined term as 0 so one bad input can't poison the logit
   var terms=[c.power,c.elo,c.hfa,c.recform,c.rest,c.xfip,c.whip,c.xwoba,c.barrel,c.lineup,c.bullpen,c.park,c.form,c.h2h,c.pvt,c.wx,c.split,c.ump,c.pythag,umpHomeNudge];
-  var logit=0;for(var ti=0;ti<terms.length;ti++){var tv=terms[ti];if(typeof tv==="number"&&!isNaN(tv))logit+=tv;}
-  var p=1/(1+Math.exp(-logit));
-  p=0.5+(p-0.5)*W.shrink;
-  if(isNaN(p))p=0.5; // final safety net — never return NaN
-  p=Math.min(0.80,Math.max(0.20,p)); // hard honesty ceiling: no single MLB game is an 82% lock
+  var logit=combineLogitTerms(terms);
+  var p=applyShrinkAndClamp(logit,W.shrink);
   return {prob:p, logit:logit, contrib:c, raw:r};
 }
 function predictHomeProb(home,away,sp,gid){return predictFull(home,away,sp,gid,arguments[4]).prob;}
@@ -3651,25 +3643,10 @@ var DIVISIONS={
   "NL West":["AZ","COL","LAD","SD","SF"]
 };
 var STANDINGS_OK=false;
-function teamWinPct(t){
-  var s=TEAM_SPLITS[t];
-  if(s&&s.rec){var p=(""+s.rec).split("-");var w=parseInt(p[0]),l=parseInt(p[1]);if(!isNaN(w)&&!isNaN(l)&&(w+l)>0)return w/(w+l);}
-  var pw=PWR[t]||60;return Math.max(0.30,Math.min(0.70,0.35+(pw-50)*0.0094));
-}
+// teamWinPctCore/pythagExpCore now live in js/predict-core.js.
+function teamWinPct(t){var s=TEAM_SPLITS[t];return teamWinPctCore(s&&s.rec,PWR[t]||60);}
 function teamRecord(t){var s=TEAM_SPLITS[t];return (s&&s.rec)?s.rec:"\u2014";}
-// Pythagorean win expectation from run differential (exponent 1.83 = MLB-tuned "Pythagenpat"-ish).
-// Catches teams whose W-L is lucky/unlucky vs how many runs they actually score & allow.
-function pythagExp(t){
-  var s=TEAM_SPLITS[t];
-  if(!s||!s.rec||s.rd==null)return teamWinPct(t);
-  var p=(""+s.rec).split("-");var g=parseInt(p[0])+parseInt(p[1]);
-  if(!g)return 0.5;
-  var rd=parseFloat((""+s.rd).replace("+",""));if(isNaN(rd))return teamWinPct(t);
-  var lg=4.5; // league avg runs/game
-  var rs=lg+(rd/g)/2, ra=lg-(rd/g)/2; if(ra<0.1)ra=0.1;
-  var e=1.83;
-  return Math.pow(rs,e)/(Math.pow(rs,e)+Math.pow(ra,e));
-}
+function pythagExp(t){var s=TEAM_SPLITS[t];return pythagExpCore(s&&s.rec,s&&s.rd,PWR[t]||60);}
 function poGameProb(a,b){var pa=teamWinPct(a),pb=teamWinPct(b);var d=pa+pb-2*pa*pb;if(d<=0)return 0.5;var p=(pa-pa*pb)/d;return Math.max(0.08,Math.min(0.92,p));}
 function comb(n,k){var r=1;for(var i=0;i<k;i++)r=r*(n-i)/(i+1);return r;}
 function seriesProb(p,w){var t=0;for(var j=0;j<w;j++)t+=comb(w-1+j,j)*Math.pow(p,w)*Math.pow(1-p,j);return t;}
