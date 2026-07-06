@@ -583,6 +583,7 @@ body{font-size:13px}
 <div id="toast" class="toast"></div>
 
 <script src="js/betting.js"></script>
+<script src="js/calibration.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -2423,7 +2424,7 @@ function renderRecentResults(){
 
 function renderToday(){
   renderMap(); scanAlerts(); renderHdrRecord(); renderTopPick(); renderRecentResults();var s=getStats30();var fa=document.getElementById("f-all");if(fa)fa.textContent="All "+GAMES30.length;var fsit=document.getElementById("f-sit");if(fsit){fsit.textContent="\ud83d\udcca Situational: "+(sitOn()?"ON":"OFF");fsit.className="fbtn"+(sitOn()?" on":"");}var el=document.getElementById("m-acc");el.textContent=s.acc!==null?(s.acc*100).toFixed(1)+"%":"\u2014";el.className="mc-val"+(s.acc!==null?(s.acc>=0.5?" g":" red"):"");document.getElementById("m-acc-s").textContent=s.ok+"/"+s.n+" correct";document.getElementById("m-hc").textContent=s.hcAcc!==null?(s.hcAcc*100).toFixed(0)+"%":"\u2014";document.getElementById("m-hc-s").textContent=s.hcN?s.hcOk+"/"+s.hcN+" correct":"waiting";var evCount=GAMES30.filter(function(g){return g.betPick;}).length;document.getElementById("m-ev").textContent=evCount;
-  var mcalEl=document.getElementById("m-cal");if(mcalEl){var calRep=calibrationReport(calibPairs());if(calRep&&calRep.n>=8){mcalEl.textContent=calRep.ece.toFixed(3);mcalEl.className="mc-val"+(calRep.ece<0.05?" g":calRep.ece<0.10?" a":" red");}else{mcalEl.textContent="—";mcalEl.className="mc-val a";}}
+  var mcalEl=document.getElementById("m-cal");if(mcalEl){var calRep=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);if(calRep&&calRep.n>=8){mcalEl.textContent=calRep.ece.toFixed(3);mcalEl.className="mc-val"+(calRep.ece<0.05?" g":calRep.ece<0.10?" a":" red");}else{mcalEl.textContent="—";mcalEl.className="mc-val a";}}
   renderSlateOverview();
   var liveGames=GAMES30.filter(function(g){return g.status==="live"&&g.live&&g.live.status==="inprogress";});
   var lb=document.getElementById("live-banner");
@@ -2605,39 +2606,10 @@ function calibPairs(){
   });
   return pairs;
 }
-function wilsonCI(k,n){
-  if(n===0)return [0,1];
-  var z=1.96,p=k/n,d=1+z*z/n;
-  var c=(p+z*z/(2*n))/d,h=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n))/d;
-  return [Math.max(0,c-h),Math.min(1,c+h)];
-}
-function logLossAt(pairs,shrink){
-  var s=0;for(var i=0;i<pairs.length;i++){var p=0.5+(pairs[i].p-0.5)*shrink;p=Math.min(0.995,Math.max(0.005,p));s+=-(pairs[i].y*Math.log(p)+(1-pairs[i].y)*Math.log(1-p));}
-  return s/pairs.length;
-}
-function calibrationReport(pairs){
-  var n=pairs.length;if(n<1)return null;
-  var base=0;for(var i=0;i<n;i++)base+=pairs[i].y;base/=n; // overall pick win rate
-  var bs=0;for(i=0;i<n;i++)bs+=Math.pow(pairs[i].p-pairs[i].y,2);bs/=n;
-  var bsRef=base*(1-base),bss=bsRef>0?1-bs/bsRef:0;
-  var ll=logLossAt(pairs,1),llBase=-((base>0?base*Math.log(base):0)+((1-base)>0?(1-base)*Math.log(1-base):0));
-  var B=10,bins=[];for(i=0;i<B;i++)bins.push({lo:0.5+i*0.05,hi:0.5+(i+1)*0.05,sp:0,sy:0,n:0});
-  for(i=0;i<n;i++){var bi=Math.min(B-1,Math.max(0,Math.floor((pairs[i].p-0.5)/0.05)));bins[bi].sp+=pairs[i].p;bins[bi].sy+=pairs[i].y;bins[bi].n++;}
-  var rel=0,res=0,ece=0;
-  bins.forEach(function(b){if(b.n>0){b.pbar=b.sp/b.n;b.obar=b.sy/b.n;b.ci=wilsonCI(b.sy,b.n);rel+=b.n*Math.pow(b.pbar-b.obar,2);res+=b.n*Math.pow(b.obar-base,2);ece+=b.n*Math.abs(b.pbar-b.obar);}});
-  rel/=n;res/=n;ece/=n;var unc=base*(1-base);
-  var bestS=1,bestLL=Infinity;for(var s=0.30;s<=1.5001;s+=0.02){var l=logLossAt(pairs,s);if(l<bestLL){bestLL=l;bestS=s;}}
-    // sharpness: how far predictions sit from 50/50 (bold-but-calibrated is the goal)
-  var mp=0;for(i=0;i<n;i++)mp+=pairs[i].p;mp/=n;var sh=0;for(i=0;i<n;i++)sh+=Math.pow(pairs[i].p-mp,2);sh=Math.sqrt(sh/n);
-  // recent-window ECE (last 30 graded) vs full period — drift check
-  var rEce=null;
-  if(n>=40){
-    var rp=pairs.slice(-30),rb=[];for(i=0;i<10;i++)rb.push({sp:0,sy:0,n:0});
-    rp.forEach(function(q){var bi=Math.min(9,Math.max(0,Math.floor((q.p-0.5)/0.05)));rb[bi].sp+=q.p;rb[bi].sy+=q.y;rb[bi].n++;});
-    rEce=0;rb.forEach(function(b){if(b.n>0)rEce+=b.n*Math.abs(b.sp/b.n-b.sy/b.n);});rEce/=rp.length;
-  }
-return {n:n,base:base,brier:bs,bss:bss,logloss:ll,llBase:llBase,reliability:rel,resolution:res,uncertainty:unc,ece:ece,sharpness:sh,recentEce:rEce,bins:bins,optShrink:Math.round(bestS*100)/100,optLL:bestLL,curLL:logLossAt(pairs,(MODEL_W&&MODEL_W.shrink)||1)};
-}
+// wilsonCI, logLossAt, calibrationReport now live in js/calibration.js (fixed a
+// sharpness-metric bug there: it used to measure spread around the sample's own
+// mean instead of RMS distance from 50/50, so a model that was always confidently
+// at ~90% reported near-zero "sharpness").
 function applyRecalibration(s){
   if(!MODEL_W)return;
   MODEL_W.shrink=s;
@@ -2649,7 +2621,7 @@ function applyRecalibration(s){
 
 function renderCalib(){
   var canvas=document.getElementById("calib-canvas");if(!canvas)return;
-  var report=calibrationReport(calibPairs());
+  var report=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);
   var metaEl=document.getElementById("calib-meta"), metricsEl=document.getElementById("calib-metrics"), recalEl=document.getElementById("calib-recal");
   var dpr=Math.min(window.devicePixelRatio||1,2);
   var cssW=Math.max(280,(canvas.parentElement.offsetWidth||920)-24), cssH=300;
@@ -4704,7 +4676,7 @@ function answerQuestion(q){
   }
   // MODEL PERFORMANCE — how accurate / calibrated / good is it (from REAL graded data)
   if(/how (accurate|good|reliable|well)|track record|your (accuracy|record)|calibrat|brier|how do you do|performanc|how.*been doing/.test(t)){
-    var rep=calibrationReport(calibPairs());
+    var rep=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);
     if(!rep||rep.n<8)return "I don\u2019t have enough graded games yet to show a real track record \u2014 I need ~8+ logged or backtested results. Run the <b>Backtest</b> tab to seed it, then ask again. I won\u2019t quote a number I can\u2019t back.";
     var acc=0;calibPairs().forEach(function(d){acc+=d.y;});acc=acc/rep.n;
     var s="<b>Track record</b> (over "+rep.n+" real graded games):<br>"
