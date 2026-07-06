@@ -92,6 +92,30 @@ function applyShrinkAndClamp(logit, shrink, lo, hi) {
   return Math.min(hi, Math.max(lo, p));
 }
 
+// Raw (unregressed) per-game feature values for the online-learning gradient
+// step in learnFromGame. Mirrors predictFull's own honesty gates exactly: a
+// feature that predictFull wouldn't have voted with (synthesized pitcher
+// stats, no realQ/realX overlay) must contribute 0 gradient here too, or the
+// weight gets trained on noise that never actually influenced the prediction
+// being graded. (Bullpen "fatigue" is pseudo-random and permanently excluded
+// from predictFull's terms -- like `ump`, it's excluded from this object
+// entirely rather than gated, since it should never be trained on at all.)
+function learningRawFeatures(params) {
+  var hP = params.hPitcher, aP = params.aPitcher;
+  var realQ = !!(hP && hP.realQ !== false) && !!(aP && aP.realQ !== false);
+  var realX = !!(hP && hP.realX !== false) && !!(aP && aP.realX !== false);
+  return {
+    power: params.hPwr - params.aPwr,
+    elo: params.eloEdge,
+    xfip: realQ ? (parseFloat(aP.xfip) - parseFloat(hP.xfip)) : 0,
+    whip: realQ ? (parseFloat(aP.whip) - parseFloat(hP.whip)) : 0,
+    xwoba: realX ? (parseFloat(aP.xwoba) - parseFloat(hP.xwoba)) : 0,
+    barrel: realX ? (parseFloat(aP.barrel) - parseFloat(hP.barrel)) : 0,
+    lineup: params.lineupDiff,
+    park: params.parkFactor - 100
+  };
+}
+
 return {
   regressAndClampDiff: regressAndClampDiff,
   recordWinPct: recordWinPct,
@@ -99,7 +123,8 @@ return {
   teamWinPctCore: teamWinPctCore,
   pythagExpCore: pythagExpCore,
   combineLogitTerms: combineLogitTerms,
-  applyShrinkAndClamp: applyShrinkAndClamp
+  applyShrinkAndClamp: applyShrinkAndClamp,
+  learningRawFeatures: learningRawFeatures
 };
 
 });

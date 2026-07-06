@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { regressAndClampDiff, recordWinPct, l10Pct, teamWinPctCore, pythagExpCore, combineLogitTerms, applyShrinkAndClamp } from "../js/predict-core.js";
+import { regressAndClampDiff, recordWinPct, l10Pct, teamWinPctCore, pythagExpCore, combineLogitTerms, applyShrinkAndClamp, learningRawFeatures } from "../js/predict-core.js";
 
 describe("regressAndClampDiff", () => {
   it("is mathematically equivalent to regressionFactor*(away-home), pre-clamp (the league average cancels)", () => {
@@ -95,6 +95,76 @@ describe("combineLogitTerms", () => {
   });
   it("returns 0 for an all-invalid input", () => {
     expect(combineLogitTerms([NaN, undefined, null])).toBe(0);
+  });
+});
+
+describe("learningRawFeatures", () => {
+  const base = { hPwr: 70, aPwr: 60, eloEdge: 0.05, lineupDiff: 2, parkFactor: 103 };
+
+  it("computes real pitcher-stat diffs when both sides have realQ/realX data", () => {
+    const r = learningRawFeatures(Object.assign({}, base, {
+      hPitcher: { xfip: "3.20", whip: "1.05", xwoba: ".290", barrel: "6.5", realQ: true, realX: true },
+      aPitcher: { xfip: "4.10", whip: "1.25", xwoba: ".320", barrel: "8.0", realQ: true, realX: true },
+    }));
+    expect(r.xfip).toBeCloseTo(4.10 - 3.20, 10);
+    expect(r.whip).toBeCloseTo(1.25 - 1.05, 10);
+    expect(r.xwoba).toBeCloseTo(0.320 - 0.290, 10);
+    expect(r.barrel).toBeCloseTo(8.0 - 6.5, 10);
+  });
+
+  it("zeroes xfip/whip when realQ is false, even if the underlying numbers differ a lot", () => {
+    const r = learningRawFeatures(Object.assign({}, base, {
+      hPitcher: { xfip: "2.00", whip: "0.80", xwoba: ".290", barrel: "6.5", realQ: false, realX: true },
+      aPitcher: { xfip: "6.00", whip: "1.60", xwoba: ".320", barrel: "8.0", realQ: false, realX: true },
+    }));
+    expect(r.xfip).toBe(0);
+    expect(r.whip).toBe(0);
+    // realX still true, so xwoba/barrel should still carry their real diff
+    expect(r.xwoba).toBeCloseTo(0.320 - 0.290, 10);
+  });
+
+  it("zeroes xwoba/barrel when realX is false (e.g. an ESPN-built game with synthesized stats)", () => {
+    const r = learningRawFeatures(Object.assign({}, base, {
+      hPitcher: { xfip: "3.20", whip: "1.05", xwoba: ".250", barrel: "4.0", realQ: true, realX: false },
+      aPitcher: { xfip: "4.10", whip: "1.25", xwoba: ".400", barrel: "12.0", realQ: true, realX: false },
+    }));
+    expect(r.xwoba).toBe(0);
+    expect(r.barrel).toBe(0);
+    // realQ still true, so xfip/whip should still carry their real diff
+    expect(r.xfip).toBeCloseTo(4.10 - 3.20, 10);
+  });
+
+  it("regression: does not train on synthesized stats for a fully-synthetic (genPitcher) game", () => {
+    // genPitcher's default output is {realQ:false, realX:false} -- a typical
+    // ESPN daily game with no real overlay applied yet. Every pitcher-stat
+    // feature must come back as 0, matching predictFull's own gates, so the
+    // gradient step doesn't train on noise the prediction itself ignored.
+    const synthPitcher = (xfip) => ({
+      xfip: String(xfip), whip: "1.10", xwoba: ".300", barrel: "7.0", synth: true, realQ: false, realX: false,
+    });
+    const r = learningRawFeatures(Object.assign({}, base, {
+      hPitcher: synthPitcher(3.0), aPitcher: synthPitcher(4.5),
+    }));
+    expect(r.xfip).toBe(0);
+    expect(r.whip).toBe(0);
+    expect(r.xwoba).toBe(0);
+    expect(r.barrel).toBe(0);
+  });
+
+  it("never includes a bullpen key -- that feature is pseudo-random and must never be trained on", () => {
+    const r = learningRawFeatures(Object.assign({}, base, {
+      hPitcher: { xfip: "3.20", whip: "1.05", xwoba: ".290", barrel: "6.5", realQ: true, realX: true },
+      aPitcher: { xfip: "4.10", whip: "1.25", xwoba: ".320", barrel: "8.0", realQ: true, realX: true },
+    }));
+    expect(Object.prototype.hasOwnProperty.call(r, "bullpen")).toBe(false);
+  });
+
+  it("always passes through power/elo/lineup/park, which have no honesty gate", () => {
+    const r = learningRawFeatures(Object.assign({}, base, { hPitcher: null, aPitcher: null }));
+    expect(r.power).toBe(10);
+    expect(r.elo).toBe(0.05);
+    expect(r.lineup).toBe(2);
+    expect(r.park).toBe(3);
   });
 });
 

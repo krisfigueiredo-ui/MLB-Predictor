@@ -1056,13 +1056,14 @@ function learnFromGame(home,away,sp,homeWon,gid){
   var W=MODEL_W;
   var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
   var hP=sp.h,aP=sp.a,pf=PARK[home]||100;
-  // raw feature values (the X in gradient)
-  var raw={
-    power:(hPwr-aPwr), elo:(eloProbHome(home,away)-0.5), xfip:(parseFloat(aP.xfip)-parseFloat(hP.xfip)),
-    whip:(parseFloat(aP.whip)-parseFloat(hP.whip)), xwoba:(parseFloat(aP.xwoba)-parseFloat(hP.xwoba)),
-    barrel:(parseFloat(aP.barrel)-parseFloat(hP.barrel)), lineup:(sp.lineup.h-sp.lineup.a),
-    bullpen:(sp.bp.a-sp.bp.h), park:(pf-100)
-  };
+  // raw feature values (the X in gradient). learningRawFeatures (js/predict-core.js)
+  // mirrors predictFull's own realQ/realX honesty gates and permanently excludes
+  // bullpen (pseudo-random), so a feature predictFull didn't vote with for THIS
+  // game can't still train its weight on noise.
+  var raw=learningRawFeatures({
+    hPwr:hPwr, aPwr:aPwr, eloEdge:(eloProbHome(home,away)-0.5),
+    hPitcher:hP, aPitcher:aP, lineupDiff:(sp.lineup.h-sp.lineup.a), parkFactor:pf
+  });
   // gradient step on each weight with L2 ridge decay toward the prior (DEFAULT_WEIGHTS);
   // the penalty term λ·(w−w₀) pulls each weight back toward its informed prior every step,
   // so a single noisy game can't drag a weight far — regularization, not just clamping.
