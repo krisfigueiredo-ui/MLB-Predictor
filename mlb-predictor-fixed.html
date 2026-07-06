@@ -582,6 +582,7 @@ body{font-size:13px}
 
 <div id="toast" class="toast"></div>
 
+<script src="js/betting.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -1309,7 +1310,7 @@ function buildGamesFromESPN(data){
     if(odds&&odds.real&&status!=="final")trackLine(ev.id,odds,startMs);
     if(odds&&odds.real){
       var he=hp-odds.homeImpl,ae=ap-odds.awayImpl;
-      if(he>=ae&&he>0.04){betPick=home;betEdge=he;}else if(ae>he&&ae>0.04){betPick=away;betEdge=ae;}
+      var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?home:away);betEdge=edgeSel.edge;
     }
     // local time label
     var d=new Date(startMs);
@@ -1422,8 +1423,7 @@ function pollESPN_overlay(data){
         ODDS[g.id]=freshOdds;
         trackLine(g.id,freshOdds,g.startMs);
         var he=g.homeP-freshOdds.homeImpl,ae=g.awayP-freshOdds.awayImpl;
-        g.betPick="";g.betEdge=0;
-        if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}
+        var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;
       }
     }
   });
@@ -1453,8 +1453,7 @@ var GAMES30=RAW30.map(function(g){
   var odds=ODDS[g.id],betPick="",betEdge=0;
   if(odds&&odds.real){
     var he=hp-odds.homeImpl, ae=ap-odds.awayImpl;
-    if(he>=ae&&he>0.04){betPick=g.home;betEdge=he;}
-    else if(ae>he&&ae>0.04){betPick=g.away;betEdge=ae;}
+    var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);betEdge=edgeSel.edge;
   }
   return{id:g.id,home:g.home,away:g.away,time:g.time,utc:g.utc,startMs:startMs,status:status,
     homeP:hp,awayP:ap,conf:Math.max(hp,ap),betPick:betPick,betEdge:parseFloat(betEdge.toFixed(3)),
@@ -3503,7 +3502,7 @@ function recomputeAll(){
     var pm=poissonModel(g.home,g.away,SP[g.id],g.id);g.pois=pm; // Poisson run-model (second opinion + expected total)
     var coreP=pm?(POIS_W*pm.pHome+(1-POIS_W)*f.prob):f.prob; // ensemble: logistic+Elo blended with Poisson
     var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,coreP+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;g.betPick="";g.betEdge=0;if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
   });
   renderToday();
 }
@@ -4020,15 +4019,7 @@ function getBankroll(){var v=parseFloat(LS.getItem(BANKROLL_KEY));return (!isNaN
 function saveBankroll(v){var n=parseFloat(v);if(!isNaN(n)&&n>0)LS.setItem(BANKROLL_KEY,n);}
 function getKellyFrac(){var v=parseFloat(LS.getItem(KELLY_KEY));return (!isNaN(v)&&v>0)?v:0.25;}
 function saveKelly(v){LS.setItem(KELLY_KEY,v);}
-function mlToDecimal(ml){return ml>0?(ml/100)+1:(100/(-ml))+1;}
-function decimalToML(dec){var b=dec-1;return b>=1?Math.round(b*100):Math.round(-100/b);}
-// Kelly fraction of bankroll: f* = (b*p - q)/b, b=decimal odds-1, p=win prob, q=1-p
-function kellyStake(p,decOdds,bankroll,frac){
-  var b=decOdds-1; if(b<=0)return 0;
-  var f=(b*p-(1-p))/b;
-  if(f<=0)return 0;
-  return bankroll*f*frac;
-}
+// mlToDecimal, decimalToML, kellyStake, pickBetSide, simWhatIf now live in js/betting.js
 var PARLAY=[]; // selected game ids
 
 // ── PAPER-TRADING BET LOG ── auto-logs each +EV pick when its game goes final,
@@ -4044,16 +4035,6 @@ function clearBetLog(){LS.removeItem(BETLOG_KEY);renderBetting();showToast("Pape
 var WHATIF_KEY="mlb_whatif_v1";
 function getWhatIf(){var v=parseFloat(LS.getItem(WHATIF_KEY));return (!isNaN(v)&&v>0)?v:100;}
 function saveWhatIf(v){var n=parseFloat(v);if(!isNaN(n)&&n>0)LS.setItem(WHATIF_KEY,n);}
-function simWhatIf(bets,start){
-  var bank=start,peak=start,maxDD=0,played=0;
-  bets.forEach(function(b){
-    var f=(b.kStake||0)/1000;if(f<=0)return; // recover Kelly fraction from the $1k-baseline stake
-    var stake=bank*f;var dec=mlToDecimal(b.ml);
-    bank+=b.won?stake*(dec-1):-stake;played++;
-    if(bank>peak)peak=bank;var dd=peak>0?(peak-bank)/peak:0;if(dd>maxDD)maxDD=dd;
-  });
-  return {final:bank,profit:bank-start,maxDD:maxDD,played:played};
-}
 function sweepBetLog(){
   var log=betlogLoad();var changed=false;
   GAMES30.forEach(function(g){
@@ -4477,7 +4458,7 @@ function applyTrained(){
   LS.setItem(TRAINED_KEY,"1");
   // re-predict today's slate with trained weights
   GAMES30.forEach(function(g){var f=predictFull(g.home,g.away,SP[g.id],g.id,g.ump);var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,f.prob+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;g.betPick="";g.betEdge=0;if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
   });
   renderTrainResult(res);
   showToast("\u2713 Model trained on "+res.nGames+" real games \u2014 weights updated");
