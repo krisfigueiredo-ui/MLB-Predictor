@@ -585,6 +585,7 @@ body{font-size:13px}
 <script src="js/betting.js"></script>
 <script src="js/calibration.js"></script>
 <script src="js/poisson.js"></script>
+<script src="js/elo.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -881,14 +882,16 @@ var ELO_PREV={};       // team -> rating ~10 games ago (for trend arrows)
 var ELO_GAMES=0;       // how many real games have shaped the current ratings
 var ELO_HFA=24;        // home-field advantage in Elo points (~4% edge, league avg)
 var ELO_K=6;           // base K-factor (MLB is high-variance, so updates stay gentle)
+// eloSeedFromPower/eloProbFromRatings/eloRatingChange now live in js/elo.js;
+// these remain here as thin glue to the ELO rating-map globals.
 function eloSeed(team){ // informative prior from preseason power rating, regressed toward the mean
   var pwr=(team in PWR)?PWR[team]:62;
-  return 1500+(pwr-64)*6.5; // tighter than raw: caps best-vs-worst Elo edge near MLB reality (~65%)
+  return eloSeedFromPower(pwr); // tighter than raw: caps best-vs-worst Elo edge near MLB reality (~65%)
 }
 function eloInit(){ELO={};ELO_PREV={};ELO_GAMES=0;Object.keys(PWR).forEach(function(t){ELO[t]=eloSeed(t);ELO_PREV[t]=eloSeed(t);});}
 function eloR(t){return (t in ELO)?ELO[t]:(ELO[t]=eloSeed(t));}
 // home win probability from the two ratings + home edge
-function eloProbHome(home,away){var d=(eloR(home)+ELO_HFA)-eloR(away);return 1/(1+Math.pow(10,-d/400));}
+function eloProbHome(home,away){return eloProbFromRatings(eloR(home),eloR(away),ELO_HFA);}
 // update both teams from one real, decisive game (margin-of-victory adjusted, 538-style)
 function eloApply(home,away,hScore,aScore){
   if(!(home in ELO))ELO[home]=eloSeed(home);
@@ -896,11 +899,7 @@ function eloApply(home,away,hScore,aScore){
   var exp=eloProbHome(home,away), homeWon=hScore>aScore?1:(hScore<aScore?0:0.5);
   var margin=Math.abs(hScore-aScore);
   var diff=(eloR(home)+ELO_HFA)-eloR(away);
-  // MOV multiplier: bigger margins move ratings more, but with diminishing returns,
-  // and damped when a strong favorite wins (so blowouts by good teams don't over-inflate)
-  var mov=Math.log(margin+1)*(2.2/(((homeWon?1:-1)*diff)*0.001+2.2));
-  if(!isFinite(mov)||mov<=0)mov=1;
-  var delta=ELO_K*mov*(homeWon-exp);
+  var delta=eloRatingChange(ELO_K,margin,diff,homeWon,exp);
   ELO[home]+=delta; ELO[away]-=delta;
 }
 // Rebuild ratings from scratch by replaying every real completed game in time order.
@@ -910,7 +909,9 @@ function buildElo(){
   eloInit();
   var games=[];
   try{var bt=btLoad();Object.keys(bt).forEach(function(k){if(k.indexOf("__")===0)return;var g=bt[k];
-    if(g&&g.home&&g.away&&g.hs!=null&&g.as!=null)games.push({d:g.d||k,home:g.home,away:g.away,hs:+g.hs,as:+g.as});
+    // hs!==as guard: MLB games never end tied, so an equal-score entry means the
+    // game was postponed/suspended and voided -- it must not be fed to Elo as a "tie".
+    if(g&&g.home&&g.away&&g.hs!=null&&g.as!=null&&+g.hs!==+g.as)games.push({d:g.d||k,home:g.home,away:g.away,hs:+g.hs,as:+g.as});
   });}catch(e){}
   try{realHistory().forEach(function(g){
     var fs=g.finalScore||{}; var hs=(fs.h!=null?fs.h:(g.hs!=null?g.hs:null)), as=(fs.a!=null?fs.a:(g.as!=null?g.as:null));
