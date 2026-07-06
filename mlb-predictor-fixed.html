@@ -588,6 +588,7 @@ body{font-size:13px}
 <script src="js/elo.js"></script>
 <script src="js/situational.js"></script>
 <script src="js/injuries.js"></script>
+<script src="js/persistence.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -856,18 +857,9 @@ var DEFAULT_WEIGHTS={
 };
 var WEIGHTS_SCHEMA=2; // v2: capped per-game weight step (see learnFromGame) — v1 weights could be
                        // slammed to their clamp bounds by a handful of noisy games, so v1 saves are reset once.
-function loadWeights(){
-  try{
-    var raw=LS.getItem(WEIGHTS_KEY);
-    if(raw){
-      var w=JSON.parse(raw);
-      if(w.__schema!==WEIGHTS_SCHEMA)return Object.assign({},DEFAULT_WEIGHTS,{__schema:WEIGHTS_SCHEMA});
-      for(var k in DEFAULT_WEIGHTS){if(w[k]===undefined)w[k]=DEFAULT_WEIGHTS[k];}
-      return w;
-    }
-  }catch(e){}
-  return Object.assign({},DEFAULT_WEIGHTS,{__schema:WEIGHTS_SCHEMA});
-}
+// parseStoredWeights (the missing/corrupt/stale-schema handling) now lives in
+// js/persistence.js; this stays here as the thin LS-reading wrapper.
+function loadWeights(){return parseStoredWeights(LS.getItem(WEIGHTS_KEY),DEFAULT_WEIGHTS,WEIGHTS_SCHEMA);}
 function saveWeights(w){try{LS.setItem(WEIGHTS_KEY,JSON.stringify(w));}catch(e){}}
 var MODEL_W=loadWeights();
 
@@ -3380,11 +3372,12 @@ function hideOfflineWarning(){var w=document.getElementById("offline-warn");if(w
 //  HISTORICAL BACKTEST — pull real completed games from ESPN and grade
 //  the model against real outcomes. Cached in LS so it grows.
 // ═══════════════════════════════════════════════════════════════════
+// parseBacktestStore/isBacktestStale now live in js/persistence.js.
 var BT_KEY="mlb_backtest_games_v1";
-function btLoad(){try{return JSON.parse(LS.getItem(BT_KEY))||{};}catch(e){return {};}}
+function btLoad(){return parseBacktestStore(LS.getItem(BT_KEY));}
 var BT_SCHEMA=2; // bump when feature semantics change (e.g. synthesized pitcher stats removed) so old grades can be flagged
 function btSave(o){try{o.__schema=BT_SCHEMA;LS.setItem(BT_KEY,JSON.stringify(o));}catch(e){}}
-function btStale(){var s=btLoad();var keys=Object.keys(s).filter(function(k){return k.indexOf("__")!==0;});return keys.length>0&&s.__schema!==BT_SCHEMA;}
+function btStale(){return isBacktestStale(btLoad(),BT_SCHEMA);}
 function staleNoticeHTML(){
   return '<div style="background:var(--amb2);border:1px solid rgba(217,119,6,0.4);border-radius:8px;padding:11px 13px;margin-bottom:12px;font-size:12px;color:var(--mut2);line-height:1.55">'
     +'<b style="color:var(--amb)">\u26a0 These grades predate the latest model fixes.</b> This backtest was scored before synthesized pitcher stats were removed and real betting lines were added, so the predictions reflect the old model. Rebuild for an honest comparison.'
