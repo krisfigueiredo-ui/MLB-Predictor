@@ -936,22 +936,13 @@ function eloRanked(){return Object.keys(ELO).map(function(t){return {team:t,r:EL
 // Recency-weighted recent form: exponentially-decayed average run differential over the last
 // ~10 games, so the most recent 2-3 games count far more than week-old ones. Captures a team
 // surging (or sliding) RIGHT NOW, which a flat last-10 win% blurs out. Returns ~[-1,1]; 0 = neutral.
+// recencyFormCore (the weighted-decay math) now lives in js/situational.js;
+// this stays here as a thin cache + IO wrapper around it.
 var _recFormCache={}, _recFormStamp=0;
 function recencyForm(team){
   if(_recFormCache._stamp!==_recFormStamp){_recFormCache={_stamp:_recFormStamp};}
   if(team in _recFormCache)return _recFormCache[team];
-  var log=teamGameLog(team), val=0;
-  if(log.length>=4){
-    var recent=log.slice(-10), lambda=0.80, wsum=0, vsum=0;
-    for(var i=recent.length-1,k=0;i>=0;i--,k++){
-      var w=Math.pow(lambda,k);
-      var nd=recent[i].rs-recent[i].ra;
-      vsum+=w*Math.max(-6,Math.min(6,nd)); // clip blowouts so one 14-run night can't dominate
-      wsum+=w;
-    }
-    var avg=wsum>0?vsum/wsum:0;
-    val=Math.max(-1,Math.min(1,avg/3.5)); // ~3.5-run weighted avg diff -> ~1.0
-  }
+  var val=recencyFormCore(teamGameLog(team));
   _recFormCache[team]=val;
   return val;
 }

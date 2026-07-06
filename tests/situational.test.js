@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { recOf, currentStreak, teamSituationalContribution, gameSituationalCore } from "../js/situational.js";
+import { recOf, recencyFormCore, currentStreak, teamSituationalContribution, gameSituationalCore } from "../js/situational.js";
 
 function game(won, rs, ra, h) { return { won, rs, ra, h }; }
 
@@ -22,6 +22,54 @@ describe("currentStreak", () => {
   it("is +/-1 right after a single result that breaks the prior direction", () => {
     const log = [game(true, 1, 0, true), game(true, 1, 0, true), game(false, 0, 1, true)];
     expect(currentStreak(log)).toBe(-1);
+  });
+});
+
+describe("recencyFormCore", () => {
+  function logOf(diffs) { return diffs.map((d) => game(d >= 0, Math.max(0, d), Math.max(0, -d), true)); }
+
+  it("is neutral (0) with fewer than 4 games of history", () => {
+    expect(recencyFormCore(logOf([5, 5, 5]))).toBe(0);
+    expect(recencyFormCore([])).toBe(0);
+    expect(recencyFormCore(null)).toBe(0);
+  });
+
+  it("is positive for a team consistently outscoring opponents, negative for the reverse", () => {
+    expect(recencyFormCore(logOf([3, 3, 3, 3]))).toBeGreaterThan(0);
+    expect(recencyFormCore(logOf([-3, -3, -3, -3]))).toBeLessThan(0);
+  });
+
+  it("is antisymmetric: negating every run differential negates the score", () => {
+    const pos = recencyFormCore(logOf([4, -2, 6, 1, -3]));
+    const neg = recencyFormCore(logOf([-4, 2, -6, -1, 3]));
+    expect(neg).toBeCloseTo(-pos, 10);
+  });
+
+  it("clamps to exactly 1 / -1 for sustained extreme form", () => {
+    expect(recencyFormCore(logOf(new Array(10).fill(6)))).toBe(1);
+    expect(recencyFormCore(logOf(new Array(10).fill(-6)))).toBe(-1);
+  });
+
+  it("clips a single blowout game so it doesn't dominate beyond the +/-6 cap", () => {
+    const withBlowout = recencyFormCore(logOf([0, 0, 0, 100]));
+    const withCappedGame = recencyFormCore(logOf([0, 0, 0, 6]));
+    expect(withBlowout).toBeCloseTo(withCappedGame, 10);
+  });
+
+  it("weighs the most recent games more heavily than older ones", () => {
+    // Most recent game is the last array element.
+    const recentHot = recencyFormCore(logOf([-5, -5, -5, 5, 5]));
+    const recentCold = recencyFormCore(logOf([5, 5, -5, -5, -5]));
+    expect(recentHot).toBeGreaterThan(recentCold);
+  });
+
+  it("only looks at the last 10 games even if the log is longer", () => {
+    // 20 old blowout wins, followed by exactly 10 recent losses -- slice(-10)
+    // should land precisely on the 10 recent losses with zero contamination
+    // from the old blowouts.
+    const withOldBlowouts = new Array(20).fill(6).concat(new Array(10).fill(-1));
+    const justRecent = new Array(10).fill(-1);
+    expect(recencyFormCore(logOf(withOldBlowouts))).toBeCloseTo(recencyFormCore(logOf(justRecent)), 10);
   });
 });
 

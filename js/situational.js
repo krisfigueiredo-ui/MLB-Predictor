@@ -16,6 +16,22 @@ function recOf(gs) {
   return { w: w, l: gs.length - w, n: gs.length };
 }
 
+// Exponentially-recency-weighted run-differential form score in [-1, 1], from
+// a team's chronological game log. Needs >=4 games of history, else neutral
+// (0). Blowouts are clipped per-game so one 14-run night can't dominate.
+function recencyFormCore(log) {
+  if (!log || log.length < 4) return 0;
+  var recent = log.slice(-10), lambda = 0.80, wsum = 0, vsum = 0;
+  for (var i = recent.length - 1, k = 0; i >= 0; i--, k++) {
+    var w = Math.pow(lambda, k);
+    var nd = recent[i].rs - recent[i].ra;
+    vsum += w * Math.max(-6, Math.min(6, nd));
+    wsum += w;
+  }
+  var avg = wsum > 0 ? vsum / wsum : 0;
+  return Math.max(-1, Math.min(1, avg / 3.5)); // ~3.5-run weighted avg diff -> ~1.0
+}
+
 // Signed length of the CURRENT active win/loss streak (positive = winning,
 // negative = losing), walking back from the most recent game in `log`.
 function currentStreak(log) {
@@ -81,6 +97,7 @@ function gameSituationalCore(homeLog, awayLog, home, away) {
 
 return {
   recOf: recOf,
+  recencyFormCore: recencyFormCore,
   currentStreak: currentStreak,
   teamSituationalContribution: teamSituationalContribution,
   gameSituationalCore: gameSituationalCore
