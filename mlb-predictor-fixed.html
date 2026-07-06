@@ -587,6 +587,7 @@ body{font-size:13px}
 <script src="js/poisson.js"></script>
 <script src="js/elo.js"></script>
 <script src="js/situational.js"></script>
+<script src="js/injuries.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -3521,28 +3522,12 @@ function fetchInjuries(){
   function tryAt(i){if(i>=routes.length)return Promise.reject(0);return fetch(routes[i]).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){if(j&&j.contents&&typeof j.contents==="string"){try{return JSON.parse(j.contents);}catch(e){}}return j;}).catch(function(){return tryAt(i+1);});}
   return tryAt(0).then(function(data){parseInjuries(data);return INJURIES;});
 }
-function starTier(team,name){
-  var stars=(STARS||{})[team]||[];var tier=null;
-  stars.forEach(function(s){var key=s[0].toLowerCase();if(name&&name.toLowerCase().indexOf(key)>=0)tier=(tier===null?s[1]:Math.min(tier,s[1]));});
-  return tier;
-}
-// Net injury impact for a team (negative = hurts them). Only "out/IL/suspended" count, not day-to-day.
-function injuryImpact(team){
-  var INJ=(INJURIES||{});var inj=INJ[team]||[];
-  if(!inj.length)return {players:[],adj:0,dtd:[]};
-  var out=[],dtd=[],adj=0;
-  inj.forEach(function(p){
-    var st=(p.status||"").toLowerCase();
-    var isOut=st.indexOf("out")>=0||st.indexOf("60-day")>=0||st.indexOf("15-day")>=0||st.indexOf("10-day")>=0||st.indexOf("injured list")>=0||st.indexOf("il")===0||st.indexOf("suspend")>=0||st.indexOf("restricted")>=0;
-    var tier=starTier(team,p.name);
-    if(isOut){
-      var hit=tier===1?0.035:tier===2?0.020:tier===3?0.010:0.005;
-      adj-=hit;out.push({name:p.name,pos:p.pos,status:p.status,tier:tier});
-    } else {dtd.push({name:p.name,pos:p.pos,status:p.status,tier:tier});}
-  });
-  adj=Math.max(-0.06,adj); // cap so it can't dominate
-  return {players:out,adj:adj,dtd:dtd};
-}
+// starTierCore, isOutStatus, and injuryImpactCore now live in js/injuries.js
+// (fixed a real bug there: the old out-status check used a bare string-prefix
+// test for "il" which also matched "Illness", wrongly treating a day-to-day
+// sick player as an IL absence and docking that team's win probability).
+function starTier(team,name){return starTierCore((STARS||{})[team]||[],name);}
+function injuryImpact(team){return injuryImpactCore((INJURIES||{})[team]||[],(STARS||{})[team]||[]);}
 // combined home-prob adjustment from both teams' injuries
 function injAdj(home,away){var h=injuryImpact(home),a=injuryImpact(away);return {adj:h.adj-a.adj,home:h,away:a};}
 
