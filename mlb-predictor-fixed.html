@@ -586,6 +586,7 @@ body{font-size:13px}
 <script src="js/calibration.js"></script>
 <script src="js/poisson.js"></script>
 <script src="js/elo.js"></script>
+<script src="js/situational.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -3429,29 +3430,11 @@ function teamGameLog(team){
   games.sort(function(a,b){return (a.d||"").localeCompare(b.d||"");});
   return games;
 }
-function recOf(gs){var w=gs.filter(function(g){return g.won;}).length;return {w:w,l:gs.length-w,n:gs.length};}
-// Returns {notes:[{text,signal,lean}], adj} where adj is a CAPPED home-prob nudge.
+// recOf, currentStreak, and the note/adjustment math now live in js/situational.js
+// (gameSituationalCore); this remains here as thin IO glue (teamGameLog reads the
+// localStorage-backed backtest store + the user's logged history).
 function gameSituational(home,away,startMs){
-  var notes=[],adj=0;
-  [{t:home,side:1,atHome:true},{t:away,side:-1,atHome:false}].forEach(function(o){
-    var log=teamGameLog(o.t);
-    if(log.length<6)return;
-    // 1) Recent form (last 6 games): record + run differential — a real, current signal
-    var l6=log.slice(-6), rec=recOf(l6), rd=l6.reduce(function(s,g){return s+(g.rs-g.ra);},0);
-    if(rec.w>=5||rd>=10){notes.push({text:o.t+" hot lately: "+rec.w+"-"+rec.l+", "+(rd>=0?"+":"")+rd+" run diff over last "+l6.length,signal:"real",lean:o.side});adj+=o.side*0.018;}
-    else if(rec.l>=5||rd<=-10){notes.push({text:o.t+" cold lately: "+rec.w+"-"+rec.l+", "+rd+" run diff over last "+l6.length,signal:"real",lean:-o.side});adj+=-o.side*0.018;}
-    // 2) Active win/loss streak (>=4 games)
-    var streak=0;for(var s2=log.length-1;s2>=0;s2--){if(s2===log.length-1){streak=log[s2].won?1:-1;}else{if((log[s2].won?1:-1)===(streak>0?1:-1))streak+=(streak>0?1:-1);else break;}}
-    if(Math.abs(streak)>=4){notes.push({text:o.t+" on a "+Math.abs(streak)+"-game "+(streak>0?"win":"losing")+" streak",signal:"real",lean:streak>0?o.side:-o.side});adj+=(streak>0?o.side:-o.side)*0.010;}
-    // 3) Home/road split for the side they actually play tonight — a genuine situational factor
-    var venueGames=log.filter(function(g){return g.h===o.atHome;});
-    if(venueGames.length>=8){var vr=recOf(venueGames),wp=vr.w/vr.n,venue=o.atHome?"at home":"on the road";
-      if(wp>=0.60){notes.push({text:o.t+" strong "+venue+": "+vr.w+"-"+vr.l+" ("+Math.round(wp*100)+"%)",signal:"real",lean:o.side});adj+=o.side*0.012;}
-      else if(wp<=0.40){notes.push({text:o.t+" weak "+venue+": "+vr.w+"-"+vr.l+" ("+Math.round(wp*100)+"%)",signal:"real",lean:-o.side});adj+=-o.side*0.012;}
-    }
-  });
-  adj=Math.max(-0.05,Math.min(0.05,adj)); // hard cap: situational can't dominate
-  return {notes:notes,adj:adj};
+  return gameSituationalCore(teamGameLog(home),teamGameLog(away),home,away);
 }
 // apply situational nudge to a home-prob (respects the on/off toggle)
 var SIT_ON_KEY="mlb_sit_on_v1";
