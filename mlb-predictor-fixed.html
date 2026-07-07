@@ -582,6 +582,15 @@ body{font-size:13px}
 
 <div id="toast" class="toast"></div>
 
+<script src="js/betting.js"></script>
+<script src="js/calibration.js"></script>
+<script src="js/poisson.js"></script>
+<script src="js/elo.js"></script>
+<script src="js/situational.js"></script>
+<script src="js/injuries.js"></script>
+<script src="js/persistence.js"></script>
+<script src="js/espn-parse.js"></script>
+<script src="js/predict-core.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -850,18 +859,9 @@ var DEFAULT_WEIGHTS={
 };
 var WEIGHTS_SCHEMA=2; // v2: capped per-game weight step (see learnFromGame) — v1 weights could be
                        // slammed to their clamp bounds by a handful of noisy games, so v1 saves are reset once.
-function loadWeights(){
-  try{
-    var raw=LS.getItem(WEIGHTS_KEY);
-    if(raw){
-      var w=JSON.parse(raw);
-      if(w.__schema!==WEIGHTS_SCHEMA)return Object.assign({},DEFAULT_WEIGHTS,{__schema:WEIGHTS_SCHEMA});
-      for(var k in DEFAULT_WEIGHTS){if(w[k]===undefined)w[k]=DEFAULT_WEIGHTS[k];}
-      return w;
-    }
-  }catch(e){}
-  return Object.assign({},DEFAULT_WEIGHTS,{__schema:WEIGHTS_SCHEMA});
-}
+// parseStoredWeights (the missing/corrupt/stale-schema handling) now lives in
+// js/persistence.js; this stays here as the thin LS-reading wrapper.
+function loadWeights(){return parseStoredWeights(LS.getItem(WEIGHTS_KEY),DEFAULT_WEIGHTS,WEIGHTS_SCHEMA);}
 function saveWeights(w){try{LS.setItem(WEIGHTS_KEY,JSON.stringify(w));}catch(e){}}
 var MODEL_W=loadWeights();
 
@@ -878,14 +878,16 @@ var ELO_PREV={};       // team -> rating ~10 games ago (for trend arrows)
 var ELO_GAMES=0;       // how many real games have shaped the current ratings
 var ELO_HFA=24;        // home-field advantage in Elo points (~4% edge, league avg)
 var ELO_K=6;           // base K-factor (MLB is high-variance, so updates stay gentle)
+// eloSeedFromPower/eloProbFromRatings/eloRatingChange now live in js/elo.js;
+// these remain here as thin glue to the ELO rating-map globals.
 function eloSeed(team){ // informative prior from preseason power rating, regressed toward the mean
   var pwr=(team in PWR)?PWR[team]:62;
-  return 1500+(pwr-64)*6.5; // tighter than raw: caps best-vs-worst Elo edge near MLB reality (~65%)
+  return eloSeedFromPower(pwr); // tighter than raw: caps best-vs-worst Elo edge near MLB reality (~65%)
 }
 function eloInit(){ELO={};ELO_PREV={};ELO_GAMES=0;Object.keys(PWR).forEach(function(t){ELO[t]=eloSeed(t);ELO_PREV[t]=eloSeed(t);});}
 function eloR(t){return (t in ELO)?ELO[t]:(ELO[t]=eloSeed(t));}
 // home win probability from the two ratings + home edge
-function eloProbHome(home,away){var d=(eloR(home)+ELO_HFA)-eloR(away);return 1/(1+Math.pow(10,-d/400));}
+function eloProbHome(home,away){return eloProbFromRatings(eloR(home),eloR(away),ELO_HFA);}
 // update both teams from one real, decisive game (margin-of-victory adjusted, 538-style)
 function eloApply(home,away,hScore,aScore){
   if(!(home in ELO))ELO[home]=eloSeed(home);
@@ -893,11 +895,7 @@ function eloApply(home,away,hScore,aScore){
   var exp=eloProbHome(home,away), homeWon=hScore>aScore?1:(hScore<aScore?0:0.5);
   var margin=Math.abs(hScore-aScore);
   var diff=(eloR(home)+ELO_HFA)-eloR(away);
-  // MOV multiplier: bigger margins move ratings more, but with diminishing returns,
-  // and damped when a strong favorite wins (so blowouts by good teams don't over-inflate)
-  var mov=Math.log(margin+1)*(2.2/(((homeWon?1:-1)*diff)*0.001+2.2));
-  if(!isFinite(mov)||mov<=0)mov=1;
-  var delta=ELO_K*mov*(homeWon-exp);
+  var delta=eloRatingChange(ELO_K,margin,diff,homeWon,exp);
   ELO[home]+=delta; ELO[away]-=delta;
 }
 // Rebuild ratings from scratch by replaying every real completed game in time order.
@@ -907,7 +905,9 @@ function buildElo(){
   eloInit();
   var games=[];
   try{var bt=btLoad();Object.keys(bt).forEach(function(k){if(k.indexOf("__")===0)return;var g=bt[k];
-    if(g&&g.home&&g.away&&g.hs!=null&&g.as!=null)games.push({d:g.d||k,home:g.home,away:g.away,hs:+g.hs,as:+g.as});
+    // hs!==as guard: MLB games never end tied, so an equal-score entry means the
+    // game was postponed/suspended and voided -- it must not be fed to Elo as a "tie".
+    if(g&&g.home&&g.away&&g.hs!=null&&g.as!=null&&+g.hs!==+g.as)games.push({d:g.d||k,home:g.home,away:g.away,hs:+g.hs,as:+g.as});
   });}catch(e){}
   try{realHistory().forEach(function(g){
     var fs=g.finalScore||{}; var hs=(fs.h!=null?fs.h:(g.hs!=null?g.hs:null)), as=(fs.a!=null?fs.a:(g.as!=null?g.as:null));
@@ -930,22 +930,13 @@ function eloRanked(){return Object.keys(ELO).map(function(t){return {team:t,r:EL
 // Recency-weighted recent form: exponentially-decayed average run differential over the last
 // ~10 games, so the most recent 2-3 games count far more than week-old ones. Captures a team
 // surging (or sliding) RIGHT NOW, which a flat last-10 win% blurs out. Returns ~[-1,1]; 0 = neutral.
+// recencyFormCore (the weighted-decay math) now lives in js/situational.js;
+// this stays here as a thin cache + IO wrapper around it.
 var _recFormCache={}, _recFormStamp=0;
 function recencyForm(team){
   if(_recFormCache._stamp!==_recFormStamp){_recFormCache={_stamp:_recFormStamp};}
   if(team in _recFormCache)return _recFormCache[team];
-  var log=teamGameLog(team), val=0;
-  if(log.length>=4){
-    var recent=log.slice(-10), lambda=0.80, wsum=0, vsum=0;
-    for(var i=recent.length-1,k=0;i>=0;i--,k++){
-      var w=Math.pow(lambda,k);
-      var nd=recent[i].rs-recent[i].ra;
-      vsum+=w*Math.max(-6,Math.min(6,nd)); // clip blowouts so one 14-run night can't dominate
-      wsum+=w;
-    }
-    var avg=wsum>0?vsum/wsum:0;
-    val=Math.max(-1,Math.min(1,avg/3.5)); // ~3.5-run weighted avg diff -> ~1.0
-  }
+  var val=recencyFormCore(teamGameLog(team));
   _recFormCache[team]=val;
   return val;
 }
@@ -981,10 +972,8 @@ function predictFull(home,away,sp,gid){
       // regress toward league average before differencing, and cap the spread, so one hot
       // or disastrous 3-start stretch can't hijack the whole prediction.
       var LGE=4.10, LGW=1.30, RG=0.55;
-      var hE=LGE+(parseFloat(hP.xfip)-LGE)*RG, aE=LGE+(parseFloat(aP.xfip)-LGE)*RG;
-      var hW=LGW+(parseFloat(hP.whip)-LGW)*RG, aW=LGW+(parseFloat(aP.whip)-LGW)*RG;
-      r.xfip=Math.max(-2.2,Math.min(2.2,aE-hE)); c.xfip=r.xfip*W.xfip;
-      r.whip=Math.max(-0.45,Math.min(0.45,aW-hW)); c.whip=r.whip*W.whip;
+      r.xfip=regressAndClampDiff(parseFloat(hP.xfip),parseFloat(aP.xfip),LGE,RG,2.2); c.xfip=r.xfip*W.xfip;
+      r.whip=regressAndClampDiff(parseFloat(hP.whip),parseFloat(aP.whip),LGW,RG,0.45); c.whip=r.whip*W.whip;
     }
     // xwOBA / barrel% aren't in the free feeds — only the curated DB carries them. Gate on realX.
     var realX=(hP&&hP.realX!==false)&&(aP&&aP.realX!==false);
@@ -1001,11 +990,8 @@ function predictFull(home,away,sp,gid){
   // ── NEW SIGNALS from deep analytics ──
   var hs=TEAM_SPLITS[home], as=TEAM_SPLITS[away];
   if(hs&&as){
-    function l10pct(s){if(!s||!s.l10)return 0.5;var p=s.l10.split("-");return parseInt(p[0])/10;}
-    r.form=(l10pct(hs)-l10pct(as)); c.form=r.form*W.form;
-    function homeWinPct(s){var p=(s.home||"0-0").split("-");var w=parseInt(p[0])||0,l=parseInt(p[1])||0;return (w+l)>0?w/(w+l):0.5;}
-    function awayWinPct(s){var p=(s.away||"0-0").split("-");var w=parseInt(p[0])||0,l=parseInt(p[1])||0;return (w+l)>0?w/(w+l):0.5;}
-    r.split=(homeWinPct(hs)-awayWinPct(as)); c.split=r.split*W.split;
+    r.form=(l10Pct(hs.l10)-l10Pct(as.l10)); c.form=r.form*W.form;
+    r.split=(recordWinPct(hs.home,0.5)-recordWinPct(as.away,0.5)); c.split=r.split*W.split;
     r.pythag=(pythagExp(home)-pythagExp(away)); c.pythag=r.pythag*W.pythag;
   }
   if(gid){
@@ -1025,13 +1011,9 @@ function predictFull(home,away,sp,gid){
   // list) — the real home-plate ump isn't in the free feeds. A feature built on a randomly
   // assigned umpire is noise, so it contributes 0. The zone visual remains illustrative only.
   var umpHomeNudge=0;
-  // sum contributions, treating any NaN/undefined term as 0 so one bad input can't poison the logit
   var terms=[c.power,c.elo,c.hfa,c.recform,c.rest,c.xfip,c.whip,c.xwoba,c.barrel,c.lineup,c.bullpen,c.park,c.form,c.h2h,c.pvt,c.wx,c.split,c.ump,c.pythag,umpHomeNudge];
-  var logit=0;for(var ti=0;ti<terms.length;ti++){var tv=terms[ti];if(typeof tv==="number"&&!isNaN(tv))logit+=tv;}
-  var p=1/(1+Math.exp(-logit));
-  p=0.5+(p-0.5)*W.shrink;
-  if(isNaN(p))p=0.5; // final safety net — never return NaN
-  p=Math.min(0.80,Math.max(0.20,p)); // hard honesty ceiling: no single MLB game is an 82% lock
+  var logit=combineLogitTerms(terms);
+  var p=applyShrinkAndClamp(logit,W.shrink);
   return {prob:p, logit:logit, contrib:c, raw:r};
 }
 function predictHomeProb(home,away,sp,gid){return predictFull(home,away,sp,gid,arguments[4]).prob;}
@@ -1046,29 +1028,17 @@ function predictHomeProb(home,away,sp,gid){return predictFull(home,away,sp,gid,a
 // the two cuts variance. It also yields a principled expected total (over/under).
 // ─────────────────────────────────────────────────────────────────────────────
 var LG_RUNS=4.4, LG_XFIP=4.10, POIS_W=0.33; // league avg runs/team, league avg xFIP, blend weight
-function poisPMF(k,lam){if(lam<=0)return k===0?1:0;var lp=-lam+k*Math.log(lam);for(var i=2;i<=k;i++)lp-=Math.log(i);return Math.exp(lp);}
-// How much a team's pitching (starter ~65% of innings + bullpen ~35%) suppresses the
-// opponent's scoring. 1.0 = league average; <1 = run-suppressing.
-function pitchSuppress(sp,side){
-  var p=sp[side];if(!p)return 1;
-  // Only a REAL pitcher line suppresses/inflates runs; a synthesized one is PWR-derived and the
-  // fake "bullpen fatigue" was pseudo-random — both are excluded so the Poisson model stays honest.
-  if(!p.realQ||p.synth)return 1;
-  var xf=parseFloat(p.xfip)||LG_XFIP, starter=xf/LG_XFIP;
-  return Math.max(0.62,Math.min(1.45,starter));
-}
+// poisPMF, pitchSuppress, and the win-probability math now live in js/poisson.js
+// (poissonModelCore); this remains here as thin glue to the game-state globals.
 function poissonModel(home,away,sp,gid){
   if(!sp)return null;
-  var parkF=((PARK[home]||100)/100);
-  var homeOff=(((sp.lineup&&sp.lineup.h)||100)/100);
-  var awayOff=(((sp.lineup&&sp.lineup.a)||100)/100);
-  var lamH=LG_RUNS*homeOff*pitchSuppress(sp,"a")*parkF*1.03; // home runs vs AWAY pitching, +HFA
-  var lamA=LG_RUNS*awayOff*pitchSuppress(sp,"h")*parkF*0.99; // away runs vs HOME pitching
-  lamH=Math.max(1.5,Math.min(8,lamH)); lamA=Math.max(1.5,Math.min(8,lamA));
-  var pH=0,pTie=0,MAX=18;
-  for(var i=0;i<=MAX;i++){var ph=poisPMF(i,lamH);for(var j=0;j<=MAX;j++){var pa=poisPMF(j,lamA);if(i>j)pH+=ph*pa;else if(i===j)pTie+=ph*pa;}}
-  pH+=pTie*(lamH/(lamH+lamA)); // ties -> extra innings; better offense slightly favored
-  return {pHome:Math.max(0.05,Math.min(0.95,pH)),lambdaH:lamH,lambdaA:lamA,total:Math.round((lamH+lamA)*10)/10};
+  return poissonModelCore({
+    parkFactor:(PARK[home]||100)/100,
+    homeOff:((sp.lineup&&sp.lineup.h)||100)/100,
+    awayOff:((sp.lineup&&sp.lineup.a)||100)/100,
+    hPitcher:sp.h,aPitcher:sp.a,
+    lgRuns:LG_RUNS,lgXfip:LG_XFIP
+  });
 }
 
 // Online learning: after a game resolves, nudge weights toward what predicted correctly.
@@ -1086,13 +1056,14 @@ function learnFromGame(home,away,sp,homeWon,gid){
   var W=MODEL_W;
   var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
   var hP=sp.h,aP=sp.a,pf=PARK[home]||100;
-  // raw feature values (the X in gradient)
-  var raw={
-    power:(hPwr-aPwr), elo:(eloProbHome(home,away)-0.5), xfip:(parseFloat(aP.xfip)-parseFloat(hP.xfip)),
-    whip:(parseFloat(aP.whip)-parseFloat(hP.whip)), xwoba:(parseFloat(aP.xwoba)-parseFloat(hP.xwoba)),
-    barrel:(parseFloat(aP.barrel)-parseFloat(hP.barrel)), lineup:(sp.lineup.h-sp.lineup.a),
-    bullpen:(sp.bp.a-sp.bp.h), park:(pf-100)
-  };
+  // raw feature values (the X in gradient). learningRawFeatures (js/predict-core.js)
+  // mirrors predictFull's own realQ/realX honesty gates and permanently excludes
+  // bullpen (pseudo-random), so a feature predictFull didn't vote with for THIS
+  // game can't still train its weight on noise.
+  var raw=learningRawFeatures({
+    hPwr:hPwr, aPwr:aPwr, eloEdge:(eloProbHome(home,away)-0.5),
+    hPitcher:hP, aPitcher:aP, lineupDiff:(sp.lineup.h-sp.lineup.a), parkFactor:pf
+  });
   // gradient step on each weight with L2 ridge decay toward the prior (DEFAULT_WEIGHTS);
   // the penalty term λ·(w−w₀) pulls each weight back toward its informed prior every step,
   // so a single noisy game can't drag a weight far — regularization, not just clamping.
@@ -1148,52 +1119,14 @@ var LIVE_SCORES={
 //  When opened as a file:// the browser blocks it (CORS) and we fall
 //  back to the LIVE_SCORES snapshot above.
 // ═══════════════════════════════════════════════════════════════════
-// ESPN uses abbreviations that differ slightly from ours — map them.
-var ESPN_ABBR={ATH:"OAK",CWS:"CHW",WSH:"WSH",SD:"SD",SF:"SF",TB:"TB",AZ:"ARI"};
-function ourAbbrFromEspn(a){
-  // reverse map ESPN -> ours
-  var rev={OAK:"ATH",CHW:"CWS",ARI:"AZ"};
-  return rev[a]||a;
-}
+// ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, and
+// applyRealRecordCore now live in js/espn-parse.js (also dropped ESPN_ABBR
+// here, a forward team-abbreviation map that had no remaining readers).
 var ESPN_OK=false;          // becomes true once a live fetch succeeds
 var ESPN_LAST=0;            // timestamp of last successful poll
 
 // Real team logo URLs from ESPN (populated as games load). Images bypass CORS.
 var LOGO_URL={};
-
-// Pull real weather from an ESPN event/competition when present.
-// ESPN sometimes provides weather.temperature + weather.displayValue, and venue indoor flag.
-function weatherFromESPN(ev,comp){
-  var w=ev.weather||comp.weather||(comp.venue&&comp.venue.weather)||null;
-  var indoor=(comp.venue&&comp.venue.indoor)||false;
-  if(indoor&&!w)return "Indoor / roof closed";
-  if(!w)return null;
-  var temp=(w.temperature!=null?w.temperature:(w.highTemperature!=null?w.highTemperature:null));
-  var cond=w.displayValue||w.conditionId||"";
-  var parts=[];
-  if(temp!=null)parts.push(temp+"F");
-  if(cond)parts.push(cond);
-  if(indoor)parts.push("(roof closed)");
-  return parts.length?parts.join(" "):null;
-}
-
-// Parse ESPN's odds array into our {homeML,awayML,homeImpl,awayImpl,overUnder,provider} shape.
-function realOddsFromESPN(comp,homeP){
-  var arr=comp&&comp.odds;
-  if(!arr||!arr.length)return null;
-  var o=arr[0];
-  var hML=o.homeTeamOdds&&o.homeTeamOdds.moneyLine, aML=o.awayTeamOdds&&o.awayTeamOdds.moneyLine;
-  if(hML==null||aML==null){
-    // sometimes only a spread/details string is present — can't get clean ML, bail to estimate
-    return null;
-  }
-  function impl(ml){return ml<0?(-ml)/((-ml)+100):100/(ml+100);}
-  var hi=impl(hML), ai=impl(aML);
-  // de-vig to normalize to 100%
-  var tot=hi+ai; if(tot>0){hi=hi/tot;ai=ai/tot;}
-  return {homeML:Math.round(hML),awayML:Math.round(aML),homeImpl:parseFloat(hi.toFixed(3)),awayImpl:parseFloat(ai.toFixed(3)),
-    overUnder:(o.overUnder!=null?o.overUnder:null),provider:(o.provider&&o.provider.name)?o.provider.name:"ESPN BET",real:true};
-}
 
 // -- Real line tracking (for Closing Line Value) --------------------------------
 // We snapshot every REAL line we see: the first is the "open", the last before first pitch
@@ -1213,41 +1146,11 @@ function clvFor(gid,pickSide){
   var oi=pickSide==="home"?r.oHi:r.oAi, ci=pickSide==="home"?r.cHi:r.cAi;
   return parseFloat((ci-oi).toFixed(4));
 }
-// Overlay real pitcher season stats from an ESPN "probables" entry onto our generated line.
-function applyRealPitcher(p,prob){
-  if(!prob)return;
-  // ESPN sometimes nests stats in prob.statistics [{name,displayValue}] or prob.athlete
-  var stats=prob.statistics||(prob.athlete&&prob.athlete.statistics)||null;
-  var gotReal=false;
-  if(stats&&stats.length){
-    stats.forEach(function(s){
-      var k=(s.name||s.abbreviation||"").toLowerCase();
-      var v=s.displayValue||s.value;
-      if(v==null)return;
-      if(k.indexOf("era")===0){p.era=(""+v);p.xfip=(""+v);gotReal=true;} // real ERA drives the run-prevention feature
-      else if(k==="whip"){p.whip=(""+v);gotReal=true;}
-    });
-  }
-  // record like "5-2" sometimes in prob.record or prob.summary
-  if(prob.record)p.wl=(""+prob.record);
-  if(gotReal){p.realQ=true;p.synth=false;} // real, independent pitcher data — now allowed to vote
-}
-
-// Overlay real W-L record / streak into TEAM_SPLITS from an ESPN competitor entry.
+// applyRealPitcher and applyRealRecordCore now live in js/espn-parse.js;
+// applyRealRecord stays here as the thin TEAM_SPLITS-mutating wrapper.
 function applyRealRecord(team,comp){
-  if(!comp)return;
-  var recs=comp.records;
-  if(recs&&recs.length){
-    var overall=recs.filter(function(r){return (r.type==="total"||r.name==="overall"||r.name==="Overall");})[0]||recs[0];
-    if(overall&&overall.summary){
-      if(!TEAM_SPLITS[team])TEAM_SPLITS[team]={rec:"0-0",home:"0-0",away:"0-0",l10:"5-5",vsR:.500,vsL:.500,day:.500,night:.500,rd:"+0",oneRun:"0-0",streak:"-"};
-      TEAM_SPLITS[team].rec=overall.summary;TEAM_SPLITS[team]._real=true;
-      var home=recs.filter(function(r){return r.type==="home"||r.name==="Home";})[0];
-      var away=recs.filter(function(r){return r.type==="road"||r.name==="Road"||r.name==="Away";})[0];
-      if(home&&home.summary)TEAM_SPLITS[team].home=home.summary;
-      if(away&&away.summary)TEAM_SPLITS[team].away=away.summary;
-    }
-  }
+  var updated=applyRealRecordCore(TEAM_SPLITS[team],comp);
+  if(updated)TEAM_SPLITS[team]=updated;
 }
 
 
@@ -1309,7 +1212,7 @@ function buildGamesFromESPN(data){
     if(odds&&odds.real&&status!=="final")trackLine(ev.id,odds,startMs);
     if(odds&&odds.real){
       var he=hp-odds.homeImpl,ae=ap-odds.awayImpl;
-      if(he>=ae&&he>0.04){betPick=home;betEdge=he;}else if(ae>he&&ae>0.04){betPick=away;betEdge=ae;}
+      var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?home:away);betEdge=edgeSel.edge;
     }
     // local time label
     var d=new Date(startMs);
@@ -1422,8 +1325,7 @@ function pollESPN_overlay(data){
         ODDS[g.id]=freshOdds;
         trackLine(g.id,freshOdds,g.startMs);
         var he=g.homeP-freshOdds.homeImpl,ae=g.awayP-freshOdds.awayImpl;
-        g.betPick="";g.betEdge=0;
-        if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}
+        var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;
       }
     }
   });
@@ -1453,8 +1355,7 @@ var GAMES30=RAW30.map(function(g){
   var odds=ODDS[g.id],betPick="",betEdge=0;
   if(odds&&odds.real){
     var he=hp-odds.homeImpl, ae=ap-odds.awayImpl;
-    if(he>=ae&&he>0.04){betPick=g.home;betEdge=he;}
-    else if(ae>he&&ae>0.04){betPick=g.away;betEdge=ae;}
+    var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);betEdge=edgeSel.edge;
   }
   return{id:g.id,home:g.home,away:g.away,time:g.time,utc:g.utc,startMs:startMs,status:status,
     homeP:hp,awayP:ap,conf:Math.max(hp,ap),betPick:betPick,betEdge:parseFloat(betEdge.toFixed(3)),
@@ -2424,7 +2325,7 @@ function renderRecentResults(){
 
 function renderToday(){
   renderMap(); scanAlerts(); renderHdrRecord(); renderTopPick(); renderRecentResults();var s=getStats30();var fa=document.getElementById("f-all");if(fa)fa.textContent="All "+GAMES30.length;var fsit=document.getElementById("f-sit");if(fsit){fsit.textContent="\ud83d\udcca Situational: "+(sitOn()?"ON":"OFF");fsit.className="fbtn"+(sitOn()?" on":"");}var el=document.getElementById("m-acc");el.textContent=s.acc!==null?(s.acc*100).toFixed(1)+"%":"\u2014";el.className="mc-val"+(s.acc!==null?(s.acc>=0.5?" g":" red"):"");document.getElementById("m-acc-s").textContent=s.ok+"/"+s.n+" correct";document.getElementById("m-hc").textContent=s.hcAcc!==null?(s.hcAcc*100).toFixed(0)+"%":"\u2014";document.getElementById("m-hc-s").textContent=s.hcN?s.hcOk+"/"+s.hcN+" correct":"waiting";var evCount=GAMES30.filter(function(g){return g.betPick;}).length;document.getElementById("m-ev").textContent=evCount;
-  var mcalEl=document.getElementById("m-cal");if(mcalEl){var calRep=calibrationReport(calibPairs());if(calRep&&calRep.n>=8){mcalEl.textContent=calRep.ece.toFixed(3);mcalEl.className="mc-val"+(calRep.ece<0.05?" g":calRep.ece<0.10?" a":" red");}else{mcalEl.textContent="—";mcalEl.className="mc-val a";}}
+  var mcalEl=document.getElementById("m-cal");if(mcalEl){var calRep=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);if(calRep&&calRep.n>=8){mcalEl.textContent=calRep.ece.toFixed(3);mcalEl.className="mc-val"+(calRep.ece<0.05?" g":calRep.ece<0.10?" a":" red");}else{mcalEl.textContent="—";mcalEl.className="mc-val a";}}
   renderSlateOverview();
   var liveGames=GAMES30.filter(function(g){return g.status==="live"&&g.live&&g.live.status==="inprogress";});
   var lb=document.getElementById("live-banner");
@@ -2606,39 +2507,10 @@ function calibPairs(){
   });
   return pairs;
 }
-function wilsonCI(k,n){
-  if(n===0)return [0,1];
-  var z=1.96,p=k/n,d=1+z*z/n;
-  var c=(p+z*z/(2*n))/d,h=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n))/d;
-  return [Math.max(0,c-h),Math.min(1,c+h)];
-}
-function logLossAt(pairs,shrink){
-  var s=0;for(var i=0;i<pairs.length;i++){var p=0.5+(pairs[i].p-0.5)*shrink;p=Math.min(0.995,Math.max(0.005,p));s+=-(pairs[i].y*Math.log(p)+(1-pairs[i].y)*Math.log(1-p));}
-  return s/pairs.length;
-}
-function calibrationReport(pairs){
-  var n=pairs.length;if(n<1)return null;
-  var base=0;for(var i=0;i<n;i++)base+=pairs[i].y;base/=n; // overall pick win rate
-  var bs=0;for(i=0;i<n;i++)bs+=Math.pow(pairs[i].p-pairs[i].y,2);bs/=n;
-  var bsRef=base*(1-base),bss=bsRef>0?1-bs/bsRef:0;
-  var ll=logLossAt(pairs,1),llBase=-((base>0?base*Math.log(base):0)+((1-base)>0?(1-base)*Math.log(1-base):0));
-  var B=10,bins=[];for(i=0;i<B;i++)bins.push({lo:0.5+i*0.05,hi:0.5+(i+1)*0.05,sp:0,sy:0,n:0});
-  for(i=0;i<n;i++){var bi=Math.min(B-1,Math.max(0,Math.floor((pairs[i].p-0.5)/0.05)));bins[bi].sp+=pairs[i].p;bins[bi].sy+=pairs[i].y;bins[bi].n++;}
-  var rel=0,res=0,ece=0;
-  bins.forEach(function(b){if(b.n>0){b.pbar=b.sp/b.n;b.obar=b.sy/b.n;b.ci=wilsonCI(b.sy,b.n);rel+=b.n*Math.pow(b.pbar-b.obar,2);res+=b.n*Math.pow(b.obar-base,2);ece+=b.n*Math.abs(b.pbar-b.obar);}});
-  rel/=n;res/=n;ece/=n;var unc=base*(1-base);
-  var bestS=1,bestLL=Infinity;for(var s=0.30;s<=1.5001;s+=0.02){var l=logLossAt(pairs,s);if(l<bestLL){bestLL=l;bestS=s;}}
-    // sharpness: how far predictions sit from 50/50 (bold-but-calibrated is the goal)
-  var mp=0;for(i=0;i<n;i++)mp+=pairs[i].p;mp/=n;var sh=0;for(i=0;i<n;i++)sh+=Math.pow(pairs[i].p-mp,2);sh=Math.sqrt(sh/n);
-  // recent-window ECE (last 30 graded) vs full period — drift check
-  var rEce=null;
-  if(n>=40){
-    var rp=pairs.slice(-30),rb=[];for(i=0;i<10;i++)rb.push({sp:0,sy:0,n:0});
-    rp.forEach(function(q){var bi=Math.min(9,Math.max(0,Math.floor((q.p-0.5)/0.05)));rb[bi].sp+=q.p;rb[bi].sy+=q.y;rb[bi].n++;});
-    rEce=0;rb.forEach(function(b){if(b.n>0)rEce+=b.n*Math.abs(b.sp/b.n-b.sy/b.n);});rEce/=rp.length;
-  }
-return {n:n,base:base,brier:bs,bss:bss,logloss:ll,llBase:llBase,reliability:rel,resolution:res,uncertainty:unc,ece:ece,sharpness:sh,recentEce:rEce,bins:bins,optShrink:Math.round(bestS*100)/100,optLL:bestLL,curLL:logLossAt(pairs,(MODEL_W&&MODEL_W.shrink)||1)};
-}
+// wilsonCI, logLossAt, calibrationReport now live in js/calibration.js (fixed a
+// sharpness-metric bug there: it used to measure spread around the sample's own
+// mean instead of RMS distance from 50/50, so a model that was always confidently
+// at ~90% reported near-zero "sharpness").
 function applyRecalibration(s){
   if(!MODEL_W)return;
   MODEL_W.shrink=s;
@@ -2650,7 +2522,7 @@ function applyRecalibration(s){
 
 function renderCalib(){
   var canvas=document.getElementById("calib-canvas");if(!canvas)return;
-  var report=calibrationReport(calibPairs());
+  var report=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);
   var metaEl=document.getElementById("calib-meta"), metricsEl=document.getElementById("calib-metrics"), recalEl=document.getElementById("calib-recal");
   var dpr=Math.min(window.devicePixelRatio||1,2);
   var cssW=Math.max(280,(canvas.parentElement.offsetWidth||920)-24), cssH=300;
@@ -3426,11 +3298,12 @@ function hideOfflineWarning(){var w=document.getElementById("offline-warn");if(w
 //  HISTORICAL BACKTEST — pull real completed games from ESPN and grade
 //  the model against real outcomes. Cached in LS so it grows.
 // ═══════════════════════════════════════════════════════════════════
+// parseBacktestStore/isBacktestStale now live in js/persistence.js.
 var BT_KEY="mlb_backtest_games_v1";
-function btLoad(){try{return JSON.parse(LS.getItem(BT_KEY))||{};}catch(e){return {};}}
+function btLoad(){return parseBacktestStore(LS.getItem(BT_KEY));}
 var BT_SCHEMA=2; // bump when feature semantics change (e.g. synthesized pitcher stats removed) so old grades can be flagged
 function btSave(o){try{o.__schema=BT_SCHEMA;LS.setItem(BT_KEY,JSON.stringify(o));}catch(e){}}
-function btStale(){var s=btLoad();var keys=Object.keys(s).filter(function(k){return k.indexOf("__")!==0;});return keys.length>0&&s.__schema!==BT_SCHEMA;}
+function btStale(){return isBacktestStale(btLoad(),BT_SCHEMA);}
 function staleNoticeHTML(){
   return '<div style="background:var(--amb2);border:1px solid rgba(217,119,6,0.4);border-radius:8px;padding:11px 13px;margin-bottom:12px;font-size:12px;color:var(--mut2);line-height:1.55">'
     +'<b style="color:var(--amb)">\u26a0 These grades predate the latest model fixes.</b> This backtest was scored before synthesized pitcher stats were removed and real betting lines were added, so the predictions reflect the old model. Rebuild for an honest comparison.'
@@ -3468,29 +3341,11 @@ function teamGameLog(team){
   games.sort(function(a,b){return (a.d||"").localeCompare(b.d||"");});
   return games;
 }
-function recOf(gs){var w=gs.filter(function(g){return g.won;}).length;return {w:w,l:gs.length-w,n:gs.length};}
-// Returns {notes:[{text,signal,lean}], adj} where adj is a CAPPED home-prob nudge.
+// recOf, currentStreak, and the note/adjustment math now live in js/situational.js
+// (gameSituationalCore); this remains here as thin IO glue (teamGameLog reads the
+// localStorage-backed backtest store + the user's logged history).
 function gameSituational(home,away,startMs){
-  var notes=[],adj=0;
-  [{t:home,side:1,atHome:true},{t:away,side:-1,atHome:false}].forEach(function(o){
-    var log=teamGameLog(o.t);
-    if(log.length<6)return;
-    // 1) Recent form (last 6 games): record + run differential — a real, current signal
-    var l6=log.slice(-6), rec=recOf(l6), rd=l6.reduce(function(s,g){return s+(g.rs-g.ra);},0);
-    if(rec.w>=5||rd>=10){notes.push({text:o.t+" hot lately: "+rec.w+"-"+rec.l+", "+(rd>=0?"+":"")+rd+" run diff over last "+l6.length,signal:"real",lean:o.side});adj+=o.side*0.018;}
-    else if(rec.l>=5||rd<=-10){notes.push({text:o.t+" cold lately: "+rec.w+"-"+rec.l+", "+rd+" run diff over last "+l6.length,signal:"real",lean:-o.side});adj+=-o.side*0.018;}
-    // 2) Active win/loss streak (>=4 games)
-    var streak=0;for(var s2=log.length-1;s2>=0;s2--){if(s2===log.length-1){streak=log[s2].won?1:-1;}else{if((log[s2].won?1:-1)===(streak>0?1:-1))streak+=(streak>0?1:-1);else break;}}
-    if(Math.abs(streak)>=4){notes.push({text:o.t+" on a "+Math.abs(streak)+"-game "+(streak>0?"win":"losing")+" streak",signal:"real",lean:streak>0?o.side:-o.side});adj+=(streak>0?o.side:-o.side)*0.010;}
-    // 3) Home/road split for the side they actually play tonight — a genuine situational factor
-    var venueGames=log.filter(function(g){return g.h===o.atHome;});
-    if(venueGames.length>=8){var vr=recOf(venueGames),wp=vr.w/vr.n,venue=o.atHome?"at home":"on the road";
-      if(wp>=0.60){notes.push({text:o.t+" strong "+venue+": "+vr.w+"-"+vr.l+" ("+Math.round(wp*100)+"%)",signal:"real",lean:o.side});adj+=o.side*0.012;}
-      else if(wp<=0.40){notes.push({text:o.t+" weak "+venue+": "+vr.w+"-"+vr.l+" ("+Math.round(wp*100)+"%)",signal:"real",lean:-o.side});adj+=-o.side*0.012;}
-    }
-  });
-  adj=Math.max(-0.05,Math.min(0.05,adj)); // hard cap: situational can't dominate
-  return {notes:notes,adj:adj};
+  return gameSituationalCore(teamGameLog(home),teamGameLog(away),home,away);
 }
 // apply situational nudge to a home-prob (respects the on/off toggle)
 var SIT_ON_KEY="mlb_sit_on_v1";
@@ -3503,7 +3358,7 @@ function recomputeAll(){
     var pm=poissonModel(g.home,g.away,SP[g.id],g.id);g.pois=pm; // Poisson run-model (second opinion + expected total)
     var coreP=pm?(POIS_W*pm.pHome+(1-POIS_W)*f.prob):f.prob; // ensemble: logistic+Elo blended with Poisson
     var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,coreP+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;g.betPick="";g.betEdge=0;if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
   });
   renderToday();
 }
@@ -3577,28 +3432,12 @@ function fetchInjuries(){
   function tryAt(i){if(i>=routes.length)return Promise.reject(0);return fetch(routes[i]).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){if(j&&j.contents&&typeof j.contents==="string"){try{return JSON.parse(j.contents);}catch(e){}}return j;}).catch(function(){return tryAt(i+1);});}
   return tryAt(0).then(function(data){parseInjuries(data);return INJURIES;});
 }
-function starTier(team,name){
-  var stars=(STARS||{})[team]||[];var tier=null;
-  stars.forEach(function(s){var key=s[0].toLowerCase();if(name&&name.toLowerCase().indexOf(key)>=0)tier=(tier===null?s[1]:Math.min(tier,s[1]));});
-  return tier;
-}
-// Net injury impact for a team (negative = hurts them). Only "out/IL/suspended" count, not day-to-day.
-function injuryImpact(team){
-  var INJ=(INJURIES||{});var inj=INJ[team]||[];
-  if(!inj.length)return {players:[],adj:0,dtd:[]};
-  var out=[],dtd=[],adj=0;
-  inj.forEach(function(p){
-    var st=(p.status||"").toLowerCase();
-    var isOut=st.indexOf("out")>=0||st.indexOf("60-day")>=0||st.indexOf("15-day")>=0||st.indexOf("10-day")>=0||st.indexOf("injured list")>=0||st.indexOf("il")===0||st.indexOf("suspend")>=0||st.indexOf("restricted")>=0;
-    var tier=starTier(team,p.name);
-    if(isOut){
-      var hit=tier===1?0.035:tier===2?0.020:tier===3?0.010:0.005;
-      adj-=hit;out.push({name:p.name,pos:p.pos,status:p.status,tier:tier});
-    } else {dtd.push({name:p.name,pos:p.pos,status:p.status,tier:tier});}
-  });
-  adj=Math.max(-0.06,adj); // cap so it can't dominate
-  return {players:out,adj:adj,dtd:dtd};
-}
+// starTierCore, isOutStatus, and injuryImpactCore now live in js/injuries.js
+// (fixed a real bug there: the old out-status check used a bare string-prefix
+// test for "il" which also matched "Illness", wrongly treating a day-to-day
+// sick player as an IL absence and docking that team's win probability).
+function starTier(team,name){return starTierCore((STARS||{})[team]||[],name);}
+function injuryImpact(team){return injuryImpactCore((INJURIES||{})[team]||[],(STARS||{})[team]||[]);}
 // combined home-prob adjustment from both teams' injuries
 function injAdj(home,away){var h=injuryImpact(home),a=injuryImpact(away);return {adj:h.adj-a.adj,home:h,away:a};}
 
@@ -3805,25 +3644,10 @@ var DIVISIONS={
   "NL West":["AZ","COL","LAD","SD","SF"]
 };
 var STANDINGS_OK=false;
-function teamWinPct(t){
-  var s=TEAM_SPLITS[t];
-  if(s&&s.rec){var p=(""+s.rec).split("-");var w=parseInt(p[0]),l=parseInt(p[1]);if(!isNaN(w)&&!isNaN(l)&&(w+l)>0)return w/(w+l);}
-  var pw=PWR[t]||60;return Math.max(0.30,Math.min(0.70,0.35+(pw-50)*0.0094));
-}
+// teamWinPctCore/pythagExpCore now live in js/predict-core.js.
+function teamWinPct(t){var s=TEAM_SPLITS[t];return teamWinPctCore(s&&s.rec,PWR[t]||60);}
 function teamRecord(t){var s=TEAM_SPLITS[t];return (s&&s.rec)?s.rec:"\u2014";}
-// Pythagorean win expectation from run differential (exponent 1.83 = MLB-tuned "Pythagenpat"-ish).
-// Catches teams whose W-L is lucky/unlucky vs how many runs they actually score & allow.
-function pythagExp(t){
-  var s=TEAM_SPLITS[t];
-  if(!s||!s.rec||s.rd==null)return teamWinPct(t);
-  var p=(""+s.rec).split("-");var g=parseInt(p[0])+parseInt(p[1]);
-  if(!g)return 0.5;
-  var rd=parseFloat((""+s.rd).replace("+",""));if(isNaN(rd))return teamWinPct(t);
-  var lg=4.5; // league avg runs/game
-  var rs=lg+(rd/g)/2, ra=lg-(rd/g)/2; if(ra<0.1)ra=0.1;
-  var e=1.83;
-  return Math.pow(rs,e)/(Math.pow(rs,e)+Math.pow(ra,e));
-}
+function pythagExp(t){var s=TEAM_SPLITS[t];return pythagExpCore(s&&s.rec,s&&s.rd,PWR[t]||60);}
 function poGameProb(a,b){var pa=teamWinPct(a),pb=teamWinPct(b);var d=pa+pb-2*pa*pb;if(d<=0)return 0.5;var p=(pa-pa*pb)/d;return Math.max(0.08,Math.min(0.92,p));}
 function comb(n,k){var r=1;for(var i=0;i<k;i++)r=r*(n-i)/(i+1);return r;}
 function seriesProb(p,w){var t=0;for(var j=0;j<w;j++)t+=comb(w-1+j,j)*Math.pow(p,w)*Math.pow(1-p,j);return t;}
@@ -4020,15 +3844,7 @@ function getBankroll(){var v=parseFloat(LS.getItem(BANKROLL_KEY));return (!isNaN
 function saveBankroll(v){var n=parseFloat(v);if(!isNaN(n)&&n>0)LS.setItem(BANKROLL_KEY,n);}
 function getKellyFrac(){var v=parseFloat(LS.getItem(KELLY_KEY));return (!isNaN(v)&&v>0)?v:0.25;}
 function saveKelly(v){LS.setItem(KELLY_KEY,v);}
-function mlToDecimal(ml){return ml>0?(ml/100)+1:(100/(-ml))+1;}
-function decimalToML(dec){var b=dec-1;return b>=1?Math.round(b*100):Math.round(-100/b);}
-// Kelly fraction of bankroll: f* = (b*p - q)/b, b=decimal odds-1, p=win prob, q=1-p
-function kellyStake(p,decOdds,bankroll,frac){
-  var b=decOdds-1; if(b<=0)return 0;
-  var f=(b*p-(1-p))/b;
-  if(f<=0)return 0;
-  return bankroll*f*frac;
-}
+// mlToDecimal, decimalToML, kellyStake, pickBetSide, simWhatIf now live in js/betting.js
 var PARLAY=[]; // selected game ids
 
 // ── PAPER-TRADING BET LOG ── auto-logs each +EV pick when its game goes final,
@@ -4044,16 +3860,6 @@ function clearBetLog(){LS.removeItem(BETLOG_KEY);renderBetting();showToast("Pape
 var WHATIF_KEY="mlb_whatif_v1";
 function getWhatIf(){var v=parseFloat(LS.getItem(WHATIF_KEY));return (!isNaN(v)&&v>0)?v:100;}
 function saveWhatIf(v){var n=parseFloat(v);if(!isNaN(n)&&n>0)LS.setItem(WHATIF_KEY,n);}
-function simWhatIf(bets,start){
-  var bank=start,peak=start,maxDD=0,played=0;
-  bets.forEach(function(b){
-    var f=(b.kStake||0)/1000;if(f<=0)return; // recover Kelly fraction from the $1k-baseline stake
-    var stake=bank*f;var dec=mlToDecimal(b.ml);
-    bank+=b.won?stake*(dec-1):-stake;played++;
-    if(bank>peak)peak=bank;var dd=peak>0?(peak-bank)/peak:0;if(dd>maxDD)maxDD=dd;
-  });
-  return {final:bank,profit:bank-start,maxDD:maxDD,played:played};
-}
 function sweepBetLog(){
   var log=betlogLoad();var changed=false;
   GAMES30.forEach(function(g){
@@ -4477,7 +4283,7 @@ function applyTrained(){
   LS.setItem(TRAINED_KEY,"1");
   // re-predict today's slate with trained weights
   GAMES30.forEach(function(g){var f=predictFull(g.home,g.away,SP[g.id],g.id,g.ump);var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,f.prob+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;g.betPick="";g.betEdge=0;if(he>=ae&&he>0.04){g.betPick=g.home;g.betEdge=he;}else if(ae>he&&ae>0.04){g.betPick=g.away;g.betEdge=ae;}}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
   });
   renderTrainResult(res);
   showToast("\u2713 Model trained on "+res.nGames+" real games \u2014 weights updated");
@@ -4723,7 +4529,7 @@ function answerQuestion(q){
   }
   // MODEL PERFORMANCE — how accurate / calibrated / good is it (from REAL graded data)
   if(/how (accurate|good|reliable|well)|track record|your (accuracy|record)|calibrat|brier|how do you do|performanc|how.*been doing/.test(t)){
-    var rep=calibrationReport(calibPairs());
+    var rep=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);
     if(!rep||rep.n<8)return "I don\u2019t have enough graded games yet to show a real track record \u2014 I need ~8+ logged or backtested results. Run the <b>Backtest</b> tab to seed it, then ask again. I won\u2019t quote a number I can\u2019t back.";
     var acc=0;calibPairs().forEach(function(d){acc+=d.y;});acc=acc/rep.n;
     var s="<b>Track record</b> (over "+rep.n+" real graded games):<br>"
