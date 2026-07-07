@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { recOf, recencyFormCore, currentStreak, teamSituationalContribution, gameSituationalCore } from "../js/situational.js";
+import { recOf, filterBeforeDate, recencyFormCore, currentStreak, teamSituationalContribution, gameSituationalCore } from "../js/situational.js";
 
 function game(won, rs, ra, h) { return { won, rs, ra, h }; }
 
@@ -7,6 +7,26 @@ describe("recOf", () => {
   it("counts wins/losses/total", () => {
     const r = recOf([game(true, 5, 1, true), game(false, 1, 5, true), game(true, 3, 2, false)]);
     expect(r).toEqual({ w: 2, l: 1, n: 3 });
+  });
+});
+
+describe("filterBeforeDate (look-ahead-bias guard)", () => {
+  const log = [
+    { d: "20260601" }, { d: "20260605" }, { d: "20260610" }, { d: "20260615" },
+  ];
+  it("keeps only games strictly before the cutoff", () => {
+    expect(filterBeforeDate(log, "20260610")).toEqual([{ d: "20260601" }, { d: "20260605" }]);
+  });
+  it("excludes a game ON the cutoff date itself (strictly before, not on-or-before)", () => {
+    const r = filterBeforeDate(log, "20260610");
+    expect(r.some((g) => g.d === "20260610")).toBe(false);
+  });
+  it("is a no-op when no cutoff is given", () => {
+    expect(filterBeforeDate(log, null)).toBe(log);
+    expect(filterBeforeDate(log, undefined)).toBe(log);
+  });
+  it("returns everything excluded when the cutoff is before all games", () => {
+    expect(filterBeforeDate(log, "20260101")).toEqual([]);
   });
 });
 
@@ -70,6 +90,23 @@ describe("recencyFormCore", () => {
     const withOldBlowouts = new Array(20).fill(6).concat(new Array(10).fill(-1));
     const justRecent = new Array(10).fill(-1);
     expect(recencyFormCore(logOf(withOldBlowouts))).toBeCloseTo(recencyFormCore(logOf(justRecent)), 10);
+  });
+
+  it("regression: filtering to before a cutoff date prevents a future slump/streak from leaking into a historical grade", () => {
+    // A team on a big win streak through 6/6, then a big losing streak from
+    // 6/10 on. Grading a game AS OF 6/10 must see the win streak (all that had
+    // actually happened), not get diluted/reversed by the future losses --
+    // that's exactly the look-ahead-bias channel backtest grading used to have.
+    const datedLog = [
+      { d: "20260601", rs: 10, ra: 1 }, { d: "20260602", rs: 10, ra: 1 }, { d: "20260603", rs: 10, ra: 1 },
+      { d: "20260604", rs: 10, ra: 1 }, { d: "20260605", rs: 10, ra: 1 }, { d: "20260606", rs: 10, ra: 1 },
+      { d: "20260610", rs: 1, ra: 10 }, { d: "20260611", rs: 1, ra: 10 }, { d: "20260612", rs: 1, ra: 10 },
+      { d: "20260613", rs: 1, ra: 10 }, { d: "20260614", rs: 1, ra: 10 }, { d: "20260615", rs: 1, ra: 10 },
+    ];
+    const asOfCutoff = recencyFormCore(filterBeforeDate(datedLog, "20260610"));
+    const withFullFutureKnowledge = recencyFormCore(datedLog);
+    expect(asOfCutoff).toBe(1); // maximally hot -- correct, that's all that had happened
+    expect(asOfCutoff).toBeGreaterThan(withFullFutureKnowledge);
   });
 });
 

@@ -16,6 +16,16 @@ function recOf(gs) {
   return { w: w, l: gs.length - w, n: gs.length };
 }
 
+// Point-in-time filter: keep only games strictly before `beforeDate`
+// ("YYYYMMDD", lexicographically comparable). Used so grading a historical
+// game only sees what had actually happened by then, not future results a
+// naive "current game log" lookup would otherwise leak in. No-op if
+// beforeDate is falsy.
+function filterBeforeDate(games, beforeDate) {
+  if (!beforeDate) return games;
+  return games.filter(function(g) { return (g.d || "") < beforeDate; });
+}
+
 // Exponentially-recency-weighted run-differential form score in [-1, 1], from
 // a team's chronological game log. Needs >=4 games of history, else neutral
 // (0). Blowouts are clipped per-game so one 14-run night can't dominate.
@@ -97,6 +107,7 @@ function gameSituationalCore(homeLog, awayLog, home, away) {
 
 return {
   recOf: recOf,
+  filterBeforeDate: filterBeforeDate,
   recencyFormCore: recencyFormCore,
   currentStreak: currentStreak,
   teamSituationalContribution: teamSituationalContribution,

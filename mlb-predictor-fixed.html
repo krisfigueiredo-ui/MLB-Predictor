@@ -553,6 +553,7 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 <!-- MODEL -->
 <div id="pnl-model" class="pnl">
   <div class="sec"><span>Self-training model</span><span class="badge" id="train-badge">0 games trained</span></div>
+  <div class="disclaimer">&#9888; <b>Point-in-time caveat:</b> team-context features (standings, Elo, recent form, H2H, injuries) are built from CURRENT data, not a snapshot of what was known as of each historical game's own date. Grading a 20-day-old game still uses today's full-season record for both teams. That means the accuracy/AUC/calibration numbers below are somewhat optimistic vs. true forward (live) performance &mdash; treat them as an upper bound, not a live-performance guarantee.</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
     <button class="btn btn-primary" onclick="applyTrained()">Train on real games</button>
     <button class="btn" onclick="runCV()">5-fold cross-validation</button>
@@ -982,7 +983,11 @@ function eloRanked(){return Object.keys(ELO).map(function(t){return {team:t,r:EL
 // recencyFormCore (the weighted-decay math) now lives in js/situational.js;
 // this stays here as a thin cache + IO wrapper around it.
 var _recFormCache={}, _recFormStamp=0;
-function recencyForm(team){
+// beforeDate (optional): date-scoped calls (backtest grading) bypass the cache
+// entirely, since each call is for a different historical date and the plain
+// team-keyed cache would otherwise return another date's stale value.
+function recencyForm(team,beforeDate){
+  if(beforeDate)return recencyFormCore(teamGameLog(team,beforeDate));
   if(_recFormCache._stamp!==_recFormStamp){_recFormCache={_stamp:_recFormStamp};}
   if(team in _recFormCache)return _recFormCache[team];
   var val=recencyFormCore(teamGameLog(team));
@@ -990,7 +995,11 @@ function recencyForm(team){
   return val;
 }
 function bumpRecForm(){_recFormStamp++;} // call when game-log data changes (backtest/history)
-function predictFull(home,away,sp,gid){
+// ump (5th arg, some call sites) is accepted for positional compatibility but not
+// read here (umpire assignments are projected/pseudo-random -- see the HONESTY GATE
+// note near c.ump below). beforeDate (6th arg, optional "YYYYMMDD") is used during
+// backtest grading to scope recency-form to games strictly before the graded game.
+function predictFull(home,away,sp,gid,ump,beforeDate){
   var W=MODEL_W;
   var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
   var c={}, r={};
@@ -1000,7 +1009,7 @@ function predictFull(home,away,sp,gid){
   r.elo=(eloProbHome(home,away)-0.5); c.elo=r.elo*((W.elo!=null)?W.elo:1.1);
   r.hfa=1; c.hfa=W.hfa;
   // recency-weighted form (decay over recent games) — distinct from the flat L10 'form' feature
-  r.recform=(recencyForm(home)-recencyForm(away)); c.recform=r.recform*((W.recform!=null)?W.recform:0);
+  r.recform=(recencyForm(home,beforeDate)-recencyForm(away,beforeDate)); c.recform=r.recform*((W.recform!=null)?W.recform:0);
   r.xfip=0;r.whip=0;r.xwoba=0;r.barrel=0;r.lineup=0;r.bullpen=0;r.park=0;r.form=0;r.h2h=0;r.pvt=0;r.wx=0;r.split=0;r.pythag=0;r.ump=0;r.rest=0;c.rest=0;
   // REST ADVANTAGE — real schedule data: teams coming off an off-day vs a team that played
   // yesterday. Only votes once yesterday's real slate has actually been fetched (REST_OK).
@@ -3370,7 +3379,10 @@ function ymd(d){return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.g
 function dowName(i){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][i];}
 function dowFromYmd(y){if(!y||y.length<8)return null;var d=new Date(parseInt(y.slice(0,4)),parseInt(y.slice(4,6))-1,parseInt(y.slice(6,8)));return dowName(d.getDay());}
 // chronological game log for a team from cached backtest games
-function teamGameLog(team){
+// beforeDate (optional, "YYYYMMDD"): when set, excludes games on/after that date --
+// used during backtest grading so a historical game is only judged on what happened
+// strictly before it, not on data from games that (relative to it) haven't happened yet.
+function teamGameLog(team,beforeDate){
   var store=btLoad();var games=[];
   Object.keys(store).forEach(function(k){
     if(k.indexOf("__")===0)return;var g=store[k];
@@ -3387,6 +3399,7 @@ function teamGameLog(team){
   });}catch(e){}
   // de-dup (a game can be in both stores) then sort oldest->newest
   var seen={};games=games.filter(function(g){var key=g.d+"_"+g.rs+"_"+g.ra;if(seen[key])return false;seen[key]=1;return true;});
+  games=filterBeforeDate(games,beforeDate);
   games.sort(function(a,b){return (a.d||"").localeCompare(b.d||"");});
   return games;
 }
@@ -3568,11 +3581,20 @@ function loadBacktest(days){
         var hScore=parseInt(hC.score||"0",10), aScore=parseInt(aC.score||"0",10);
         if(hScore===aScore)return;
         // grade the model: build estimated features, predict, compare to real winner
+        // KNOWN LIMITATION (look-ahead bias): predictFull still reads TEAM_SPLITS/ELO/H2H/
+        // PVT/INJURIES as they exist RIGHT NOW, not as of `ds` (this game's real date) --
+        // recency-form is the one channel scoped to `ds` below (via beforeDate), since it's
+        // the only one built from a per-game-dated log we can filter. The rest reflect the
+        // full season to date, so grading an older game still sees standings/Elo shaped by
+        // games that happened AFTER it -- inflating apparent accuracy vs. true forward
+        // performance. A correct fix needs point-in-time snapshots of those tables (not
+        // available from the free feeds today); see the UI disclaimer on the Model tab and
+        // TEST_COVERAGE_ANALYSIS.md for the full writeup.
         var hProb=hC.probables&&hC.probables[0], aProb=aC.probables&&aC.probables[0];
         var hPit=(hProb&&hProb.athlete)?hProb.athlete.shortName:null;
         var aPit=(aProb&&aProb.athlete)?aProb.athlete.shortName:null;
         var sp=genSP(home,away,hPit,aPit);
-        var pf=predictFull(home,away,sp,ev.id,projectUmp(ev.id));
+        var pf=predictFull(home,away,sp,ev.id,projectUmp(ev.id),ds);
         var hp=pf.prob;
         var pick=hp>=0.5?"home":"away";
         var actual=hScore>aScore?"home":"away";

@@ -15,12 +15,13 @@ Since then:
   asserting the page still renders `GAMES30`/computes predictions with zero console/page errors, and
   for the riskiest one (`predictFull`) a byte-for-byte before/after diff of its output across every game
   in `GAMES30`.
-- **150 unit tests, all passing**, across 10 modules:
+- **179 unit tests, all passing**, across 11 modules:
   - `js/betting.js` — odds conversion, Kelly staking, the shared bet-edge-threshold rule (17 tests)
   - `js/calibration.js` — Wilson CI, log loss, Brier/ECE/BSS decomposition (12 tests)
   - `js/poisson.js` — Poisson PMF, pitcher suppression, win-probability core (13 tests)
   - `js/elo.js` — Elo seeding, ratings→win-prob, margin-of-victory rating change (12 tests)
-  - `js/situational.js` — recent form/streaks/venue splits, recency-weighted form decay (18 tests)
+  - `js/situational.js` — recent form/streaks/venue splits, recency-weighted form decay, the
+    point-in-time date filter (23 tests)
   - `js/injuries.js` — star-tier matching, out-status classification, injury impact (11 tests)
   - `js/persistence.js` — schema migration / corrupt-JSON handling for weights + backtest store (10 tests)
   - `js/espn-parse.js` — team-abbreviation mapping, weather/odds/pitcher/record parsing from real
@@ -28,6 +29,59 @@ Since then:
   - `js/predict-core.js` — pitcher-stat regression/clamping, W-L record parsing, Pythagorean win
     expectation, the final logit→probability combine step, and the online-learning gradient-input
     computation (32 tests)
+  - `js/ml-train.js` — standardization, batch logistic regression, ROC-AUC/ROC curve, confusion-matrix
+    precision/recall/F1 (24 tests)
+
+## Machine-learning-focused pass
+
+After the initial coverage push, focus shifted specifically to the ML/data-quality side: the
+"Model Training" tab's batch logistic regression (`trainModel`), k-fold cross-validation
+(`crossValidate`), and the learning-curve tool (`learningCurve`) — previously untested and, it turned
+out, hiding a real methodology bug plus a much bigger structural one.
+
+### Bug: data leakage in `trainModel()`'s train/test split
+
+`trainModel()` computed feature standardization (mean/std) on the **full** dataset, then split into
+train/test and used those same full-dataset statistics for both. That's textbook leakage: the held-out
+test set's own feature distribution influenced how training features were scaled, biasing the reported
+"honest out-of-sample eval" optimistic. `crossValidate()` already did this correctly (fit on each fold's
+train split only, per its own comment) — `trainModel` was the one path that didn't match. Fixed by moving
+the split before standardization; `crossValidate`/`learningCurve` were already correct and are now
+sharing the same tested `js/ml-train.js` primitives instead of three separately hand-rolled copies of the
+same gradient-descent loop.
+
+### Bigger finding: look-ahead bias in backtest grading (partially fixed, mostly documented)
+
+While tracing how `trainModel`'s `g.feat`/`g.y` training examples get created (`loadBacktest`), found
+something more significant: grading a historical game calls `predictFull` using **today's** `TEAM_SPLITS`
+(win/loss record, home/away split, L10), `ELO` ratings, `H2H`, `PVT`, and `INJURIES` — not a snapshot of
+what those looked like as of that game's actual date. Since those tables reflect the full season to date,
+grading a game from 3 weeks ago still sees standings and Elo ratings shaped by everything that happened
+*after* it. That inflates every accuracy/AUC/calibration number the app computes from backtest data
+(win-rate tracking, `crossValidate`, `calibrationReport`) versus what the model would actually achieve
+predicting forward in real time.
+
+This is a genuinely different class of problem than everything else found in this pass — not a
+localized formula bug, but a mismatch between the data architecture (single current-state tables) and
+what point-in-time backtesting requires (historical snapshots). A full fix means storing
+`TEAM_SPLITS`/`ELO`/`H2H`/`PVT`/`INJURIES` as they stood on every date in range, which the free ESPN feeds
+mostly don't expose for arbitrary past dates anyway. That's a real architecture project, not a bug fix —
+so rather than attempt a partial rewrite that might create false confidence, the response here was:
+
+1. **Fixed the one channel that was actually tractable**: `recencyForm` (the recency-weighted run-diff
+   signal) is built from a team's own per-game-dated log, which the app already has for every backtest
+   game. Added an optional `beforeDate` cutoff threaded through `teamGameLog` → `recencyForm` →
+   `predictFull`, and wired `loadBacktest` to pass each graded game's own date. Verified in a browser with
+   a synthetic team on a hot streak through 6/6 then a cold streak from 6/10 on: grading a game as of 6/10
+   now correctly reads "maximally hot" (all that had happened by then), instead of being diluted/reversed
+   by the future cold streak. Regression-tested in `js/situational.js` (`filterBeforeDate`).
+   `gameSituational`/`withSit` turned out not to be called during backtest grading at all, so they weren't
+   in scope for this fix.
+2. **Documented the rest plainly rather than pretending it's fixed**: a code comment at the `predictFull`
+   call site in `loadBacktest` naming exactly which tables still leak, and a visible disclaimer banner on
+   the Model tab (next to the training/CV results) telling users the accuracy/AUC numbers are an upper
+   bound, not a live-performance guarantee. This matches the codebase's own existing "HONESTY GATE"
+   culture (the `wxWinPct`/umpire-feature disclaimers already there) rather than introducing a new pattern.
 
 ### Real bugs found and fixed along the way
 
@@ -61,6 +115,8 @@ Since then:
    — even though the code's own comment says only out/IL/suspended should count, not day-to-day. A
    sick-but-possibly-playing star was being silently treated as unavailable, docking that team's win
    probability (and its bet edge) for no real reason. Fixed with a word-boundary check.
+5. **Data leakage in `trainModel()`'s standardization** and **look-ahead bias in backtest grading** — see
+   the "Machine-learning-focused pass" section above for the full writeup.
 
 ### Other cleanups
 
@@ -73,15 +129,21 @@ Since then:
 - Removed a genuinely dead `ESPN_ABBR` lookup table with zero readers anywhere in the file
   (`ourAbbrFromEspn` has always used its own separate reverse map).
 
-## What's left at 0%
+## What's left
 
-### 1. Rendering / DOM — the only sizable gap remaining
+### 1. Point-in-time data architecture — the biggest remaining item, and it's not a small one
+As described above: `TEAM_SPLITS`/`ELO`/`H2H`/`PVT`/`INJURIES` all reflect "right now," not "as of the
+date being graded." `recencyForm` is fixed; the rest aren't, and can't be without either (a) an
+ESPN-independent historical-standings/injury archive, or (b) storing daily snapshots of these tables
+going forward so future backtests at least don't leak *recent* history (older backtest runs would still
+be affected retroactively). This is a genuine product/architecture decision, not something to just
+patch — flagged prominently (code comment + UI disclaimer) rather than half-fixed.
+
+### 2. Rendering / DOM — the only sizable *testing* gap remaining
 `renderCalib`, `renderToday`, `strikeZoneSVG`, `logoBox`, etc. Canvas/DOM-heavy, changes often for
 cosmetic reasons, and genuinely lower value to unit-test than the math was. A handful of jsdom or
 Playwright smoke tests (tab switching works, a game card renders without throwing, toggling situational
-factors re-renders) would cover this better than unit tests — deliberately not attempted yet, since it's
-a different kind of test (browser/DOM environment) than the pure-function unit tests added so far, and
-the highest-value math-correctness work is now done.
+factors re-renders) would cover this better than unit tests — deliberately not attempted yet.
 
 ### 2. `umpTeamFit` / `wxCategory` — display-only, low priority
 Confirmed while working on `predictFull`: the umpire feature is permanently gated to 0 in the actual
