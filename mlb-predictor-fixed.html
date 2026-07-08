@@ -11,14 +11,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#090b10; --s1:#111419; --s2:#161a21; --s3:#1e232b;
-  --br:#20252d; --br2:#333a45;
-  --text:#eef0f4; --mut:#7c8494; --mut2:#aeb5c2;
-  --ink:#5b8def; --ink2:#0f1d33; --ink3:#28406e;
-  --grn:#34b07a; --grn2:#0d2019; --red:#e0605f; --red2:#2a1414;
+  --bg:#000000; --s1:#0b0b0d; --s2:#131316; --s3:#1c1c20;
+  --br:rgba(255,255,255,.09); --br2:rgba(255,255,255,.16);
+  --text:#f5f5f7; --mut:#86868b; --mut2:#c7c7cc;
+  --ink:#0a84ff; --ink2:#0b1c33; --ink3:#1c3a63;
+  --grn:#30d158; --grn2:#0c2115; --red:#ff453a; --red2:#2c1210;
   --amb:#d9a441; --amb2:#241d0d; --vio:#9b8ce8; --vio2:#1b1830; --teal:#2dbfae;
   --gold:#e0b64a; --gold2:#2a2210;
-  --r:10px; --rs:7px;
+  --r:16px; --rs:12px;
   --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
   --sans:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
 }
@@ -379,6 +379,51 @@ body{font-size:13px}
 .panel-h{font-size:11px;font-weight:700;color:var(--mut2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline}
 .panel-h .n{font-family:var(--mono);font-size:9.5px;color:var(--mut);font-weight:400}
 @media(min-width:920px){.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+
+/* ── design v4: Apple-inspired — near-black canvas, hairline borders instead of boxes,
+   one restrained accent, generous rounded corners and spacing, quieter motion ── */
+body{font-size:14px;letter-spacing:-.1px;padding:16px;padding-bottom:96px}
+::selection{background:rgba(10,132,255,.35);color:#fff}
+.logo{background:linear-gradient(160deg,#1a1a1d,#000);border-color:var(--br)}
+.h-title{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.h-sub{color:var(--mut);font-weight:500}
+.tabbar{background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:5px}
+.tab{border-radius:10px;font-family:var(--sans);font-weight:500;font-size:12.5px;letter-spacing:0;color:var(--mut2);padding:9px 14px}
+.tab.active{background:var(--ink);color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.disclaimer{background:var(--s1);border:1px solid var(--br);color:var(--mut2);border-radius:var(--rs)}
+.disclaimer b{color:var(--text)}
+.live-banner,.offline-warn{border-radius:var(--rs)}
+/* cards: hairline border + soft shadow instead of solid gray boxes */
+.mc,.gc,.hero,.panel,.pitcher-box,.an-cell,.feat,.mod-card,.mo-card,.ai-body,.ai-box,.batter-card,
+.rr,.gc-reason,#calib-recal,.feat-strip{
+  border-color:var(--br);
+}
+.mc{border-radius:var(--r);border-top:1px solid var(--br);padding:14px 16px 13px;background:var(--s1);box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.mc::before{display:none}
+.mc.ink{border-top-color:var(--br)}.mc.grn{border-top-color:var(--br)}.mc.amb{border-top-color:var(--br)}.mc.vio{border-top-color:var(--br)}
+.mc-lbl{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.1px;text-transform:none;color:var(--mut)}
+.mc-val,.mc-v{font-size:28px;font-weight:700;font-family:var(--sans);letter-spacing:-1px}
+.gc{border-radius:var(--r);box-shadow:0 1px 2px rgba(0,0,0,.4);border-color:var(--br)}
+.gc:hover{box-shadow:0 20px 40px rgba(0,0,0,.5);transform:translateY(-1px)}
+.gc-top{padding:16px 18px}
+.sec{font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:0;text-transform:none;color:var(--mut2);border-bottom:none;margin:26px 0 12px}
+.btn{background:var(--s2);border:1px solid var(--br);border-radius:999px;font-family:var(--sans);font-weight:500;font-size:12.5px;padding:9px 16px;color:var(--mut2)}
+.btn:hover{border-color:var(--br2);color:var(--text);background:var(--s3)}
+.btn-primary{background:var(--ink);color:#fff;border:none;border-radius:999px;font-family:var(--sans);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.btn-primary:hover{background:#0074e0;filter:none}
+.fbtn{border-radius:999px;font-family:var(--sans);font-weight:500;font-size:11.5px;border:1px solid var(--br);background:var(--s2);color:var(--mut2)}
+.fbtn.on{background:var(--text);color:#000;border-color:var(--text)}
+.fbtn.gon{background:var(--grn);color:#000;border-color:var(--grn)}
+.chip,.badge,.pick-tag,.time-tag,.ev-tag,.edge-badge,.live-tag{border-radius:999px;border-color:var(--br);font-family:var(--sans);font-weight:600}
+.hero{background:var(--s1);border:1px solid var(--br);border-left:1px solid var(--br);border-radius:var(--r);padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.hero::before{content:"";display:block;width:34px;height:3px;border-radius:2px;background:var(--gold);margin-bottom:14px}
+.hero:hover{border-color:var(--br2)}
+.hero-ovl{color:var(--gold);font-family:var(--sans);font-weight:600;letter-spacing:1px;font-size:11px}
+.hero-match{font-size:26px;font-weight:700;letter-spacing:-.7px}
+.hero-pick{font-size:19px}
+.panel,.pitcher-box,.an-cell,.feat,.mod-card,.mo-card,.ai-body,.ai-box{border-radius:var(--r);box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.map-wrap{border-radius:var(--r)!important;border-color:var(--br)!important}
+::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
 <body>
