@@ -3346,7 +3346,7 @@ function showOfflineWarning(){
   var isFile=loc==="file:";
   div.innerHTML="<b>\u26a0\ufe0f Showing the built-in backup schedule, not today\u2019s real games.</b><br>"
     +(isFile
-      ? "Tried ESPN directly plus several public relays and none responded right now (could be a network hiccup or all relays busy). It retries automatically every 15s \u2014 the LIVE badge turns green when one connects. If it never does, the bulletproof fix is to run <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">python3 run_live.py</code> in this folder and open <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">http://localhost:8000/MLB_Predictor_2026.html</code>."
+      ? "You\u2019ve opened this page directly from a file, so the browser blocks live data requests (CORS). Serve it over http instead \u2014 the hosted site, or any local static server (e.g. <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">python3 -m http.server</code> in this folder, then open <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">http://localhost:8000/</code>). It retries automatically every 15s \u2014 the LIVE badge turns green when a connection succeeds."
       : "Couldn\u2019t reach ESPN right now (network or CORS). It\u2019ll retry automatically every 15s \u2014 the LIVE badge turns green when it connects.");
   div.style.display="block";
 }
@@ -3745,9 +3745,11 @@ function simLeague(prefix){
   var s=seedLeague(prefix);
   var wcA=leagueSeries(s[2],s[5],3);
   var wcB=leagueSeries(s[3],s[4],3);
-  var wcW=[wcA.winner,wcB.winner].sort(function(x,y){return x.seed-y.seed;});
-  var dsA=leagueSeries(s[0],wcW[1],5);
-  var dsB=leagueSeries(s[1],wcW[0],5);
+  // MLB's current format does NOT re-seed after the wild card round: the 1-seed
+  // always plays the 4/5-series winner and the 2-seed plays the 3/6-series
+  // winner, even if the 6-seed advances.
+  var dsA=leagueSeries(s[0],wcB.winner,5);
+  var dsB=leagueSeries(s[1],wcA.winner,5);
   var lcs=leagueSeries(dsA.winner,dsB.winner,7);
   return {seeds:s,wcA:wcA,wcB:wcB,dsA:dsA,dsB:dsB,lcs:lcs,champ:lcs.winner};
 }
@@ -4175,7 +4177,7 @@ function trainModel(){
   // time-based split FIRST: train on older 80%, test on most recent 20% (honest forward test)
   var cut=Math.floor(games.length*0.8);
   var train=games.slice(0,cut), test=games.slice(cut);
-  // standardize on the TRAIN split only \u2014 fitting on the full set (train+test)
+  // standardize on the TRAIN split only -- fitting on the full set (train+test)
   // would leak the held-out test set's feature distribution into training,
   // undermining the "honest out-of-sample eval" this split exists for.
   var st=standardize(train,FEATS), mean=st.mean, std=st.std;
@@ -4453,7 +4455,10 @@ function answerQuestion(q){
     var sideTeam=team||(tg.homeP>=tg.awayP?tg.home:tg.away);
     var isLiveGame=tg.status==="live";
     var wp;
-    if(isLiveGame){var hw=liveWinProb(tg);wp=(sideTeam===tg.home)?hw:1-hw;}
+    // liveWinProb returns null when live score data is missing -- without this
+    // guard, 1-null evaluates to 1 and the assistant would claim a 100% win
+    // probability (and a huge "edge") off a game with no data at all.
+    if(isLiveGame){var hw=liveWinProb(tg);if(hw!=null){wp=(sideTeam===tg.home)?hw:1-hw;}else{wp=(sideTeam===tg.home)?tg.homeP:tg.awayP;isLiveGame=false;}}
     else{wp=(sideTeam===tg.home)?tg.homeP:tg.awayP;}
     var implied=ml<0?(-ml)/((-ml)+100):100/(ml+100);
     var edge=wp-implied;
