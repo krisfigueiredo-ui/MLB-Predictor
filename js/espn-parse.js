@@ -25,7 +25,8 @@ function weatherFromESPN(ev, comp) {
   if (indoor && !w) return "Indoor / roof closed";
   if (!w) return null;
   var temp = (w.temperature != null ? w.temperature : (w.highTemperature != null ? w.highTemperature : null));
-  var cond = w.displayValue || w.conditionId || "";
+  // conditionId is a numeric lookup key, not user-facing weather copy.
+  var cond = w.displayValue || "";
   var parts = [];
   if (temp != null) parts.push(temp + "F");
   if (cond) parts.push(cond);
@@ -64,8 +65,8 @@ function applyRealPitcher(p, prob) {
       var k = (s.name || s.abbreviation || "").toLowerCase();
       var v = s.displayValue || s.value;
       if (v == null) return;
-      if (k.indexOf("era") === 0) { p.era = ("" + v); p.xfip = ("" + v); gotReal = true; }
-      else if (k === "whip") { p.whip = ("" + v); gotReal = true; }
+      if (k.indexOf("era") === 0) { p.era = ("" + v); p.xfip = ("" + v); p.realEra = true; gotReal = true; }
+      else if (k === "whip") { p.whip = ("" + v); p.realWhip = true; gotReal = true; }
     });
   }
   if (prob.record) p.wl = ("" + prob.record);
