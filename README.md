@@ -11,9 +11,9 @@ betting lines, and grades itself honestly against real results.
 
 ## What it does
 
-- **Daily slate** — win probability for every MLB game on today's schedule (live ESPN data when
-  reachable, built-in fallback schedule otherwise), with starting pitchers, park factors, injuries,
-  weather, and situational trends factored in.
+- **Daily slate** — win probability for games returned by the verified ESPN scoreboard feed, with
+  verified starters, standings, injuries, weather, and real market lines added when available.
+  No substitute schedule, projected score, or manufactured betting line is shown when a feed fails.
 - **Ensemble model** — a logistic blend of ~19 features (Elo, power ratings, pitcher quality,
   home/away splits, Pythagorean expectation, recent form, rest, head-to-head, …) combined with an
   independent Poisson run model. Honesty gates keep synthesized or pseudo-random inputs (fake
@@ -26,6 +26,8 @@ betting lines, and grades itself honestly against real results.
   builder, paper-trading P/L tracking, and closing-line-value measurement.
 - **Live mode** — in-game win probability, leverage index, and fair-line comparison while games
   are in progress.
+- **Portable log** — completed predictions are stored locally and can be downloaded as CSV or as a
+  restorable JSON backup from the Log tab.
 
 ## Running it
 
@@ -37,8 +39,9 @@ python3 -m http.server 8000
 # then open http://localhost:8000/
 ```
 
-Opening `index.html` directly as a `file://` URL also works, but the browser will block live ESPN
-requests (CORS), so you'll see the built-in fallback schedule instead of today's real games.
+Opening `index.html` directly as a `file://` URL is not recommended because browsers can block live
+data requests. When the official feed is unavailable, the dashboard shows a clear unavailable-data
+state and retries automatically; it does not display sample games.
 
 Deploys happen automatically: every push to `main` publishes `index.html` + `js/` to GitHub Pages
 via `.github/workflows/pages.yml`.
@@ -73,5 +76,6 @@ grading uses current-day team tables rather than point-in-time snapshots — fla
 
 ## Data sources
 
-ESPN public scoreboard/standings/injury feeds (fetched from the browser, with public CORS relays
-as fallback) and the MLB Stats API for platoon/day-night splits. All free, no keys required.
+ESPN public scoreboard, standings, and injury feeds (requested directly, with an optional
+same-origin development proxy) plus the MLB Stats API for supported splits. Third-party CORS
+relays and substitute datasets are not used. No API keys are required.

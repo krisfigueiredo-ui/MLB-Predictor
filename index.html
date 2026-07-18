@@ -260,7 +260,8 @@ details[open] .an-chev{transform:rotate(180deg)}
 .hdr{padding-bottom:2px}
 
 /* ── Live alerts ── */
-.al-bell{position:relative}
+.al-bell{position:relative;width:32px;height:29px;padding:0;display:inline-grid;place-items:center}
+.al-bell svg{width:15px;height:15px;display:block;color:currentColor}
 .al-badge{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-family:var(--mono);font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px;border:1px solid #0a0e17}
 .al-panel{position:fixed;top:54px;right:10px;width:min(340px,92vw);max-height:340px;overflow-y:auto;background:var(--s1);border:1px solid var(--br2);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.6);z-index:400;display:none;padding:8px}
 .al-panel.open{display:block;animation:alIn .18s ease-out}
@@ -271,14 +272,20 @@ details[open] .an-chev{transform:rotate(180deg)}
 .al-empty{padding:18px 10px;text-align:center;color:var(--mut);font-size:11px;font-family:var(--mono)}
 /* ── Ballpark map ── */
 .map-wrap{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
-.map-wrap summary{cursor:pointer;padding:10px 13px;font-size:11px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut2);list-style:none;display:flex;justify-content:space-between;align-items:center}
-.map-wrap summary::-webkit-details-marker{display:none}
-.map-svg{display:block;width:100%;height:auto}
-.stad-dot{cursor:pointer}
-.stad-live{animation:stadPulse 1.6s ease-in-out infinite}
-@keyframes stadPulse{0%,100%{opacity:1}50%{opacity:0.35}}
-.arc-live{stroke-dasharray:6 5;animation:arcFlow 1.2s linear infinite}
-@keyframes arcFlow{to{stroke-dashoffset:-11}}
+.map-head{padding:11px 14px;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.map-head b{font-size:11px;font-weight:600;color:var(--text)}
+.map-head span{font-size:10px;color:var(--mut)}
+.map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--br)}
+.map-game{appearance:none;border:0;background:var(--s1);color:var(--text);text-align:left;padding:12px 14px;cursor:pointer;font:inherit;min-width:0}
+.map-game:hover{background:var(--s2)}
+.map-game:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.map-match{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.map-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;font-size:9.5px;color:var(--mut);font-family:var(--mono)}
+.map-state{display:inline-flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.04em}
+.map-state::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mut)}
+.map-state.live::before{background:var(--red)}
+.map-state.final::before{background:var(--grn)}
+.map-empty{padding:20px 14px;color:var(--mut);font-size:12px;text-align:center}
 .gc-flash{box-shadow:0 0 0 2px var(--amb),0 12px 32px rgba(0,0,0,.55)!important;transition:box-shadow .3s}
 
 /* ── 3D layer ── */
@@ -288,7 +295,6 @@ details[open] .an-chev{transform:rotate(180deg)}
 .gc.tilting::after{opacity:1}
 .gc.tilting{box-shadow:0 22px 48px rgba(0,0,0,.6);border-color:var(--br2)}
 #map-host{transform:perspective(950px) rotateX(22deg) scale(1.06);transform-origin:50% 62%;transition:transform .3s ease-out;will-change:transform}
-.map-wrap[open] .map-svg{filter:drop-shadow(0 18px 22px rgba(0,0,0,.45))}
 .logo{perspective:240px}
 .ball{animation:ballSpin 8s linear infinite;transform-style:preserve-3d;backface-visibility:visible}
 @keyframes ballSpin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
@@ -367,8 +373,7 @@ body{font-size:13px}
 .hdr-rec{border-radius:4px}
 .rr,.rr-chip{border-radius:4px}
 .al-panel{border-radius:8px}
-.map-wrap,.map-wrap summary{border-radius:var(--rs)}
-.map-wrap summary{font-family:var(--sans);text-transform:none;letter-spacing:.2px;font-weight:600;font-size:11px}
+.map-wrap{border-radius:var(--rs)}
 /* stat table rows for analytics modules */
 .stat-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
 .stat-tbl td{padding:6px 8px;border-bottom:1px solid var(--br)}
@@ -427,6 +432,30 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 .panel-h,.p-label,.an-k,.feat-k,.mc-lbl,.gs-k,.ai-hdr,.ai-title,.mod-name{font-family:var(--sans)!important}
 .games{gap:10px}
 ::-webkit-scrollbar{width:0;height:0}
+#map-host{transform:none!important}
+.logo:hover,.logo:hover .ball{transform:none;box-shadow:none}
+.pnl.active{animation:none}
+.pulse{animation:none;box-shadow:none}
+.gc,.mc,.hero,.btn,.fbtn{transition:border-color .15s,background .15s,color .15s}
+.gc:hover{box-shadow:none;transform:none}
+.snap{box-shadow:none;border-radius:7px}
+.tab:focus{outline:none}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.map-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.history-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.history-actions .btn{font-size:10.5px;padding:6px 9px;margin:0;cursor:pointer}
+.danger-btn{color:var(--red)!important}
+.gc>.ai-strip{display:none}
+#chat-fab{width:auto;height:34px;bottom:18px;right:18px;border-radius:8px;background:var(--s2);color:var(--mut2);border:1px solid var(--br);font-size:11px;font-weight:600;padding:0 12px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#chat-fab:hover{transform:none;background:var(--s3);color:var(--text);box-shadow:none}
+@media(min-width:920px){
+  .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);grid-template-areas:"accent accent" "label reason" "match reason" "sub reason" "row reason" "context context";column-gap:24px}
+  .hero::before{grid-area:accent}.hero-ovl{grid-area:label}.hero-match{grid-area:match}.hero-sub{grid-area:sub}.hero-row{grid-area:row}
+  .hero-reason{grid-area:reason;align-self:center;margin:0;padding:12px 0 12px 22px;border-left:1px solid var(--br);display:flex;flex-direction:column;gap:5px}
+  .hero-ctx{grid-area:context}
+}
+@media(max-width:900px){.map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){body{padding:16px;padding-bottom:88px}.hdr-r{width:100%;overflow-x:auto}.history-actions{width:100%}.history-actions .btn{flex:1;text-align:center;white-space:nowrap}.map-grid{grid-template-columns:1fr}.disclaimer{font-size:11.5px}}
 </style>
 </head>
 <body>
@@ -440,7 +469,7 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
     <span class="hdr-rec" id="hdr-rec" style="display:none"></span>
     <span class="snap"><span class="pulse"></span> <span id="live-badge">LIVE</span></span>
     <button class="btn" onclick="loadToday()">&#8635; Refresh</button>
-    <button class="btn al-bell" onclick="toggleAlerts()" title="Live alerts"><span class="al-badge" id="al-badge">0</span></button>
+    <button class="btn al-bell" onclick="toggleAlerts()" title="Live alerts" aria-label="Open live alerts"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="al-badge" id="al-badge">0</span></button>
   </div>
 </div>
 <div class="al-panel" id="al-panel">
@@ -460,18 +489,18 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <button class="tab" onclick="setTab('betting')">Edges</button>
   <button class="tab" onclick="setTab('backtest')">Backtest</button>
   <button class="tab" onclick="setTab('bracket')">Playoffs</button>
-  <button class="tab" onclick="setTab('ai')">Analyst</button>
+  <button class="tab" onclick="setTab('ai')">Research</button>
 </div>
 
 <!-- TODAY -->
 <div id="pnl-today" class="pnl active">
-  <div class="disclaimer"><b>Automated grading:</b> results are logged and the model retrained as games finish, with no manual input required. Historical high-confidence accuracy is approximately 62%; the model is optimized for <b>calibration</b> and <b>positive expected value</b>. Sample sizes below 50 graded games should be treated as directional, not conclusive.</div>
+  <div class="disclaimer"><b>Data policy:</b> the live slate, scores, starters, standings, and betting lines are shown only when a verified feed is available. Unavailable inputs remain neutral and are labeled as pending. Completed games are logged locally for calibration and can be exported from the Log tab.</div>
   <div id="live-banner" class="live-banner"></div>
   <div id="offline-warn" class="offline-warn"></div>
-  <details class="map-wrap" id="map-wrap" open>
-    <summary><span>League map &middot; live</span><span style="font-size:9px;color:var(--mut)">tap a game to jump</span></summary>
+  <section class="map-wrap" id="map-wrap" aria-label="Schedule overview">
+    <div class="map-head"><b>Schedule overview</b><span>ESPN slate · select a matchup</span></div>
     <div id="map-host"></div>
-  </details>
+  </section>
   <div style="margin:4px 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <button class="btn" id="load-all-sp" onclick="loadAllSP()" style="font-size:11px">Load today’s starters</button>
     <span style="font-size:9px;font-family:var(--mono);color:var(--mut);line-height:1.4;flex:1;min-width:160px">Pitching stats stay neutral until real starter data loads &mdash; one tap pulls each probable&rsquo;s recent ERA/WHIP so the matchup actually counts.</span>
@@ -514,7 +543,7 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
     <div class="mc amb"><div class="mc-lbl">Last 10</div><div class="mc-val" id="h-l10">&mdash;</div><div class="mc-sub" id="h-l10-s">no data</div></div>
     <div class="mc vio"><div class="mc-lbl">Total Logged</div><div class="mc-val" id="h-total">0</div><div class="mc-sub" id="h-total-s">real results</div></div>
   </div>
-  <div class="sec">Full prediction log</div>
+  <div class="sec"><span>Full prediction log</span><div class="history-actions"><button class="btn" onclick="exportCSV()">Download CSV</button><button class="btn" onclick="exportJSON()">Download backup</button><label class="btn" for="history-import">Import backup</label><button class="btn danger-btn" onclick="clearHistory()">Clear</button><input id="history-import" type="file" accept="application/json,.json" hidden onchange="importHistoryFile(this.files[0]);this.value=''" /></div></div>
   <div style="overflow-x:auto;border:1px solid var(--br);border-radius:var(--r);background:var(--s1)"><table id="h-table" class="hist-table"></table></div>
 </div>
 
@@ -594,16 +623,16 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <div id="bracket-body"></div>
 </div>
 
-<!-- AI -->
+<!-- RESEARCH -->
 <div id="pnl-ai" class="pnl">
   <div class="sec">Daily slate summary</div>
   <div id="ai-resp" class="ai-body"></div>
 </div>
 
-<!-- chat -->
-<button id="chat-fab" onclick="toggleChat()" title="Assistant">&#128172;</button>
+<!-- contextual research panel -->
+<button id="chat-fab" onclick="toggleChat()" title="Open research panel">Research</button>
 <div id="chat-panel">
-  <div class="chat-hdr">Assistant <small>rule-based, not a live model</small></div>
+  <div class="chat-hdr">Slate research <small>rules-based · live inputs only</small></div>
   <div id="chat-body"></div>
   <div class="chat-foot">
     <input id="chat-input" placeholder="Ask about a team, bet, or stat&hellip;" onkeydown="if(event.key==='Enter')sendChat()">
@@ -646,7 +675,8 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 
 
 var LOGOS={NYY:{c:"#003087",t:"#fff"},LAD:{c:"#005A9C",t:"#fff"},BOS:{c:"#BD3039",t:"#fff"},ATL:{c:"#CE1141",t:"#fff"},HOU:{c:"#002D62",t:"#EB6E1F"},NYM:{c:"#002D72",t:"#fff"},CHC:{c:"#0E3386",t:"#fff"},STL:{c:"#C41E3A",t:"#fff"},MIL:{c:"#12284B",t:"#B6922E"},PHI:{c:"#E81828",t:"#fff"},SD:{c:"#2F241D",t:"#FFC425"},SF:{c:"#FD5A1E",t:"#fff"},CLE:{c:"#00385D",t:"#fff"},BAL:{c:"#DF4601",t:"#fff"},SEA:{c:"#0C2C56",t:"#5dc1d8"},MIN:{c:"#002B5C",t:"#D31145"},TOR:{c:"#134A8E",t:"#E8291C"},TB:{c:"#092C5C",t:"#8FBCE6"},CIN:{c:"#C6011F",t:"#fff"},MIA:{c:"#00A3E0",t:"#EF3340"},WSH:{c:"#AB0003",t:"#fff"},PIT:{c:"#27251F",t:"#FDB827"},TEX:{c:"#003278",t:"#C0111F"},KC:{c:"#004687",t:"#BD9B60"},DET:{c:"#0C2340",t:"#FA4616"},LAA:{c:"#BA0021",t:"#003263"},CWS:{c:"#27251F",t:"#C4CED3"},COL:{c:"#33006F",t:"#C4CED4"},ATH:{c:"#003831",t:"#EFB21E"},AZ:{c:"#A71930",t:"#E3D4AD"}};
-var BT={NYY:["J. Soto",".288","12 HR"],LAD:["S. Ohtani",".305","22 HR"],BOS:["R. Devers",".302","14 HR"],ATL:["R. Acuna",".311","15 HR"],HOU:["Y. Alvarez",".295","16 HR"],NYM:["F. Lindor",".282","11 HR"],CHC:["S. Suzuki",".291","10 HR"],STL:["N. Arenado",".261","10 HR"],MIL:["W. Contreras",".271","11 HR"],PHI:["B. Harper",".301","13 HR"],SD:["F. Tatis",".298","14 HR"],SF:["M. Chapman",".255","8 HR"],CLE:["J. Ramirez",".285","12 HR"],BAL:["G. Henderson",".291","11 HR"],SEA:["J. Rodriguez",".288","10 HR"],MIN:["M. Buxton",".291","11 HR"],TOR:["V. Guerrero",".305","11 HR"],TB:["Y. Diaz",".268","10 HR"],CIN:["E. De La Cruz",".271","9 HR"],MIA:["L. Arraez",".330","2 HR"],WSH:["CJ Abrams",".276","7 HR"],PIT:["O. Cruz",".268","6 HR"],TEX:["C. Seager",".285","11 HR"],KC:["B. Witt",".295","12 HR"],DET:["R. Greene",".271","10 HR"],LAA:["M. Ward",".273","7 HR"],CWS:["L. Robert",".278","9 HR"],COL:["K. Bryant",".254","7 HR"],ATH:["B. Rooker",".268","9 HR"],AZ:["C. Carroll",".278","9 HR"]};
+// Batter details are populated from live lineups only. No hard-coded player slate.
+var BT={};
 
 // Park factors (runs index, 100=neutral, >100 hitter-friendly)
 var PARK={COL:112,CIN:104,BOS:104,TEX:103,BAL:101,PHI:101,CWS:101,AZ:100,TOR:100,ATL:100,MIL:99,LAD:98,NYY:98,HOU:97,WSH:98,MIN:99,KC:101,STL:97,CHC:103,PIT:97,NYM:96,SEA:92,TB:95,SD:94,CLE:98,DET:97,LAA:96,SF:91,ATH:94,MIA:95};
@@ -674,33 +704,12 @@ var TEAM_SPLITS={};
 var H2H={};
 
 // Pitcher vs THIS opponent history (career splits vs today's foe)
-var PVT={
-  "b03e5ca4":{h:{vs:"TOR",era:"2.85",ip:"38.0",record:"3-1",k:42},a:{vs:"BAL",era:"4.10",ip:"32.1",record:"1-3",k:28}},
-  "66546373":{h:{vs:"SD",era:"5.20",ip:"24.0",record:"1-2",k:18},a:{vs:"WSH",era:"2.40",ip:"45.0",record:"4-1",k:51}},
-  "84d8a760":{h:{vs:"MIN",era:"1.95",ip:"27.2",record:"3-0",k:38},a:{vs:"PIT",era:"3.60",ip:"30.0",record:"2-2",k:29}},
-  "31ebea24":{h:{vs:"MIA",era:"3.10",ip:"40.2",record:"3-2",k:44},a:{vs:"NYM",era:"3.95",ip:"34.0",record:"2-3",k:31}},
-  "75bdd696":{h:{vs:"LAA",era:"3.30",ip:"28.0",record:"2-1",k:33},a:{vs:"TB",era:"4.50",ip:"22.0",record:"1-2",k:19}},
-  "c4b6698d":{h:{vs:"BOS",era:"3.05",ip:"35.1",record:"3-1",k:40},a:{vs:"CLE",era:"3.45",ip:"31.0",record:"2-2",k:30}},
-  "fa3f04bd":{h:{vs:"ATL",era:"4.20",ip:"30.0",record:"1-3",k:28},a:{vs:"CIN",era:"2.10",ip:"42.2",record:"5-0",k:55}},
-  "1a61f552":{h:{vs:"MIL",era:"2.65",ip:"44.0",record:"4-1",k:52},a:{vs:"HOU",era:"4.30",ip:"27.0",record:"1-2",k:24}},
-  "9b04a625":{h:{vs:"DET",era:"4.60",ip:"23.1",record:"1-2",k:20},a:{vs:"CWS",era:"3.20",ip:"33.0",record:"3-1",k:34}},
-  "fb2fcf01":{h:{vs:"KC",era:"1.80",ip:"35.0",record:"4-0",k:48},a:{vs:"TEX",era:"3.75",ip:"28.2",record:"2-2",k:27}},
-  "89dc035a":{h:{vs:"SF",era:"5.40",ip:"21.0",record:"0-3",k:16},a:{vs:"COL",era:"2.95",ip:"36.2",record:"3-1",k:41}},
-  "6f74a9e9":{h:{vs:"NYY",era:"4.80",ip:"24.0",record:"1-3",k:22},a:{vs:"ATH",era:"2.20",ip:"40.0",record:"4-0",k:46}},
-  "34ec6693":{h:{vs:"PHI",era:"2.70",ip:"38.0",record:"3-1",k:45},a:{vs:"LAD",era:"3.50",ip:"32.1",record:"2-2",k:35}},
-  "e0a17a11":{h:{vs:"AZ",era:"2.50",ip:"39.0",record:"4-1",k:43},a:{vs:"SEA",era:"3.85",ip:"30.0",record:"2-2",k:32}},
-  "72c8c5bb":{h:{vs:"CHC",era:"3.15",ip:"37.0",record:"3-2",k:39},a:{vs:"STL",era:"3.40",ip:"33.1",record:"2-2",k:36}}
-};
+// Opponent splits stay empty until a verified source provides them.
+var PVT={};
 
 // Weather-condition performance: how each team hits in wind/heat/cold/dome
 // Format: win% in {windOut, windIn, hot(85F+), cold(60F-), dome}
-var WX_PERF={
-  hot:{LAD:.640,ATL:.620,HOU:.600,TEX:.610,AZ:.560,_def:.510},
-  cold:{SEA:.580,SF:.560,COL:.480,MIN:.540,_def:.490},
-  windOut:{NYY:.640,LAD:.660,ATL:.630,COL:.560,CIN:.540,_def:.520},  // wind blowing out = HR boost favors power teams
-  windIn:{SEA:.560,SF:.570,HOU:.580,_def:.500},                       // wind in = pitcher friendly
-  dome:{TB:.560,HOU:.590,TOR:.560,MIL:.550,AZ:.540,_def:.510}
-};
+var WX_PERF={};
 
 function wxCategory(weather){
   if(!weather)return null;
@@ -724,29 +733,9 @@ function wxCategory(weather){
 // zone: strike-zone size vs avg (1.00=avg, >1 = bigger zone = more K, pitcher-friendly)
 // kBoost/bbBoost: % effect on K and BB rates. runs: avg runs impact/game (+ = hitter-friendly)
 // ouLean: "over" / "under" / "neutral" total tendency
-var UMPS=[
-  {name:"Pat Hoberg",zone:1.04,kBoost:+6,bbBoost:-5,runs:-0.30,ouLean:"under",acc:97.7},
-  {name:"Will Little",zone:1.02,kBoost:+3,bbBoost:-2,runs:-0.15,ouLean:"under",acc:96.5},
-  {name:"Tripp Gibson",zone:1.01,kBoost:+2,bbBoost:-1,runs:-0.05,ouLean:"neutral",acc:96.2},
-  {name:"John Tumpane",zone:1.00,kBoost:0,bbBoost:0,runs:0.00,ouLean:"neutral",acc:96.0},
-  {name:"Jordan Baker",zone:1.00,kBoost:+1,bbBoost:0,runs:-0.02,ouLean:"neutral",acc:95.8},
-  {name:"Mark Carlson",zone:0.99,kBoost:-1,bbBoost:+1,runs:+0.08,ouLean:"neutral",acc:95.6},
-  {name:"Dan Bellino",zone:1.03,kBoost:+4,bbBoost:-3,runs:-0.20,ouLean:"under",acc:96.4},
-  {name:"Lance Barksdale",zone:0.97,kBoost:-3,bbBoost:+4,runs:+0.25,ouLean:"over",acc:94.9},
-  {name:"Angel Hernandez",zone:0.95,kBoost:-4,bbBoost:+5,runs:+0.35,ouLean:"over",acc:93.4},
-  {name:"CB Bucknor",zone:0.96,kBoost:-3,bbBoost:+4,runs:+0.30,ouLean:"over",acc:93.8},
-  {name:"Doug Eddings",zone:0.98,kBoost:-2,bbBoost:+2,runs:+0.15,ouLean:"over",acc:95.0},
-  {name:"Hunter Wendelstedt",zone:1.01,kBoost:+2,bbBoost:-1,runs:-0.08,ouLean:"neutral",acc:95.9},
-  {name:"Laz Diaz",zone:0.99,kBoost:-1,bbBoost:+1,runs:+0.10,ouLean:"neutral",acc:95.3},
-  {name:"Phil Cuzzi",zone:0.98,kBoost:-2,bbBoost:+3,runs:+0.18,ouLean:"over",acc:94.7},
-  {name:"Marvin Hudson",zone:1.00,kBoost:0,bbBoost:0,runs:+0.02,ouLean:"neutral",acc:95.7},
-  {name:"Quinn Wolcott",zone:1.02,kBoost:+3,bbBoost:-2,runs:-0.12,ouLean:"under",acc:96.3}
-];
-// Stable per-game umpire projection (so it doesn't change on refresh).
-function projectUmp(gid){
-  var h=0;for(var i=0;i<gid.length;i++)h=(h*31+gid.charCodeAt(i))>>>0;
-  return UMPS[h%UMPS.length];
-}
+var UMPS=[];
+// Umpire assignments are not projected. The feature stays neutral until a verified feed is added.
+function projectUmp(){return null;}
 // How this umpire's ZONE STYLE fits each team (rewards strike-throwers vs patient hitters),
 // plus a fairness/consistency read from accuracy + a small universal home-plate edge.
 // NOT team-specific bias (which isn't a real persistent effect) — style fit only.
@@ -781,127 +770,35 @@ function wxWinPct(team,cat){
 //  Pitcher names come from ESPN (real); advanced stats are estimated
 //  from team strength when not provided.
 // ═══════════════════════════════════════════════════════════════════
-// Team rotation quality proxy (ace-ish staff = lower number). Derived from PWR.
-function teamPitchProxy(team){
-  var p=PWR[team]||60;
-  // map power 50-82 -> xFIP ~4.6-3.0
-  var xfip=(4.9-(p-50)*0.055);
-  return xfip;
-}
-// Generate plausible pitcher line for a team (used when ESPN gives only a name or nothing)
+// Neutral internal pitcher prior. It never votes unless verified starter data sets realQ=true.
 function genPitcher(team,name){
-  var baseX=teamPitchProxy(team);
-  // stable per-team jitter
-  var seed=0;for(var i=0;i<team.length;i++)seed=(seed*31+team.charCodeAt(i))>>>0;
-  var jit=((seed%100)/100-0.5)*0.5;
-  var xfip=Math.max(2.3,Math.min(5.2,baseX+jit));
-  var era=Math.max(2.1,Math.min(5.5,xfip+((seed%7)-3)*0.06));
-  var whip=Math.max(0.85,Math.min(1.55,1.05+(xfip-3.5)*0.18));
-  var k9=Math.max(6.5,Math.min(12.0,10.5-(xfip-3.0)*1.1));
-  var barrel=Math.max(4.5,Math.min(10.8,5.5+(xfip-3.0)*1.3));
-  var hh=Math.max(33,Math.min(46,36+(xfip-3.0)*2.5));
-  var xwoba=Math.max(.250,Math.min(.365,.275+(xfip-3.0)*.028));
-  return {name:name||(team+" TBD"),era:era.toFixed(2),xfip:xfip.toFixed(2),whip:whip.toFixed(2),
-    k9:k9.toFixed(1),barrel:barrel.toFixed(1),hh:hh.toFixed(1),xwoba:xwoba.toFixed(3).replace(/^0/,""),
+  return {name:name||"Starter not posted",era:"4.10",xfip:"4.10",whip:"1.28",
+    k9:"8.5",barrel:"8.0",hh:"39.0",xwoba:".315",
     synth:true,realQ:false,realX:false};
 }
 // Generate a full SP entry (home + away pitchers + situational features) for a matchup
 function genSP(home,away,hPitcher,aPitcher){
-  var hs=TEAM_SPLITS[home],as=TEAM_SPLITS[away];
-  function lineupFromSplit(s){return s?Math.round(95+(parseFloat((s.rd||"+0").replace("+",""))/10)+ (s.l10?parseInt(s.l10.split("-")[0])-5:0)*1.5):100;}
-  // bullpen fatigue: pseudo-random but stable per team per day
-  function fatigue(t){var seed=0;var key=t+(new Date()).getDate();for(var i=0;i<key.length;i++)seed=(seed*31+key.charCodeAt(i))>>>0;return 12+(seed%30);}
   return {
     h:genPitcher(home,hPitcher), a:genPitcher(away,aPitcher),
-    bp:{h:fatigue(home),a:fatigue(away)},
-    lineup:{h:lineupFromSplit(hs),a:lineupFromSplit(as)},
-    weather:"72F"  // ESPN venue weather not always available; neutral default
+    bp:{h:0,a:0}, lineup:{h:100,a:100}, weather:null
   };
 }
-// Generate odds from model prob (so +EV detection still works; market = model minus a vig-ish noise)
-function genOdds(home,away,homeP){
-  // Build an INDEPENDENT market line from team strength + home field (NOT from the model's own
-  // probability). This lets the model's pitching/form/Pythagorean signals genuinely disagree in
-  // EITHER direction, so underdog value surfaces when the model sees something the base line misses.
-  var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
-  var z=(hPwr-aPwr)*0.05 + 0.20; // 0.20 logit ~ home-field edge
-  var fair=1/(1+Math.exp(-z));
-  var seed=0;var key=home+away;for(var i=0;i<key.length;i++)seed=(seed*31+key.charCodeAt(i))>>>0;
-  fair+=((seed%100)/100-0.5)*0.05; // small stable noise, independent of the model
-  fair=Math.max(0.32,Math.min(0.68,fair));
-  function toML(p){return p>=0.5?Math.round(-100*p/(1-p)):Math.round(100*(1-p)/p);}
-  return {homeML:toML(fair),awayML:toML(1-fair),homeImpl:parseFloat(fair.toFixed(3)),awayImpl:parseFloat((1-fair).toFixed(3)),est:true};
-}
-
-
-
-// May 31 games with FULL feature set including Statcast
-// pf = pitcher: era, xfip, whip, k9, barrel% allowed, hardhit% allowed, xwoba allowed
-var SP={
-  "b03e5ca4":{h:{name:"Zach Eflin",era:"3.48",xfip:"3.66",whip:"1.13",k9:"8.0",barrel:"7.5",hh:"39.0",xwoba:".308"},a:{name:"Chris Bassitt",era:"3.71",xfip:"3.88",whip:"1.20",k9:"8.1",barrel:"8.0",hh:"40.5",xwoba:".320"},bp:{h:20,a:24},lineup:{h:106,a:104},weather:"71F Wind 9mph out"},
-  "66546373":{h:{name:"Jake Irvin",era:"4.05",xfip:"4.21",whip:"1.28",k9:"7.5",barrel:"8.7",hh:"41.0",xwoba:".330"},a:{name:"Michael King",era:"2.95",xfip:"3.08",whip:"1.04",k9:"9.6",barrel:"6.0",hh:"36.2",xwoba:".282"},bp:{h:28,a:16},lineup:{h:94,a:110},weather:"80F Wind 6mph"},
-  "84d8a760":{h:{name:"Paul Skenes",era:"2.34",xfip:"2.48",whip:"0.92",k9:"11.4",barrel:"5.0",hh:"34.0",xwoba:".258"},a:{name:"Joe Ryan",era:"3.42",xfip:"3.55",whip:"1.10",k9:"9.0",barrel:"7.2",hh:"38.5",xwoba:".300"},bp:{h:18,a:22},lineup:{h:97,a:103},weather:"69F Wind 7mph out"},
-  "31ebea24":{h:{name:"David Peterson",era:"3.55",xfip:"3.70",whip:"1.18",k9:"8.4",barrel:"7.0",hh:"38.0",xwoba:".299"},a:{name:"Sandy Alcantara",era:"3.88",xfip:"3.60",whip:"1.22",k9:"8.8",barrel:"7.4",hh:"39.2",xwoba:".305"},bp:{h:20,a:26},lineup:{h:106,a:88},weather:"75F Wind 5mph"},
-  "75bdd696":{h:{name:"Shane Baz",era:"3.62",xfip:"3.74",whip:"1.16",k9:"9.2",barrel:"7.3",hh:"38.8",xwoba:".303"},a:{name:"Jose Soriano",era:"4.05",xfip:"4.10",whip:"1.30",k9:"8.0",barrel:"8.5",hh:"41.5",xwoba:".328"},bp:{h:22,a:30},lineup:{h:99,a:91},weather:"84F Dome"},
-  "c4b6698d":{h:{name:"Gavin Williams",era:"3.40",xfip:"3.52",whip:"1.12",k9:"9.5",barrel:"6.8",hh:"37.5",xwoba:".296"},a:{name:"Tanner Houck",era:"3.30",xfip:"3.44",whip:"1.09",k9:"8.4",barrel:"6.6",hh:"37.0",xwoba:".293"},bp:{h:16,a:20},lineup:{h:101,a:115},weather:"73F Wind 10mph out"},
-  "fa3f04bd":{h:{name:"Andrew Abbott",era:"3.72",xfip:"3.85",whip:"1.20",k9:"8.6",barrel:"7.6",hh:"39.4",xwoba:".307"},a:{name:"Chris Sale",era:"2.68",xfip:"2.74",whip:"0.98",k9:"11.0",barrel:"5.4",hh:"35.0",xwoba:".266"},bp:{h:24,a:18},lineup:{h:98,a:114},weather:"79F Wind 8mph"},
-  "1a61f552":{h:{name:"Hunter Brown",era:"3.10",xfip:"3.22",whip:"1.06",k9:"9.8",barrel:"6.2",hh:"36.8",xwoba:".286"},a:{name:"Jose Quintana",era:"3.80",xfip:"3.95",whip:"1.24",k9:"7.6",barrel:"8.2",hh:"40.8",xwoba:".318"},bp:{h:14,a:28},lineup:{h:110,a:108},weather:"90F Roof closed"},
-  "9b04a625":{h:{name:"Davis Martin",era:"4.30",xfip:"4.42",whip:"1.32",k9:"7.2",barrel:"9.0",hh:"42.5",xwoba:".334"},a:{name:"Casey Mize",era:"3.55",xfip:"3.68",whip:"1.14",k9:"7.8",barrel:"7.1",hh:"38.6",xwoba:".301"},bp:{h:26,a:18},lineup:{h:104,a:118},weather:"72F Wind 8mph out"},
-  "fb2fcf01":{h:{name:"Jacob deGrom",era:"2.60",xfip:"2.70",whip:"0.94",k9:"10.6",barrel:"5.2",hh:"34.5",xwoba:".260"},a:{name:"Seth Lugo",era:"3.45",xfip:"3.70",whip:"1.12",k9:"7.9",barrel:"7.0",hh:"38.2",xwoba:".298"},bp:{h:15,a:24},lineup:{h:112,a:98},weather:"86F Wind 11mph in"},
-  "89dc035a":{h:{name:"German Marquez",era:"4.95",xfip:"4.80",whip:"1.46",k9:"7.0",barrel:"10.4",hh:"45.0",xwoba:".360"},a:{name:"Robbie Ray",era:"3.20",xfip:"3.30",whip:"1.10",k9:"10.0",barrel:"6.4",hh:"37.2",xwoba:".290"},bp:{h:32,a:20},lineup:{h:96,a:101},weather:"66F Wind 13mph in"},
-  "6f74a9e9":{h:{name:"Luis Severino",era:"4.10",xfip:"4.22",whip:"1.27",k9:"7.8",barrel:"8.6",hh:"41.2",xwoba:".326"},a:{name:"Max Fried",era:"2.85",xfip:"2.96",whip:"1.02",k9:"9.0",barrel:"5.8",hh:"36.0",xwoba:".276"},bp:{h:20,a:16},lineup:{h:92,a:116},weather:"67F Wind 5mph"},
-  "34ec6693":{h:{name:"Tyler Glasnow",era:"2.90",xfip:"2.85",whip:"1.00",k9:"11.0",barrel:"5.6",hh:"35.5",xwoba:".272"},a:{name:"Aaron Nola",era:"3.30",xfip:"3.40",whip:"1.08",k9:"9.2",barrel:"6.8",hh:"37.8",xwoba:".294"},bp:{h:14,a:20},lineup:{h:120,a:114},weather:"73F Dome"},
-  "e0a17a11":{h:{name:"George Kirby",era:"3.05",xfip:"3.10",whip:"1.00",k9:"9.0",barrel:"6.2",hh:"36.5",xwoba:".285"},a:{name:"Brandon Pfaadt",era:"3.70",xfip:"3.80",whip:"1.16",k9:"8.5",barrel:"7.5",hh:"39.0",xwoba:".305"},bp:{h:18,a:22},lineup:{h:103,a:102},weather:"64F Wind 8mph"},
-  "72c8c5bb":{h:{name:"Sonny Gray",era:"3.40",xfip:"3.50",whip:"1.10",k9:"9.4",barrel:"6.6",hh:"37.4",xwoba:".294"},a:{name:"Shota Imanaga",era:"3.15",xfip:"3.28",whip:"1.05",k9:"8.8",barrel:"6.4",hh:"37.0",xwoba:".288"},bp:{h:22,a:18},lineup:{h:100,a:107},weather:"78F Wind 9mph out"}
-};
-
-var ODDS={
-  "b03e5ca4":{homeML:-130,awayML:110,homeImpl:0.565,awayImpl:0.476},
-  "66546373":{homeML:160,awayML:-180,homeImpl:0.385,awayImpl:0.643},
-  "84d8a760":{homeML:-190,awayML:162,homeImpl:0.655,awayImpl:0.382},
-  "31ebea24":{homeML:-155,awayML:132,homeImpl:0.608,awayImpl:0.431},
-  "75bdd696":{homeML:-118,awayML:100,homeImpl:0.541,awayImpl:0.500},
-  "c4b6698d":{homeML:-110,awayML:-110,homeImpl:0.524,awayImpl:0.524},
-  "fa3f04bd":{homeML:165,awayML:-185,homeImpl:0.377,awayImpl:0.649},
-  "1a61f552":{homeML:-175,awayML:150,homeImpl:0.636,awayImpl:0.400},
-  "9b04a625":{homeML:135,awayML:-155,homeImpl:0.426,awayImpl:0.608},
-  "fb2fcf01":{homeML:-205,awayML:175,homeImpl:0.672,awayImpl:0.364},
-  "89dc035a":{homeML:175,awayML:-200,homeImpl:0.364,awayImpl:0.667},
-  "6f74a9e9":{homeML:185,awayML:-210,homeImpl:0.351,awayImpl:0.677},
-  "34ec6693":{homeML:-145,awayML:124,homeImpl:0.592,awayImpl:0.446},
-  "e0a17a11":{homeML:-135,awayML:115,homeImpl:0.574,awayImpl:0.465},
-  "72c8c5bb":{homeML:-115,awayML:-105,homeImpl:0.535,awayImpl:0.512}
-};
+// Live-only per-game stores. They are populated after a verified ESPN response.
+var SP={};
+var ODDS={};
 
 function ensureTeam(t){
   if(!t)return;
   if(!TEAM_SPLITS[t])TEAM_SPLITS[t]={rec:"0-0",home:"0-0",away:"0-0",l10:null,vsR:.500,vsL:.500,day:.500,night:.500,rd:"+0",oneRun:"0-0",streak:"-",_real:false};
   if(typeof PWR!=="undefined"&&PWR[t]==null)PWR[t]=55; // neutral power for an unseen team
 }
-var PWR={NYY:78,LAD:82,BOS:71,ATL:76,HOU:72,NYM:67,CHC:64,STL:65,MIL:68,PHI:73,SD:69,SF:60,CLE:70,BAL:66,SEA:63,MIN:66,TOR:64,TB:62,CIN:58,MIA:57,WSH:52,PIT:53,TEX:61,KC:56,DET:56,LAA:50,CWS:51,COL:54,ATH:51,AZ:59};
-
-var RAW30=[
-  {id:"b03e5ca4",home:"BAL",away:"TOR",time:"12:15 PM ET",utc:"2026-05-31T16:15:00Z"},
-  {id:"66546373",home:"WSH",away:"SD",time:"1:35 PM ET",utc:"2026-05-31T17:35:00Z"},
-  {id:"84d8a760",home:"PIT",away:"MIN",time:"1:35 PM ET",utc:"2026-05-31T17:35:00Z"},
-  {id:"31ebea24",home:"NYM",away:"MIA",time:"1:40 PM ET",utc:"2026-05-31T17:40:00Z"},
-  {id:"75bdd696",home:"TB",away:"LAA",time:"1:40 PM ET",utc:"2026-05-31T17:40:00Z"},
-  {id:"c4b6698d",home:"CLE",away:"BOS",time:"1:40 PM ET",utc:"2026-05-31T17:40:00Z"},
-  {id:"fa3f04bd",home:"CIN",away:"ATL",time:"1:40 PM ET",utc:"2026-05-31T17:40:00Z"},
-  {id:"1a61f552",home:"HOU",away:"MIL",time:"2:10 PM ET",utc:"2026-05-31T18:10:00Z"},
-  {id:"9b04a625",home:"CWS",away:"DET",time:"2:10 PM ET",utc:"2026-05-31T18:10:00Z"},
-  {id:"fb2fcf01",home:"TEX",away:"KC",time:"2:35 PM ET",utc:"2026-05-31T18:35:00Z"},
-  {id:"89dc035a",home:"COL",away:"SF",time:"3:10 PM ET",utc:"2026-05-31T19:10:00Z"},
-  {id:"6f74a9e9",home:"ATH",away:"NYY",time:"4:05 PM ET",utc:"2026-05-31T20:05:00Z"},
-  {id:"34ec6693",home:"LAD",away:"PHI",time:"4:10 PM ET",utc:"2026-05-31T20:10:00Z"},
-  {id:"e0a17a11",home:"SEA",away:"AZ",time:"4:10 PM ET",utc:"2026-05-31T20:10:00Z"},
-  {id:"72c8c5bb",home:"STL",away:"CHC",time:"7:20 PM ET",utc:"2026-05-31T23:20:00Z"}
-];
+var PWR={};
+Object.keys(TEAM_SPLITS).forEach(function(t){PWR[t]=55;});
 
 // ─── THE MODEL: feature-weighted logistic combination ───
 // Returns home win probability. Pick is ALWAYS argmax of this, so it matches the data.
 // ─── ADAPTIVE MODEL WEIGHTS (self-improving via online learning) ───
-var WEIGHTS_KEY="mlb_pred_weights_v5"; // v5: pitcher weights retuned for REAL data scale (regressed + capped inputs)
+var WEIGHTS_KEY="mlb_pred_weights_v6"; // v6 starts clean after retiring the sample-slate training path
 var DEFAULT_WEIGHTS={
   power:0.015, hfa:0.14, xfip:0.22, whip:0.30, xwoba:1.5,
   barrel:0.018, lineup:0.006, bullpen:0.004, park:-0.001,
@@ -931,7 +828,7 @@ var ELO_K=6;           // base K-factor (MLB is high-variance, so updates stay g
 // eloSeedFromPower/eloProbFromRatings/eloRatingChange now live in js/elo.js;
 // these remain here as thin glue to the ELO rating-map globals.
 function eloSeed(team){ // informative prior from preseason power rating, regressed toward the mean
-  var pwr=(team in PWR)?PWR[team]:62;
+  var pwr=(team in PWR)?PWR[team]:55;
   return eloSeedFromPower(pwr); // tighter than raw: caps best-vs-worst Elo edge near MLB reality (~65%)
 }
 function eloInit(){ELO={};ELO_PREV={};ELO_GAMES=0;Object.keys(PWR).forEach(function(t){ELO[t]=eloSeed(t);ELO_PREV[t]=eloSeed(t);});}
@@ -1001,7 +898,7 @@ function bumpRecForm(){_recFormStamp++;} // call when game-log data changes (bac
 // backtest grading to scope recency-form to games strictly before the graded game.
 function predictFull(home,away,sp,gid,ump,beforeDate){
   var W=MODEL_W;
-  var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
+  var hPwr=PWR[home]||55, aPwr=(away in PWR)?PWR[away]:55;
   var c={}, r={};
   r.power=(hPwr-aPwr); c.power=r.power*W.power;
   // Elo signal: the dynamic-rating model's edge for the home side, centered at 0.
@@ -1112,7 +1009,7 @@ function learnFromGame(home,away,sp,homeWon,gid){
   var y=homeWon?1:0;
   var err=pred-y; // positive = over-predicted home
   var W=MODEL_W;
-  var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
+  var hPwr=PWR[home]||55, aPwr=(away in PWR)?PWR[away]:55;
   var hP=sp.h,aP=sp.a,pf=PARK[home]||100;
   // raw feature values (the X in gradient). learningRawFeatures (js/predict-core.js)
   // mirrors predictFull's own realQ/realX honesty gates and permanently excludes
@@ -1151,37 +1048,20 @@ function modelTrainedGames(){
 }
 function bumpTrainedCount(){try{LS.setItem(WEIGHTS_KEY+"_count",String(modelTrainedGames()+1));}catch(e){}}
 
-// Live score snapshot (fetched May 31, ~1:15 PM ET). Local files can't poll the API
-// due to browser security, so this is the last-known snapshot. Re-fetch via Colab for realtime.
-var LIVE_SCORES={
-  "b03e5ca4":{status:"closed",home:9,away:5},
-  "66546373":{status:"closed",home:4,away:2},
-  "84d8a760":{status:"closed",home:9,away:3},
-  "31ebea24":{status:"closed",home:10,away:1},
-  "75bdd696":{status:"closed",home:5,away:2},
-  "c4b6698d":{status:"closed",home:4,away:9},
-  "fa3f04bd":{status:"closed",home:6,away:4},
-  "1a61f552":{status:"closed",home:0,away:2},
-  "9b04a625":{status:"closed",home:2,away:1},
-  "fb2fcf01":{status:"inprogress",home:6,away:1,inning:"In progress"},
-  "89dc035a":{status:"inprogress",home:1,away:4,inning:"In progress"},
-  "6f74a9e9":{status:"inprogress",home:3,away:0,inning:"In progress"},
-  "34ec6693":{status:"inprogress",home:1,away:0,inning:"In progress"},
-  "e0a17a11":{status:"inprogress",home:1,away:0,inning:"In progress"}
-  // 72c8c5bb (STL/CHC 7:20 PM) still scheduled
-};
+var LIVE_SCORES={};
 
 // ═══════════════════════════════════════════════════════════════════
 //  ESPN LIVE DATA ENGINE — real play-by-play when served over http(s)
 //  Works when the page is on http://localhost or a real host.
-//  When opened as a file:// the browser blocks it (CORS) and we fall
-//  back to the LIVE_SCORES snapshot above.
+//  When opened as a file:// the browser may block the feed. In that case
+//  the interface shows an unavailable state and never substitutes sample games.
 // ═══════════════════════════════════════════════════════════════════
 // ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, and
 // applyRealRecordCore now live in js/espn-parse.js (also dropped ESPN_ABBR
 // here, a forward team-abbreviation map that had no remaining readers).
 var ESPN_OK=false;          // becomes true once a live fetch succeeds
 var ESPN_LAST=0;            // timestamp of last successful poll
+var SLATE_LOADING=true;
 
 // Real team logo URLs from ESPN (populated as games load). Images bypass CORS.
 var LOGO_URL={};
@@ -1190,8 +1070,8 @@ var LOGO_URL={};
 // We snapshot every REAL line we see: the first is the "open", the last before first pitch
 // is the "close". CLV then measures whether the market moved toward the model's pick after it
 // was made -- the single most honest test of whether an edge is real.
-var LINES=(function(){try{return JSON.parse(LS.getItem("mlb_lines_v1")||"{}");}catch(e){return {};}})();
-function saveLines(){try{LS.setItem("mlb_lines_v1",JSON.stringify(LINES));}catch(e){}}
+var LINES=(function(){try{return JSON.parse(LS.getItem("mlb_lines_v2")||"{}");}catch(e){return {};}})();
+function saveLines(){try{LS.setItem("mlb_lines_v2",JSON.stringify(LINES));}catch(e){}}
 function trackLine(gid,odds,startMs){
   if(!gid||!odds||!odds.real)return;
   var now=Date.now(), rec=LINES[gid]||(LINES[gid]={});
@@ -1208,7 +1088,15 @@ function clvFor(gid,pickSide){
 // applyRealRecord stays here as the thin TEAM_SPLITS-mutating wrapper.
 function applyRealRecord(team,comp){
   var updated=applyRealRecordCore(TEAM_SPLITS[team],comp);
-  if(updated)TEAM_SPLITS[team]=updated;
+  if(updated){
+    TEAM_SPLITS[team]=updated;
+    var parts=String(updated.rec||"").split("-");
+    var wins=parseInt(parts[0],10),losses=parseInt(parts[1],10),games=wins+losses;
+    if(games>0){
+      var rd=parseFloat(String(updated.rd||"0").replace("+",""))||0;
+      PWR[team]=Math.max(40,Math.min(70,55+((wins/games)-.5)*42+rd/Math.max(20,games)*2.2));
+    }
+  }
 }
 
 
@@ -1394,57 +1282,8 @@ function pollESPN_overlay(data){
 
 
 
-var GAMES30=RAW30.map(function(g){
-  var sp=SP[g.id];
-  var rawHp=predictHomeProb(g.home,g.away,sp,g.id);
-  var now=Date.now(),startMs=new Date(g.utc).getTime(),endMs=startMs+3.5*3600*1000;
-  var ia=injAdj(g.home,g.away);
-  rawHp=Math.max(0.05,Math.min(0.95,rawHp+ia.adj));
-  var sitRes=withSit(rawHp,g.home,g.away,startMs);
-  var hp=parseFloat(sitRes.hp.toFixed(3));
-  var ap=parseFloat((1-hp).toFixed(3));
-  var status=now<startMs?"pre":now<endMs?"live":"final";
-  // overlay real live-score snapshot if present
-  var live=LIVE_SCORES[g.id]||null;
-  var finalScore=null;
-  if(live){if(live.status==="inprogress")status="live";else if(live.status==="closed"){status="final";finalScore={h:live.home,a:live.away};}}
-  var initResult=null,initActual=null;
-  if(finalScore){initResult=hp>=ap?"home":"away";initActual=finalScore.h>finalScore.a?"home":"away";}
-  var odds=ODDS[g.id],betPick="",betEdge=0;
-  if(odds&&odds.real){
-    var he=hp-odds.homeImpl, ae=ap-odds.awayImpl;
-    var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);betEdge=edgeSel.edge;
-  }
-  return{id:g.id,home:g.home,away:g.away,time:g.time,utc:g.utc,startMs:startMs,status:status,
-    homeP:hp,awayP:ap,conf:Math.max(hp,ap),betPick:betPick,betEdge:parseFloat(betEdge.toFixed(3)),
-    result:initResult,actual:initActual,aiText:null,aiLoading:false,live:live,finalScore:finalScore,ump:projectUmp(g.id),sit:sitRes.sit,inj:ia};
-});
-
-// May 29 real results
-var MAY29=[
-  {id:"m1",home:"CIN",away:"ATL",time:"6:40 PM",hs:3,as:8,sp:{h:{xfip:"3.60",whip:"1.18",xwoba:".310"},a:{xfip:"2.78",whip:"1.02",xwoba:".268"},lineup:{h:98,a:114},bp:{h:20,a:18}},spn:{h:"Lodolo 3.44",a:"Schwellenbach 2.87"}},
-  {id:"m2",home:"WSH",away:"SD",time:"6:45 PM",hs:5,as:7,sp:{h:{xfip:"3.79",whip:"1.31",xwoba:".334"},a:{xfip:"2.91",whip:"1.09",xwoba:".284"},lineup:{h:94,a:112},bp:{h:25,a:16}},spn:{h:"Gore 4.21",a:"Cease 3.02"}},
-  {id:"m3",home:"PIT",away:"MIN",time:"6:45 PM",hs:6,as:5,sp:{h:{xfip:"3.84",whip:"1.22",xwoba:".318"},a:{xfip:"3.52",whip:"1.07",xwoba:".301"},lineup:{h:97,a:103},bp:{h:22,a:24}},spn:{h:"Keller 3.71",a:"Ober 3.33"}},
-  {id:"m4",home:"BAL",away:"TOR",time:"7:05 PM",hs:5,as:6,sp:{h:{xfip:"2.78",whip:"1.05",xwoba:".278"},a:{xfip:"3.94",whip:"1.22",xwoba:".331"},lineup:{h:108,a:106},bp:{h:18,a:22}},spn:{h:"Burnes 2.89",a:"Berrios 3.67"}},
-  {id:"m5",home:"NYM",away:"MIA",time:"7:10 PM",hs:9,as:7,sp:{h:{xfip:"3.41",whip:"1.11",xwoba:".291"},a:{xfip:"4.78",whip:"1.40",xwoba:".358"},lineup:{h:106,a:88},bp:{h:14,a:30}},spn:{h:"Senga 3.28",a:"Munoz 4.50"}},
-  {id:"m6",home:"CLE",away:"BOS",time:"7:10 PM",hs:4,as:3,sp:{h:{xfip:"3.34",whip:"1.06",xwoba:".294"},a:{xfip:"3.97",whip:"1.24",xwoba:".326"},lineup:{h:101,a:115},bp:{h:16,a:20}},spn:{h:"Bibee 3.05",a:"Bello 3.89"}},
-  {id:"m7",home:"TB",away:"LAA",time:"7:10 PM",hs:8,as:5,sp:{h:{xfip:"3.71",whip:"1.15",xwoba:".310"},a:{xfip:"4.32",whip:"1.28",xwoba:".342"},lineup:{h:99,a:91},bp:{h:22,a:28}},spn:{h:"Eflin 3.52",a:"Anderson 4.11"}},
-  {id:"m8",home:"STL",away:"CHC",time:"7:15 PM",hs:6,as:5,sp:{h:{xfip:"4.05",whip:"1.19",xwoba:".322"},a:{xfip:"3.36",whip:"1.08",xwoba:".295"},lineup:{h:100,a:107},bp:{h:24,a:18}},spn:{h:"Mikolas 3.88",a:"Steele 3.21"}},
-  {id:"m9",home:"CWS",away:"DET",time:"7:40 PM",hs:4,as:3,sp:{h:{xfip:"3.05",whip:"1.10",xwoba:".298"},a:{xfip:"2.34",whip:"0.82",xwoba:".261"},lineup:{h:104,a:118},bp:{h:20,a:16}},spn:{h:"Crochet 3.18",a:"Skubal 2.11"}},
-  {id:"m10",home:"TEX",away:"KC",time:"8:05 PM",hs:9,as:1,sp:{h:{xfip:"3.61",whip:"1.16",xwoba:".312"},a:{xfip:"3.88",whip:"1.23",xwoba:".328"},lineup:{h:112,a:98},bp:{h:15,a:26}},spn:{h:"Eovaldi 3.34",a:"Singer 3.67"}},
-  {id:"m11",home:"HOU",away:"MIL",time:"8:10 PM",hs:4,as:5,sp:{h:{xfip:"3.12",whip:"1.05",xwoba:".285"},a:{xfip:"3.58",whip:"1.14",xwoba:".306"},lineup:{h:110,a:108},bp:{h:28,a:14}},spn:{h:"Valdez 2.98",a:"Peralta 3.44"}},
-  {id:"m12",home:"COL",away:"SF",time:"8:40 PM",hs:8,as:6,sp:{h:{xfip:"4.91",whip:"1.44",xwoba:".362"},a:{xfip:"3.04",whip:"1.08",xwoba:".286"},lineup:{h:96,a:101},bp:{h:30,a:20}},spn:{h:"Quantrill 4.88",a:"Webb 3.12"}},
-  {id:"m13",home:"ATH",away:"NYY",time:"9:40 PM",hs:2,as:8,sp:{h:{xfip:"4.38",whip:"1.29",xwoba:".336"},a:{xfip:"3.49",whip:"1.18",xwoba:".299"},lineup:{h:92,a:116},bp:{h:18,a:16}},spn:{h:"Sears 4.22",a:"Rodon 3.61"}},
-  {id:"m14",home:"SEA",away:"AZ",time:"10:10 PM",hs:7,as:6,sp:{h:{xfip:"3.18",whip:"1.02",xwoba:".283"},a:{xfip:"3.44",whip:"1.11",xwoba:".303"},lineup:{h:103,a:102},bp:{h:18,a:22}},spn:{h:"Castillo 2.91",a:"Gallen 3.38"}},
-  {id:"m15",home:"LAD",away:"PHI",time:"10:15 PM",hs:4,as:2,sp:{h:{xfip:"2.61",whip:"0.91",xwoba:".252"},a:{xfip:"2.71",whip:"0.95",xwoba:".264"},lineup:{h:120,a:114},bp:{h:13,a:19}},spn:{h:"Yamamoto 2.54",a:"Wheeler 2.78"}}
-];
-
-var MAY29_PICKS=MAY29.map(function(g){
-  var hp=parseFloat(predictHomeProb(g.home,g.away,g.sp,null).toFixed(3));
-  var pick=hp>=0.5?g.home:g.away;
-  var actual=g.hs>g.as?g.home:g.away;
-  return Object.assign({},g,{homeP:hp,awayP:parseFloat((1-hp).toFixed(3)),conf:Math.max(hp,1-hp),pick:pick,actual:actual,correct:pick===actual});
-});
+// The slate starts empty. Only a successful ESPN schedule response can populate it.
+var GAMES30=[];
 
 var activeFilter="all",logTarget=null,selRes=null;
 
@@ -1472,7 +1311,7 @@ function makeDiamond(g){var sq=66,cx=sq/2,cy=sq/2,b1x=cx+15,b1y=cy,b2x=cx,b2y=cy
 function eraCls(e){var v=parseFloat(e);return v<3.0?"g":v>4.3?"b":"";}
 function xwCls(x){var v=parseFloat(x);return v<.290?"g":v>.330?"b":"";}
 
-function pitcherStrip(g){var sp=SP[g.id];if(!sp)return"";function ph(p,a,side){var ini=p.name.split(" ").map(function(x){return x[0]||"";}).join("").slice(0,2).toUpperCase();var lo=LOGOS[a]||{c:"#555"};var flag=(p.realQ&&p.synth===false)?'<span title="Real recent ERA/WHIP — drives the prediction" style="font-size:7px;font-family:var(--mono);color:var(--grn);border:1px solid rgba(63,207,142,.35);border-radius:3px;padding:0 3px;margin-left:5px">REAL</span>':'<span title="Estimated from team strength — does NOT vote until you load real data" style="font-size:7px;font-family:var(--mono);color:var(--amb);border:1px solid rgba(245,158,11,.35);border-radius:3px;padding:0 3px;margin-left:5px">EST</span>';return '<div class="pitcher-box"><div class="p-label">'+side+' starter'+flag+'</div><div class="p-name"><span style="width:22px;height:22px;border-radius:50%;background:'+lo.c+'22;color:'+lo.c+';border:1px solid '+lo.c+'44;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;flex-shrink:0;font-family:var(--mono)">'+ini+'</span>'+p.name+'</div><div class="p-stats"><span class="ps '+eraCls(p.era)+'">ERA '+p.era+'</span><span class="ps">xFIP '+p.xfip+'</span><span class="ps">WHIP '+p.whip+'</span><span class="ps">K/9 '+p.k9+'</span></div></div>';}return '<div class="pitcher-strip">'+ph(sp.h,g.home,"Home")+ph(sp.a,g.away,"Away")+'</div>';}
+function pitcherStrip(g){var sp=SP[g.id];if(!sp)return"";function ph(p,a,side){p=p||genPitcher(a,null);var ini=(p.name||a).split(" ").map(function(x){return x[0]||"";}).join("").slice(0,2).toUpperCase();var lo=LOGOS[a]||{c:"#555"};var verified=!!(p.realQ&&p.synth===false);var flag=verified?'<span title="Verified starter data" style="font-size:7px;font-family:var(--mono);color:var(--grn);border:1px solid rgba(34,197,94,.35);border-radius:3px;padding:0 3px;margin-left:5px">VERIFIED</span>':'<span style="font-size:7px;font-family:var(--mono);color:var(--mut);border:1px solid var(--br);border-radius:3px;padding:0 3px;margin-left:5px">PENDING</span>';var fields=[];if(p.realEra)fields.push('<span class="ps '+eraCls(p.era)+'">ERA '+p.era+'</span>');if(p.realWhip)fields.push('<span class="ps">WHIP '+p.whip+'</span>');if(p.realK9)fields.push('<span class="ps">K/9 '+p.k9+'</span>');var stats=verified&&fields.length?'<div class="p-stats">'+fields.join("")+'</div>':'<div class="p-stats"><span class="ps">Verified stats pending — neutral in model</span></div>';return '<div class="pitcher-box"><div class="p-label">'+side+' starter'+flag+'</div><div class="p-name"><span style="width:22px;height:22px;border-radius:50%;background:'+lo.c+'22;color:'+lo.c+';border:1px solid '+lo.c+'44;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;flex-shrink:0;font-family:var(--mono)">'+ini+'</span>'+(p.name||"Starter not posted")+'</div>'+stats+'</div>';}return '<div class="pitcher-strip">'+ph(sp.h,g.home,"Home")+ph(sp.a,g.away,"Away")+'</div>';}
 
 // Strike-zone visual: rulebook zone vs the umpire's effective zone (from their tendency).
 // Honest: this shows the UMPIRE'S zone behavior, not live pitch locations (Statcast isn't in ESPN's feed).
@@ -1753,7 +1592,7 @@ function enrichHitters(gid){
 //  this replaces season-long estimates with what the pitcher ACTUALLY did
 //  lately. Applied as a capped (±7%) post-model adjustment, like injuries.
 // ═══════════════════════════════════════════════════════════════════
-var PFORM_KEY="mlb_pform_v1";
+var PFORM_KEY="mlb_pform_v2";
 function pformCache(){try{var o=JSON.parse(LS.getItem(PFORM_KEY))||{};var today=(new Date()).toISOString().slice(0,10);if(o.__d!==today)return {__d:today};return o;}catch(e){return {__d:(new Date()).toISOString().slice(0,10)};}}
 function pformSave(o){try{LS.setItem(PFORM_KEY,JSON.stringify(o));}catch(e){}}
 function parseIP(ip){var p=(""+(ip||"0")).split(".");return parseInt(p[0]||"0",10)+(parseInt(p[1]||"0",10))/3;}
@@ -1822,8 +1661,10 @@ function loadSPForm(gid){
       // runs on real, independent data instead of the PWR-derived estimate
       var sp=SP[gid];
       if(sp){
-        if(res[0]){sp.h.era=(""+res[0].era);sp.h.whip=(""+res[0].whip);sp.h.xfip=(""+res[0].era);sp.h.k9=(""+res[0].k9);sp.h.realQ=true;sp.h.synth=false;}
-        if(res[1]){sp.a.era=(""+res[1].era);sp.a.whip=(""+res[1].whip);sp.a.xfip=(""+res[1].era);sp.a.k9=(""+res[1].k9);sp.a.realQ=true;sp.a.synth=false;}
+        if(pr.h&&pr.h.name)sp.h.name=pr.h.name;
+        if(pr.a&&pr.a.name)sp.a.name=pr.a.name;
+        if(res[0]){sp.h.era=(""+res[0].era);sp.h.whip=(""+res[0].whip);sp.h.xfip=(""+res[0].era);sp.h.k9=(""+res[0].k9);sp.h.realQ=true;sp.h.synth=false;sp.h.realEra=true;sp.h.realWhip=true;sp.h.realK9=true;}
+        if(res[1]){sp.a.era=(""+res[1].era);sp.a.whip=(""+res[1].whip);sp.a.xfip=(""+res[1].era);sp.a.k9=(""+res[1].k9);sp.a.realQ=true;sp.a.synth=false;sp.a.realEra=true;sp.a.realWhip=true;sp.a.realK9=true;}
       }
       recomputeAll();
       showToast("Starters loaded \u2014 pitching matchup is now live in the pick");
@@ -1860,8 +1701,10 @@ function loadAllSP(){
         g.spform={h:res[0],a:res[1],hn:pr.h?pr.h.name:null,an:pr.a?pr.a.name:null,adj:spformAdj(res[0],res[1])};
         var sp=SP[g.id];
         if(sp){
-          if(res[0]){sp.h.era=(""+res[0].era);sp.h.whip=(""+res[0].whip);sp.h.xfip=(""+res[0].era);sp.h.k9=(""+res[0].k9);sp.h.realQ=true;sp.h.synth=false;}
-          if(res[1]){sp.a.era=(""+res[1].era);sp.a.whip=(""+res[1].whip);sp.a.xfip=(""+res[1].era);sp.a.k9=(""+res[1].k9);sp.a.realQ=true;sp.a.synth=false;}
+          if(pr.h&&pr.h.name)sp.h.name=pr.h.name;
+          if(pr.a&&pr.a.name)sp.a.name=pr.a.name;
+          if(res[0]){sp.h.era=(""+res[0].era);sp.h.whip=(""+res[0].whip);sp.h.xfip=(""+res[0].era);sp.h.k9=(""+res[0].k9);sp.h.realQ=true;sp.h.synth=false;sp.h.realEra=true;sp.h.realWhip=true;sp.h.realK9=true;}
+          if(res[1]){sp.a.era=(""+res[1].era);sp.a.whip=(""+res[1].whip);sp.a.xfip=(""+res[1].era);sp.a.k9=(""+res[1].k9);sp.a.realQ=true;sp.a.synth=false;sp.a.realEra=true;sp.a.realWhip=true;sp.a.realK9=true;}
         }
         if(res[0]||res[1])done++;else failed++;
         setTimeout(next,280);
@@ -1887,6 +1730,12 @@ function spformHTML(g){
 function analyticsStrip(g){
   var hs=TEAM_SPLITS[g.home], as=TEAM_SPLITS[g.away], h2h=H2H[g.id], pvt=PVT[g.id], sp=SP[g.id];
   if(!hs||!as)return "";
+  var verifiedRows="";
+  if(hs._real&&as._real){verifiedRows+='<div class="an-row"><div class="an-cell"><div class="an-k">'+g.home+' record</div><div class="an-v">'+hs.rec+(hs.home&&hs.home!=="0-0"?' <span class="an-sub">('+hs.home+' home)</span>':'')+'</div></div><div class="an-cell"><div class="an-k">'+g.away+' record</div><div class="an-v">'+as.rec+(as.away&&as.away!=="0-0"?' <span class="an-sub">('+as.away+' away)</span>':'')+'</div></div></div>';}
+  if(g.spform)verifiedRows+='<div class="an-row" style="display:block"><div class="an-k" style="margin-bottom:6px">Recent starter form</div>'+spformHTML(g)+'</div>';
+  if(sp&&sp.wxReal)verifiedRows+='<div class="an-row"><div class="an-cell"><div class="an-k">Verified conditions</div><div class="an-v">'+sp.weather+'</div></div></div>';
+  if(!verifiedRows)return "";
+  return '<details class="an-strip" id="an-'+g.id+'"'+(OPEN_PANELS[g.id]?' open':'')+'><summary class="an-summary"><span class="an-text">Verified matchup data</span><span class="an-chev">&#9656;</span></summary><div class="an-body">'+verifiedRows+'</div></details>';
   var rows="";
   // Data-source key — so every stat's reliability is transparent at a glance
   rows+='<div style="font-size:9px;font-family:var(--mono);color:var(--mut);background:var(--s2);border:1px solid var(--br);border-radius:7px;padding:8px 10px;margin-bottom:10px;line-height:1.6">'
@@ -2003,19 +1852,7 @@ function analyticsStrip(g){
   return '<details class="an-strip" id="an-'+g.id+'"'+(OPEN_PANELS[g.id]?' open':'')+'><summary class="an-summary"><span class="an-text">Deep analytics &mdash; '+(h2h?h2h.series+" series, ":"")+'records, H2H, pitcher, weather, umpire, injuries, trends</span><span class="an-chev">&#9656;</span></summary><div class="an-body">'+rows+warnFeedbackHtml(g)+'</div></details>';
 }
 
-function featureStrip(g){var sp=SP[g.id];if(!sp)return"";var pf=PARK[g.home]||100;var pfTxt=pf>105?"Hitter ("+pf+")":pf<95?"Pitcher ("+pf+")":"Neutral ("+pf+")";var pfCls=pf>105?"neu":pf<95?"pos":"";var hFat=sp.bp.h>30?"HIGH":sp.bp.h>20?"MED":"LOW",aFat=sp.bp.a>30?"HIGH":sp.bp.a>20?"MED":"LOW";var hFC=sp.bp.h>30?"neg":sp.bp.h>20?"neu":"pos",aFC=sp.bp.a>30?"neg":sp.bp.a>20?"neu":"pos";return '<div class="feat-strip"><div class="feat-title">Statcast &amp; situational features <span style="font-size:8px;font-family:var(--mono);color:var(--amb);border:1px solid var(--amb);opacity:.8;padding:1px 5px;border-radius:3px;text-transform:uppercase;margin-left:4px">est.</span></div><div class="feat-grid">'
-  +'<div class="feat"><div class="feat-k">'+g.home+' xwOBA-a</div><div class="feat-v '+xwCls(sp.h.xwoba)+'">'+sp.h.xwoba+'</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.away+' xwOBA-a</div><div class="feat-v '+xwCls(sp.a.xwoba)+'">'+sp.a.xwoba+'</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.home+' barrel%</div><div class="feat-v">'+sp.h.barrel+'%</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.away+' barrel%</div><div class="feat-v">'+sp.a.barrel+'%</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.home+' lineup</div><div class="feat-v '+(sp.lineup.h>=108?"pos":sp.lineup.h<96?"neg":"")+'">'+sp.lineup.h+' wRC+</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.away+' lineup</div><div class="feat-v '+(sp.lineup.a>=108?"pos":sp.lineup.a<96?"neg":"")+'">'+sp.lineup.a+' wRC+</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.home+' bullpen</div><div class="feat-v '+hFC+'">'+hFat+'</div></div>'
-  +'<div class="feat"><div class="feat-k">'+g.away+' bullpen</div><div class="feat-v '+aFC+'">'+aFat+'</div></div>'
-  +'<div class="feat"><div class="feat-k">Park factor</div><div class="feat-v '+pfCls+'">'+pfTxt+'</div></div>'
-  +'<div class="feat"><div class="feat-k">Weather</div><div class="feat-v neu">'+(sp.wxReal?sp.weather:"not posted")+'</div></div>'
-  +'<div class="feat"><div class="feat-k">HP Umpire</div><div class="feat-v">'+(g.ump?g.ump.name:"TBD")+'</div></div>'
-  +'</div></div>';}
+function featureStrip(g){var sp=SP[g.id];if(!sp||!sp.wxReal)return"";return '<div class="feat-strip"><div class="feat-title">Verified game conditions</div><div class="feat-grid"><div class="feat"><div class="feat-k">Weather</div><div class="feat-v neu">'+sp.weather+'</div></div></div></div>';}
 
 function bettingStrip(g){
   var odds=ODDS[g.id];if(!odds)return"";
@@ -2040,7 +1877,7 @@ function bettingStrip(g){
     +'</div>';
 }
 
-function diamondStrip(g){var bt=BT[g.home]||["Batter",".265","7 HR"],name=bt[0],avg=bt[1],hr=bt[2];var ini=name.split(" ").map(function(x){return x[0]||"";}).join("").slice(0,2).toUpperCase();var lo=LOGOS[g.home]||{c:"#333"};var right;if(g.status==="pre"){right='<div class="batter-section"><div class="batter-card"><div class="b-avi" style="background:'+lo.c+'22;color:'+lo.c+';border:1px solid '+lo.c+'44">'+ini+'</div><div style="flex:1;min-width:0"><div class="b-name">'+name+'</div><div class="b-sub">'+g.home+' &middot; Expected leadoff</div></div><div class="chips"><span class="chip hi">'+avg+'</span><span class="chip">'+hr+'</span></div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><span class="chip" style="font-size:9px;padding:3px 7px">'+g.time+'</span><span class="chip" style="font-size:9px;padding:3px 7px">Bases empty &mdash; pre-game</span></div></div>';}else if(g.status==="live"){var lvs=g.live&&g.live.status==="inprogress"?g.live:null;var scoreBig=lvs?'<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><div style="text-align:center"><div style="font-size:10px;font-family:var(--mono);color:var(--mut)">'+g.away+'</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">'+lvs.away+'</div></div><div style="font-size:12px;color:var(--mut);font-family:var(--mono)">&ndash;</div><div style="text-align:center"><div style="font-size:10px;font-family:var(--mono);color:var(--mut)">'+g.home+'</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">'+lvs.home+'</div></div></div>':'';
+function diamondStrip(g){if(g.status==="pre")return"";var right;if(g.status==="live"){var lvs=g.live&&g.live.status==="inprogress"?g.live:null;var scoreBig=lvs?'<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><div style="text-align:center"><div style="font-size:10px;font-family:var(--mono);color:var(--mut)">'+g.away+'</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">'+lvs.away+'</div></div><div style="font-size:12px;color:var(--mut);font-family:var(--mono)">&ndash;</div><div style="text-align:center"><div style="font-size:10px;font-family:var(--mono);color:var(--mut)">'+g.home+'</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text)">'+lvs.home+'</div></div></div>':'';
     var hasReal=lvs&&lvs.outs!==undefined&&lvs.outs!==null;
     var detail;
     if(hasReal){
@@ -2135,23 +1972,7 @@ function liveWPStrip(g){
     +'</div>';
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  BALLPARK MAP — real stadium coordinates (2026 homes: ATH in West
-//  Sacramento, TB at Steinbrenner Field in Tampa). Static real facts.
-// ══════════════════════════════════════════════════════════════════
-var STADIUMS={
-  NYY:[40.829,-73.926],NYM:[40.757,-73.846],BOS:[42.346,-71.097],TOR:[43.641,-79.389],
-  BAL:[39.284,-76.622],TB:[27.980,-82.507],PHI:[39.906,-75.166],WSH:[38.873,-77.008],
-  ATL:[33.891,-84.468],MIA:[25.778,-80.220],CLE:[41.496,-81.685],DET:[42.339,-83.049],
-  CWS:[41.830,-87.634],CHC:[41.948,-87.655],CIN:[39.097,-84.507],PIT:[40.447,-80.006],
-  STL:[38.623,-90.193],MIL:[43.028,-87.971],MIN:[44.982,-93.278],KC:[39.051,-94.480],
-  HOU:[29.757,-95.355],TEX:[32.747,-97.084],COL:[39.756,-104.994],AZ:[33.445,-112.067],
-  SEA:[47.591,-122.332],SF:[37.778,-122.389],ATH:[38.580,-121.513],LAD:[34.074,-118.240],
-  LAA:[33.800,-117.883],SD:[32.707,-117.157]
-};
-function mapProj(lon,lat){
-  return [ (lon+126.5)*(700/61.5), (50.8-lat)*(400/26.5) ];
-}
+// Compact schedule overview replaces the retired decorative ballpark map.
 function jumpToGame(gid){
   setTab("today");
   var el=document.getElementById("gc-"+gid);
@@ -2162,53 +1983,13 @@ function jumpToGame(gid){
 }
 function renderMap(){
   var host=document.getElementById("map-host"); if(!host)return;
-  var W=700,H=400;
-  var s='<svg class="map-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
-  // graticule
-  for(var gx=50;gx<W;gx+=65)s+='<line x1="'+gx+'" y1="0" x2="'+gx+'" y2="'+H+'" stroke="rgba(148,163,184,0.05)" stroke-width="1"/>';
-  for(var gy=40;gy<H;gy+=55)s+='<line x1="0" y1="'+gy+'" x2="'+W+'" y2="'+gy+'" stroke="rgba(148,163,184,0.05)" stroke-width="1"/>';
-  var playing={};
-  GAMES30.forEach(function(g){playing[g.home]=g;playing[g.away]=g;});
-  // matchup arcs (away -> home)
-  GAMES30.forEach(function(g){
-    var A=STADIUMS[g.away],Hc=STADIUMS[g.home]; if(!A||!Hc)return;
-    var p1=mapProj(A[1],A[0]),p2=mapProj(Hc[1],Hc[0]);
-    var mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
-    var dx=p2[0]-p1[0],dy=p2[1]-p1[1],len=Math.sqrt(dx*dx+dy*dy)||1;
-    var cx=mx-dy/len*Math.min(60,len*0.28), cy=my+dx/len*Math.min(60,len*0.28)-14;
-    var col="rgba(91,141,239,0.38)",cls="",wd=1.4;
-    if(g.status==="live"){col="rgba(247,109,109,0.75)";cls=" class=\"arc-live\"";wd=2;}
-    else if(g.status==="final"){var pick=g.homeP>=g.awayP?g.home:g.away;var won=g.finalScore?(g.finalScore.h>g.finalScore.a?g.home:g.away):null;col=won?(pick===won?"rgba(63,207,142,0.55)":"rgba(247,109,109,0.45)"):"rgba(148,163,184,0.3)";}
-    var pk=g.homeP>=g.awayP?g.home:g.away, pp=Math.round(Math.max(g.homeP,g.awayP)*100);
-    var lv=g.live, stTxt=g.status==="live"&&lv?(g.away+" "+lv.away+"\u2013"+lv.home+" "+g.home+" \u00b7 "+(lv.inning||"live")):g.status==="final"&&g.finalScore?("FINAL "+g.away+" "+g.finalScore.a+"\u2013"+g.finalScore.h+" "+g.home):(g.away+" @ "+g.home+" \u00b7 "+(g.time||""));
-    s+='<path d="M'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+' Q'+cx.toFixed(1)+' '+cy.toFixed(1)+' '+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="'+wd+'"'+cls+' style="cursor:pointer" onclick="jumpToGame(\''+g.id+'\')"><title>'+stTxt+' \u2014 pick '+pk+' '+pp+'%</title></path>';
-  });
-  // stadium dots
-  Object.keys(STADIUMS).forEach(function(t){
-    var xy=mapProj(STADIUMS[t][1],STADIUMS[t][0]);
-    var g=playing[t];
-    if(!g){ s+='<circle cx="'+xy[0].toFixed(1)+'" cy="'+xy[1].toFixed(1)+'" r="2.6" fill="rgba(148,163,184,0.22)"/>'; return; }
-    var lo=(typeof LOGOS!=="undefined"&&LOGOS[t])?LOGOS[t].c:"#5b8def";
-    var isHome=(g.home===t);
-    var cls=g.status==="live"?" class=\"stad-dot stad-live\"":" class=\"stad-dot\"";
-    var r=isHome?6:4.4, lift=isHome?11:8;
-    var x=xy[0].toFixed(1), gy=xy[1].toFixed(1), dy=(xy[1]-lift).toFixed(1);
-    var pk=g.homeP>=g.awayP?g.home:g.away, pp=Math.round(Math.max(g.homeP,g.awayP)*100);
-    s+='<g'+cls+' onclick="jumpToGame(\''+g.id+'\')"><title>'+t+(isHome?" (home)":" (away)")+' \u2014 pick '+pk+' '+pp+'%</title>'
-      +'<ellipse cx="'+x+'" cy="'+gy+'" rx="'+(r+1.5)+'" ry="2.3" fill="rgba(0,0,0,0.42)"/>'
-      +'<line x1="'+x+'" y1="'+gy+'" x2="'+x+'" y2="'+dy+'" stroke="rgba(224,230,242,0.35)" stroke-width="1.2"/>'
-      +'<circle cx="'+x+'" cy="'+dy+'" r="'+r+'" fill="'+lo+'" stroke="#0a0e17" stroke-width="1.4"/>'
-      +(isHome?'<text x="'+x+'" y="'+(xy[1]-lift-9).toFixed(1)+'" text-anchor="middle" font-size="9" font-family="Space Mono,monospace" font-weight="700" fill="rgba(224,230,242,0.85)">'+t+'</text>':'')
-      +'</g>';
-  });
-  // legend
-  s+='<g font-size="8.5" font-family="Space Mono,monospace" fill="rgba(148,163,184,0.7)">'
-    +'<circle cx="14" cy="'+(H-30)+'" r="4" fill="#5b8def"/><text x="24" y="'+(H-27)+'">upcoming</text>'
-    +'<circle cx="92" cy="'+(H-30)+'" r="4" fill="#f76d6d"/><text x="102" y="'+(H-27)+'">live</text>'
-    +'<circle cx="146" cy="'+(H-30)+'" r="4" fill="#3fcf8e"/><text x="156" y="'+(H-27)+'">final &middot; pick hit</text>'
-    +'<text x="14" y="'+(H-12)+'">arc = away team travels to home park &middot; tap anything to open the game</text></g>';
-  s+='</svg>';
-  host.innerHTML=s;
+  if(!GAMES30.length){host.innerHTML='<div class="map-empty">ESPN schedule data has not loaded.</div>';return;}
+  host.innerHTML='<div class="map-grid">'+GAMES30.map(function(g){
+    var state=g.status==="live"?"live":g.status==="final"?"final":"upcoming";
+    var label=g.status==="live"&&g.live?(g.live.away+"–"+g.live.home+" · "+(g.live.inning||"Live")):g.status==="final"&&g.finalScore?(g.finalScore.a+"–"+g.finalScore.h+" · Final"):(g.time||"Time pending");
+    var pick=g.homeP>=g.awayP?g.home:g.away;
+    return '<button class="map-game" onclick="jumpToGame(\''+g.id+'\')"><div class="map-match">'+g.away+' at '+g.home+'</div><div class="map-meta"><span class="map-state '+state+'">'+label+'</span><span>'+pick+' '+Math.round(g.conf*100)+'%</span></div></button>';
+  }).join("")+'</div>';
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -2315,6 +2096,8 @@ function reasonFor(g){
     };
     var best=null,bv=0;
     Object.keys(phr).forEach(function(k){
+      if((k==="xfip"||k==="whip")&&!(SP[g.id]&&SP[g.id].h&&SP[g.id].a&&SP[g.id].h.realQ&&SP[g.id].a.realQ))return;
+      if(k==="lineup")return; // no verified lineup-strength feed is currently connected
       var v=cb[k];if(typeof v!=="number"||isNaN(v))return;
       var toward=pickHome?v:-v; // positive = supports the pick side
       if(toward>bv){bv=toward;best=k;}
@@ -2382,19 +2165,20 @@ function renderRecentResults(){
 }
 
 function renderToday(){
-  renderMap(); scanAlerts(); renderHdrRecord(); renderTopPick(); renderRecentResults();var s=getStats30();var fa=document.getElementById("f-all");if(fa)fa.textContent="All "+GAMES30.length;var fsit=document.getElementById("f-sit");if(fsit){fsit.textContent="\ud83d\udcca Situational: "+(sitOn()?"ON":"OFF");fsit.className="fbtn"+(sitOn()?" on":"");}var el=document.getElementById("m-acc");el.textContent=s.acc!==null?(s.acc*100).toFixed(1)+"%":"\u2014";el.className="mc-val"+(s.acc!==null?(s.acc>=0.5?" g":" red"):"");document.getElementById("m-acc-s").textContent=s.ok+"/"+s.n+" correct";document.getElementById("m-hc").textContent=s.hcAcc!==null?(s.hcAcc*100).toFixed(0)+"%":"\u2014";document.getElementById("m-hc-s").textContent=s.hcN?s.hcOk+"/"+s.hcN+" correct":"waiting";var evCount=GAMES30.filter(function(g){return g.betPick;}).length;document.getElementById("m-ev").textContent=evCount;
+  renderMap(); scanAlerts(); renderHdrRecord(); renderTopPick(); renderRecentResults();var s=getStats30();var fa=document.getElementById("f-all");if(fa)fa.textContent="All "+GAMES30.length;var fsit=document.getElementById("f-sit");if(fsit){fsit.textContent="Situational: "+(sitOn()?"ON":"OFF");fsit.className="fbtn"+(sitOn()?" on":"");}var el=document.getElementById("m-acc");el.textContent=s.acc!==null?(s.acc*100).toFixed(1)+"%":"\u2014";el.className="mc-val"+(s.acc!==null?(s.acc>=0.5?" g":" red"):"");document.getElementById("m-acc-s").textContent=s.ok+"/"+s.n+" correct";document.getElementById("m-hc").textContent=s.hcAcc!==null?(s.hcAcc*100).toFixed(0)+"%":"\u2014";document.getElementById("m-hc-s").textContent=s.hcN?s.hcOk+"/"+s.hcN+" correct":"waiting";var evCount=GAMES30.filter(function(g){return g.betPick;}).length;document.getElementById("m-ev").textContent=evCount;
   var mcalEl=document.getElementById("m-cal");if(mcalEl){var calRep=calibrationReport(calibPairs(),(MODEL_W&&MODEL_W.shrink)||1);if(calRep&&calRep.n>=8){mcalEl.textContent=calRep.ece.toFixed(3);mcalEl.className="mc-val"+(calRep.ece<0.05?" g":calRep.ece<0.10?" a":" red");}else{mcalEl.textContent="—";mcalEl.className="mc-val a";}}
   renderSlateOverview();
   var liveGames=GAMES30.filter(function(g){return g.status==="live"&&g.live&&g.live.status==="inprogress";});
   var lb=document.getElementById("live-banner");
   if(liveGames.length){lb.style.display="block";lb.innerHTML="\u25cf LIVE NOW: "+liveGames.map(function(g){return g.away+" "+g.live.away+"\u2013"+g.live.home+" "+g.home+" ("+(g.live.inning||"in progress")+")";}).join("  \u00b7  ");}
-  else{lb.style.display="block";lb.style.background="var(--s2)";lb.style.color="var(--mut)";lb.style.borderColor="var(--br)";lb.innerHTML="No games live yet \u2014 scores land here at first pitch.";}
+  else{lb.style.display="block";lb.style.background="var(--s2)";lb.style.color="var(--mut)";lb.style.borderColor="var(--br)";lb.innerHTML=!GAMES30.length?(SLATE_LOADING?"Loading the official MLB schedule\u2026":"Official schedule unavailable \u2014 retrying automatically."):"No games are live right now.";}
   var list=GAMES30.slice();if(activeFilter==="hc")list=list.filter(function(g){return g.conf>=0.60;});if(activeFilter==="bet")list=list.filter(function(g){return g.betPick;});if(activeFilter==="pending")list=list.filter(function(g){return g.status!=="final"&&!g.voided;});if(activeFilter==="won"||activeFilter==="lost"){list=list.filter(function(g){if(!decidedFinal(g)||!g.finalScore)return false;var mp=g.homeP>=g.awayP?"home":"away";var aw=g.finalScore.h>g.finalScore.a?"home":"away";return activeFilter==="won"?(mp===aw):(mp!==aw);});}var srt=document.getElementById("srt").value;if(srt==="conf")list.sort(function(a,b){return b.conf-a.conf;});else if(srt==="edge")list.sort(function(a,b){return b.betEdge-a.betEdge;});else list.sort(function(a,b){return a.startMs-b.startMs;});
   var html="";for(var i=0;i<list.length;i++){var g=list[i];var pick=g.homeP>=g.awayP?"home":"away",pt=pick==="home"?g.home:g.away,strong=g.conf>=0.64;var timeHtml=g.status==="live"?'<span class="live-tag">&#9679; LIVE</span>':'<span class="time-tag">'+g.time+'</span>';var pickHtml=g.conf>=0.58?'<span class="pick-tag'+(strong?" strong":"")+'">'+(strong?"\uD83D\uDD25 ":"")+Math.round(g.conf*100)+"% \u2192 "+pt+'</span>':"";var evHtml=g.betPick?'<span class="ev-tag">+EV '+g.betPick+'</span>':"";var statusHtml;if(decidedFinal(g)){var fs=g.finalScore;var modelPick=g.homeP>=g.awayP?"home":"away";var actualWinner=fs?(fs.h>fs.a?"home":"away"):g.actual;var won=fs?(modelPick===actualWinner):(g.result===g.actual);var scoreLine=fs?'<span style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--text)">'+fs.a+'\u2013'+fs.h+'</span>':'';statusHtml='<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'+scoreLine+'<span class="badge '+(won?"win":"loss")+'">'+(won?"\u2713 WIN":"\u2717 LOSS")+'</span><span style="font-size:8px;font-family:var(--mono);color:var(--mut)">FINAL</span></div>';}else if(g.status==="live"){if(g.live&&g.live.status==="inprogress"){statusHtml='<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><span class="badge liveb">&#9679; LIVE</span><span style="font-size:14px;font-weight:700;font-family:var(--mono);color:var(--text)">'+g.live.away+'&ndash;'+g.live.home+'</span><span style="font-size:8px;font-family:var(--mono);color:var(--mut)">'+(g.live.inning||"")+'</span></div>';}else{statusHtml='<span class="badge liveb">&#9679; LIVE</span>';}}else if(g.status==="pre"){statusHtml='<span class="badge" style="background:var(--s3);color:var(--mut);border:1px solid var(--br)">UPCOMING</span>';}else if(g.status==="void"){statusHtml='<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><span class="badge" style="background:var(--amb2);color:var(--amb);border:1px solid rgba(232,179,57,.3)">PPD / VOID</span><span style="font-size:8px;font-family:var(--mono);color:var(--mut)">not graded</span></div>';}else{statusHtml='<span class="badge" style="background:var(--amb2);color:var(--amb);border:1px solid rgba(232,179,57,.3)">AUTO &#8987;</span>';}html+='<div class="gc'+(g.conf>=0.60?" hc":"")+(g.status==="live"?" is-live":"")+(g.betPick?" bet":"")+'" id="gc-'+g.id+'" onclick="fetchAI(\''+g.id+'\',null)"><div class="gc-top"><div class="teams-col"><div class="tr"><span class="tn'+(pick==="away"?" pick":"")+'">'+logoB(g.away)+g.away+'<span class="tn-nick">'+nick(g.away)+'</span></span><span class="tp'+(pick==="away"?" pick":"")+'">'+Math.round(g.awayP*100)+'%</span></div><div class="vs-line"><span>@</span>'+timeHtml+pickHtml+hotBadge(g)+evHtml+warnBadge(g)+'</div><div class="tr"><span class="tn'+(pick==="home"?" pick":"")+'">'+logoB(g.home)+g.home+'<span class="tn-nick">'+nick(g.home)+'</span></span><span class="tp'+(pick==="home"?" pick":"")+'">'+Math.round(g.homeP*100)+'%</span></div></div>'+confRing(g)+'<div class="out-col">'+statusHtml+'</div></div>'+(function(){var r=reasonFor(g);return r?'<div class="gc-reason"><b>Model lean</b><span>'+r+'</span></div>':'';})()+liveWPStrip(g)+pitcherStrip(g)+featureStrip(g)+analyticsStrip(g)+bettingStrip(g)+diamondStrip(g)+aiStripHtml(g)+'</div>';}
   var glEl=document.getElementById("gl");
   // remember which analytics panels are open + scroll, so a background refresh doesn't snap them shut
   var sy=window.scrollY;
-  glEl.innerHTML=html||'<div style="color:var(--mut);font-family:var(--mono);font-size:12px;padding:20px;text-align:center">No games match filter</div>';
+  glEl.innerHTML=html||'<div style="color:var(--mut);font-size:12px;padding:28px 20px;text-align:center;border:1px solid var(--br);border-radius:var(--r);background:var(--s1)">'+(!GAMES30.length?(SLATE_LOADING?'Loading verified schedule data\u2026':'No verified slate is available. The dashboard will retry automatically.'):'No games match the selected filter.')+'</div>';
+  Array.prototype.forEach.call(glEl.querySelectorAll(".pick-tag"),function(tag){tag.textContent=tag.textContent.replace("\uD83D\uDD25 ","");});
   // re-bind open-state tracking on the freshly rendered panels
   var ds=glEl.querySelectorAll("details.an-strip");
   for(var di=0;di<ds.length;di++){(function(d){
@@ -2412,7 +2196,8 @@ function renderToday(){
   window.scrollTo(0,sy);}
 
 // ─── ROLLING HISTORY (persistent storage) ───
-var HIST_KEY="mlb_pred_history_v1";
+var HIST_KEY="mlb_pred_history_v3";
+var LEGACY_HIST_KEYS=["mlb_pred_history_v1","mlb_pred_history_v2"];
 var OPEN_PANELS={}; // game ids whose Deep-analytics panel is expanded (preserved across refreshes)
 var STANDINGS_OK=false; // becomes true once the live standings overlay (L10/streak/run-diff) succeeds
 
@@ -2422,12 +2207,18 @@ function isRealResult(r){
   return r&&r.real===true&&r.hs!=null&&r.as!=null&&r.hs!==r.as;
 }
 function loadHistory(){
-  // NON-DESTRUCTIVE: returns the stored log exactly as-is. Never filters, never
-  // overwrites LS. (A past version self-healed on load and wiped data —
-  // that is gone for good. Cleaning now only ever happens on explicit user action.)
   var arr=[];
-  try{var raw=LS.getItem(HIST_KEY);if(raw)arr=JSON.parse(raw)||[];}catch(e){arr=[];}
-  return arr;
+  try{
+    var raw=LS.getItem(HIST_KEY);
+    if(!raw){
+      // Previous stores could contain results from the retired sample slate. Start a clean,
+      // verified-only log; users can restore a reviewed v2 JSON backup through the Log tab.
+      arr=[];
+      LS.setItem(HIST_KEY,JSON.stringify(arr));
+      LEGACY_HIST_KEYS.forEach(function(k){LS.removeItem(k);});
+    }else arr=JSON.parse(raw)||[];
+  }catch(e){arr=[];}
+  return Array.isArray(arr)?arr.filter(isRealResult):[];
 }
 // Display/stats helper: hides un-verifiable rows from view WITHOUT deleting anything.
 function realHistory(){return loadHistory().filter(isRealResult);}
@@ -2450,36 +2241,61 @@ function downloadBlob(content,filename,type){
 }
 function exportCSV(){
   var h=loadHistory();
-  if(!h.length){showToast("No logged games to export yet");return;}
   h.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
-  var cols=["date","away","home","away_score","home_score","model_pick","model_conf_pct","actual_winner","correct","plus_ev_pick","edge_pct","real_result","pitchers"];
+  var cols=["game_id","date","timestamp_utc","away","home","away_score","home_score","model_home_prob","model_away_prob","model_pick","model_conf_pct","actual_winner","correct","market_home_ml","market_away_ml","plus_ev_pick","edge_pct","verified","pitchers"];
   var rows=[cols.join(",")];
+  function csvCell(value){
+    if(value==null)return "";
+    var text=String(value);
+    return /[",\n]/.test(text)?'"'+text.replace(/"/g,'""')+'"':text;
+  }
   h.forEach(function(g){
     var r=[
-      g.date||"",g.away||"",g.home||"",
+      g.gid||"",g.date||"",g.ts?new Date(g.ts).toISOString():"",g.away||"",g.home||"",
       (g.as!=null?g.as:""),(g.hs!=null?g.hs:""),
-      g.pick||"",Math.round((g.conf||0)*100),
+      (g.homeP!=null?Number(g.homeP).toFixed(3):""),(g.awayP!=null?Number(g.awayP).toFixed(3):(g.homeP!=null?(1-Number(g.homeP)).toFixed(3):"")),
+      g.pick||"",(g.conf!=null?(Number(g.conf)*100).toFixed(1):""),
       g.actual||"",(g.correct?"WIN":"LOSS"),
-      (g.betPick||""),(g.betEdge!=null?Math.round(g.betEdge*100):""),
-      (g.real?"yes":"sim"),
-      '"'+((g.sp||"").replace(/"/g,'""'))+'"'
+      (g.homeML!=null?g.homeML:""),(g.awayML!=null?g.awayML:""),
+      (g.betPick||""),(g.betEdge!=null?(Number(g.betEdge)*100).toFixed(1):""),
+      (g.real?"yes":"no"),(g.sp||"")
     ];
-    rows.push(r.join(","));
+    rows.push(r.map(csvCell).join(","));
   });
   downloadBlob(rows.join("\n"),"mlb_predictor_log_"+(new Date()).toISOString().slice(0,10)+".csv","text/csv");
-  showToast("\u2713 Exported "+h.length+" games to CSV");
+  showToast(h.length?"\u2713 Exported "+h.length+" games to CSV":"\u2713 Downloaded an empty CSV log template");
 }
 function exportJSON(){
   var h=loadHistory();
-  if(!h.length){showToast("No logged games to export yet");return;}
-  downloadBlob(JSON.stringify(h,null,2),"mlb_predictor_log_"+(new Date()).toISOString().slice(0,10)+".json","application/json");
-  showToast("\u2713 Exported "+h.length+" games to JSON");
+  var backup={schema:2,exportedAt:(new Date()).toISOString(),history:h};
+  downloadBlob(JSON.stringify(backup,null,2),"mlb_predictor_log_"+(new Date()).toISOString().slice(0,10)+".json","application/json");
+  showToast(h.length?"\u2713 Exported "+h.length+" games to JSON":"\u2713 Downloaded an empty JSON backup");
+}
+function importHistoryFile(file){
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(String(reader.result||""));
+      var incoming=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.history)?parsed.history:[]);
+      var valid=incoming.filter(isRealResult);
+      if(!valid.length)throw new Error("No verified final-score rows found");
+      var merged=loadHistory().slice(),seen={};
+      merged.forEach(function(r){seen[(r.gid||"")+"|"+(r.date||"")+"|"+r.away+"|"+r.home]=1;});
+      var added=0;
+      valid.forEach(function(r){var key=(r.gid||"")+"|"+(r.date||"")+"|"+r.away+"|"+r.home;if(!seen[key]){seen[key]=1;merged.push(r);added++;}});
+      saveHistory(merged);bumpRecForm();buildElo();renderHistory();renderToday();
+      showToast(added?"Imported "+added+" verified game"+(added===1?"":"s"):"Backup already matches this log");
+    }catch(e){showToast("Import failed: "+(e&&e.message?e.message:"invalid backup"));}
+  };
+  reader.onerror=function(){showToast("Import failed: file could not be read");};
+  reader.readAsText(file);
 }
 function clearHistory(){
   if(confirm("Clear all rolling history? This cannot be undone.")){
     try{LS.removeItem(HIST_KEY);}catch(e){}
     renderHistory();
-    showToast("History cleared \u2014 reseeded with starting data");
+    showToast("Prediction log cleared");
   }
 }
 
@@ -2572,7 +2388,7 @@ function calibPairs(){
 function applyRecalibration(s){
   if(!MODEL_W)return;
   MODEL_W.shrink=s;
-  try{LS.setItem("mlb_pred_weights_v1",JSON.stringify(MODEL_W));}catch(e){}
+  saveWeights(MODEL_W);
   if(GAMES30&&GAMES30.length)recomputeAll();
   renderCalib();
   showToast("\u2713 Recalibrated \u2014 shrink set to "+s.toFixed(2)+", predictions updated");
@@ -2686,8 +2502,8 @@ function warnFeedbackHtml(g){
   var trustOn=fb==="trust", fadeOn=fb==="fade";
   h+='<div class="an-row" style="display:block"><div class="an-k" style="margin-bottom:5px">Analyst feedback <span class="an-sub">(your call on the '+pick+' pick)</span></div>'
     +'<div style="display:flex;gap:6px">'
-    +'<button onclick="setFeedback(\''+g.id+'\',\'trust\')" style="flex:1;cursor:pointer;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:6px;border-radius:7px;border:1px solid '+(trustOn?"var(--grn)":"var(--br2)")+';background:'+(trustOn?"var(--grn2)":"var(--s2)")+';color:'+(trustOn?"var(--grn)":"var(--mut2)")+'">\uD83D\uDC4D Trust</button>'
-    +'<button onclick="setFeedback(\''+g.id+'\',\'fade\')" style="flex:1;cursor:pointer;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:6px;border-radius:7px;border:1px solid '+(fadeOn?"var(--red)":"var(--br2)")+';background:'+(fadeOn?"var(--red2)":"var(--s2)")+';color:'+(fadeOn?"var(--red)":"var(--mut2)")+'">\uD83D\uDC4E Fade</button>'
+    +'<button onclick="setFeedback(\''+g.id+'\',\'trust\')" style="flex:1;cursor:pointer;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:6px;border-radius:7px;border:1px solid '+(trustOn?"var(--grn)":"var(--br2)")+';background:'+(trustOn?"var(--grn2)":"var(--s2)")+';color:'+(trustOn?"var(--grn)":"var(--mut2)")+'">Trust</button>'
+    +'<button onclick="setFeedback(\''+g.id+'\',\'fade\')" style="flex:1;cursor:pointer;font-family:var(--mono);font-size:10.5px;font-weight:700;padding:6px;border-radius:7px;border:1px solid '+(fadeOn?"var(--red)":"var(--br2)")+';background:'+(fadeOn?"var(--red2)":"var(--s2)")+';color:'+(fadeOn?"var(--red)":"var(--mut2)")+'">Fade</button>'
     +'</div>'
     +(fb?'<div style="font-size:9.5px;font-family:var(--mono);color:var(--mut);margin-top:5px;line-height:1.4">'+(fadeOn?"Fading \u2014 flagged with a warning above. The model\u2019s probability is left unchanged; your override is just recorded and surfaced.":"Backing the model on this one.")+'</div>':'')
     +'</div>';
@@ -2777,7 +2593,7 @@ var STREAK_FIRE=3; // show the fire at 3+ correct picks in a row on a team
 function hotBadge(g){
   var pick=g.homeP>=g.awayP?g.home:g.away, s=perTeamStreakCached()[pick]||0;
   if(s<STREAK_FIRE)return "";
-  return '<span class="hot-badge" title="Model\u2019s last '+s+' picks on '+pick+' all hit" style="display:inline-flex;align-items:center;gap:1px;font-size:9px;font-family:var(--mono);font-weight:700;color:var(--amb);background:var(--amb2);border:1px solid var(--amb);padding:1px 5px;border-radius:4px">\uD83D\uDD25'+s+'</span>';
+  return '<span class="hot-badge" title="Model\u2019s last '+s+' picks on '+pick+' all hit" style="display:inline-flex;align-items:center;gap:1px;font-size:9px;font-family:var(--mono);font-weight:700;color:var(--amb);background:var(--amb2);border:1px solid var(--amb);padding:1px 5px;border-radius:4px">Streak '+s+'</span>';
 }
 
 // ── Top-pick tracking + splits + honest ROI. All computed from real graded data. ──
@@ -2994,7 +2810,7 @@ function buildAnalysis(g){
   var hs=TEAM_SPLITS[g.home],as=TEAM_SPLITS[g.away],h2h=H2H[g.id],pvt=PVT[g.id];
   var parts=[];
   // 1. Pitching edge
-  if(sp){
+  if(sp&&sp.h&&sp.a&&sp.h.realQ&&sp.a.realQ){
     var hX=parseFloat(sp.h.xfip),aX=parseFloat(sp.a.xfip);
     var edgeTeam=hX<aX?g.home:g.away, edgeName=hX<aX?sp.h.name:sp.a.name;
     var betterX=hX<aX?sp.h.xfip:sp.a.xfip, worseX=hX<aX?sp.a.xfip:sp.h.xfip;
@@ -3054,7 +2870,7 @@ function buildAnalysis(g){
 function buildFallback(g){
   var sp=SP[g.id],pick=g.homeP>=g.awayP?g.home:g.away;
   var hs=TEAM_SPLITS[g.home],as=TEAM_SPLITS[g.away],h2h=H2H[g.id],pvt=PVT[g.id];
-  if(!sp)return pick+" favored at "+Math.round(g.conf*100)+"% on team strength + home edge.";
+  if(!sp||!sp.h||!sp.a||!sp.h.realQ||!sp.a.realQ)return pick+" favored at "+Math.round(g.conf*100)+"% from verified team records, run differential, Elo, and home-field context.";
   var hX=parseFloat(sp.h.xfip),aX=parseFloat(sp.a.xfip);
   var betterName=hX<aX?sp.h.name:sp.a.name, betterTeam=hX<aX?g.home:g.away;
   var s1=betterName+" ("+betterTeam+") owns the pitching edge at "+(hX<aX?sp.h.xfip:sp.a.xfip)+" xFIP vs "+(hX<aX?sp.a.xfip:sp.h.xfip)+".";
@@ -3094,13 +2910,16 @@ function confirmLog(){
   var pick=g.homeP>=g.awayP?g.home:g.away;
   var actualTeam=homeWon?g.home:g.away;
   var correct=(pick===actualTeam);
+  var logOdds=ODDS[g.id]||{};
   g.result=g.homeP>=g.awayP?"home":"away"; g.actual=homeWon?"home":"away";
   // log with a REAL score + real:true so it passes isRealResult and actually feeds Elo,
   // calibration, recency form and per-team accuracy (winner-only logs were being dropped)
   addToHistory({
-    gid:g.id,date:(new Date()).toLocaleDateString("en-US",{month:"short",day:"numeric"}),
-    home:g.home,away:g.away,homeP:g.homeP,conf:g.conf,pick:pick,actual:actualTeam,correct:correct,
-    hs:hS,as:aS,real:true,sp:(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:""),ts:Date.now()
+    gid:g.id,date:(new Date(g.startMs||Date.now())).toLocaleDateString("en-US",{month:"short",day:"numeric"}),
+    home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,pick:pick,actual:actualTeam,correct:correct,
+    hs:hS,as:aS,real:true,betPick:g.betPick||"",betEdge:g.betEdge||0,
+    homeML:logOdds.homeML,awayML:logOdds.awayML,
+    sp:(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:""),ts:g.startMs||Date.now()
   });
   learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id); // SGD on pitcher-form weights (if SP loaded)
   bumpTrainedCount();
@@ -3121,12 +2940,13 @@ function runAI(){
   if(bets.length){
     var b=bets[0];var sp=SP[b.id];
     html+='<div style="background:var(--grn2);border:1px solid rgba(63,207,142,0.3);border-radius:8px;padding:11px 13px;margin-bottom:12px">';
-    html+='<div style="font-size:10px;font-family:var(--mono);color:var(--grn);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">\u2b50 Top +EV bet today</div>';
+    html+='<div style="font-size:10px;font-family:var(--mono);color:var(--grn);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px">Highest model edge</div>';
     html+='<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px">'+b.betPick+' over '+(b.betPick===b.home?b.away:b.home)+' &mdash; +'+Math.round(b.betEdge*100)+'% edge</div>';
-    html+='<div style="font-size:12px;color:var(--mut2);line-height:1.5">Model gives '+b.betPick+' '+Math.round((b.betPick===b.home?b.homeP:b.awayP)*100)+'% but Vegas implies only '+Math.round((b.betPick===b.home?ODDS[b.id].homeImpl:ODDS[b.id].awayImpl)*100)+'%'+(sp?'. '+(parseFloat(sp.h.xfip)<parseFloat(sp.a.xfip)?sp.h.name:sp.a.name)+' anchors the edge with the better xFIP.':'.')+'</div></div>';
+    var hasVerifiedMatchup=sp&&sp.h&&sp.a&&sp.h.realQ&&sp.a.realQ;
+    html+='<div style="font-size:12px;color:var(--mut2);line-height:1.5">Model probability '+Math.round((b.betPick===b.home?b.homeP:b.awayP)*100)+'%; market-implied probability '+Math.round((b.betPick===b.home?ODDS[b.id].homeImpl:ODDS[b.id].awayImpl)*100)+'%.'+(hasVerifiedMatchup?' '+(parseFloat(sp.h.xfip)<parseFloat(sp.a.xfip)?sp.h.name:sp.a.name)+' has the lower verified xFIP.':' Starter metrics remain neutral until both probables are verified.')+'</div></div>';
   } else {
     var _lg=GAMES30.filter(function(g){return ODDS[g.id]&&ODDS[g.id].real;}).length;
-    var msg=_lg?('<b style="color:var(--amb)">No strong +EV bets today.</b> Across the '+_lg+' game'+(_lg>1?'s':'')+' with a real posted line, the model isn\'t finding 4%+ gaps \u2014 the books are sharp. Discipline = passing when there\'s no edge.'):('<b style="color:var(--amb)">No betting lines posted yet.</b> ESPN hasn\'t published moneylines for this slate, so there\'s nothing to compare the model against. +EV is never computed off a fabricated line \u2014 check back closer to first pitch.');
+    var msg=_lg?('<b style="color:var(--amb)">No qualifying markets.</b> None of the '+_lg+' game'+(_lg>1?'s':'')+' with a posted line currently clears the 4% edge threshold.'):('<b style="color:var(--amb)">No betting lines posted.</b> ESPN has not published moneylines for this slate, so edge calculations remain unavailable.');
     html+='<div style="background:var(--amb2);border:1px solid rgba(217,119,6,0.3);border-radius:8px;padding:11px 13px;margin-bottom:12px;font-size:12px;color:var(--mut2);line-height:1.5">'+msg+'</div>';
   }
   // Closing Line Value — did the market move toward the model's picks after they were made?
@@ -3150,7 +2970,7 @@ function runAI(){
   html+='<div style="font-size:10px;font-family:var(--mono);color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px">Highest-confidence picks</div>';
   picks.forEach(function(g){
     var pick=g.homeP>=g.awayP?g.home:g.away;var sp=SP[g.id];
-    var reason=sp?((parseFloat(sp.h.xfip)<parseFloat(sp.a.xfip)?sp.h.name:sp.a.name)+" edge"):"team strength";
+    var reason=(sp&&sp.h&&sp.a&&sp.h.realQ&&sp.a.realQ)?((parseFloat(sp.h.xfip)<parseFloat(sp.a.xfip)?sp.h.name:sp.a.name)+" · verified starter edge"):(reasonFor(g)||"verified team context");
     html+='<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--br)">';
     html+='<div style="min-width:42px;font-family:var(--mono);font-weight:700;color:'+(g.conf>=0.65?"var(--grn)":g.conf>=0.58?"var(--ink)":"var(--amb)")+'">'+Math.round(g.conf*100)+'%</div>';
     html+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+pick+'</div><div style="font-size:10px;color:var(--mut);font-family:var(--mono)">over '+(pick===g.home?g.away:g.home)+' &middot; '+reason+(g.betPick?' &middot; +EV':'')+'</div></div>';
@@ -3158,7 +2978,7 @@ function runAI(){
   });
   // Model insight
   html+='<div style="margin-top:13px;padding:11px 13px;background:var(--s3);border-radius:8px;font-size:12px;color:var(--mut2);line-height:1.6">';
-  html+='<b style="color:var(--text)">Coach read:</b> '+(bets.length?"There "+(bets.length===1?"is 1 +EV spot":"are "+bets.length+" +EV spots")+" worth a play tonight. ":"Sit tight \u2014 no edges means no forced bets. ")+'The model trains on every logged result, so calibration tightens as your Full Log grows. Remember: hitting 57\u201360% on the spots where you have a real edge beats chasing every game. Bet the edge, skip the rest.';
+  html+='<b style="color:var(--text)">Model status:</b> '+(bets.length?(bets.length+" market"+(bets.length===1?"":"s")+" clear the configured edge threshold. "):"No posted market currently clears the configured edge threshold. ")+'Completed games are added to the verified log and used for calibration. Review sample size and closing-line value before drawing performance conclusions.';
   html+='</div>';
   box.innerHTML=html;
 }
@@ -3195,12 +3015,14 @@ function autoResolveGames(){
     var actualTeam=homeWon?g.home:g.away;
     var pick=g.homeP>=g.awayP?g.home:g.away;
     var correct=(pick===actualTeam);
+    var logOdds=ODDS[g.id]||{};
     learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id);
     bumpTrainedCount();
     addToHistory({
       gid:g.id,date:(new Date(g.startMs)).toLocaleDateString("en-US",{month:"short",day:"numeric"}),
-      home:g.home,away:g.away,homeP:g.homeP,conf:g.conf,pick:pick,actual:actualTeam,
+      home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,pick:pick,actual:actualTeam,
       correct:correct,hs:realScore?realScore.h:null,as:realScore?realScore.a:null,auto:true,real:!!realScore,
+      betPick:g.betPick||"",betEdge:g.betEdge||0,homeML:logOdds.homeML,awayML:logOdds.awayML,
       sp:(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:""),ts:g.startMs+1000
     });
     g.result=g.homeP>=g.awayP?"home":"away";
@@ -3234,7 +3056,7 @@ function refreshStatuses(){
 function setLiveBadge(){
   var b=document.getElementById("live-badge");if(!b)return;
   if(ESPN_OK){var secs=Math.round((Date.now()-ESPN_LAST)/1000);b.innerHTML='<span class="pulse"></span> LIVE \u00b7 ESPN';b.style.background="var(--grn2)";b.style.color="var(--grn)";b.style.borderColor="rgba(63,207,142,0.3)";b.title="Real ESPN data, updated "+secs+"s ago";}
-  else{b.innerHTML='\u25cb SNAPSHOT';b.style.background="var(--amb2)";b.style.color="var(--amb)";b.style.borderColor="rgba(217,119,6,0.3)";b.title="Serve over http:// (e.g. python3 -m http.server) to get live ESPN play-by-play";}
+  else{b.innerHTML='\u25cb '+(SLATE_LOADING?'CONNECTING':'DATA UNAVAILABLE');b.style.background="var(--s2)";b.style.color="var(--mut)";b.style.borderColor="var(--br)";b.title="Waiting for the official ESPN scoreboard feed";}
 }
 function slateSig(){
   return GAMES30.map(function(g){
@@ -3272,41 +3094,30 @@ function autoTick(){
 }
 setInterval(autoTick,15000);
 // On load: fetch today's schedule from ESPN and build the game list dynamically.
-// Falls back to the built-in snapshot if ESPN can't be reached (file:// mode).
+// If ESPN cannot be reached, the slate stays empty and the unavailable state remains visible.
 // Build today's ESPN scoreboard URL with an explicit local date (avoids timezone drift).
 function espnURL(){
   var d=new Date();
   var ymd=d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2);
   return "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard?dates="+ymd;
 }
-// Fetch ESPN data, trying the local proxy (if served via run_live.py) and the direct API.
-// On file:// the direct call works whenever ESPN returns Access-Control-Allow-Origin: * (it usually does).
+// Fetch ESPN data from the official endpoint or the same-origin local proxy.
+// Third-party CORS relays are intentionally excluded so displayed data keeps a verifiable source.
 function fetchESPN(){
   var served=(window.location&&window.location.protocol&&window.location.protocol.indexOf("http")===0);
   var espn=espnURL();
   var espnNow="https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"; // ESPN default = current MLB day (handles TZ rollover)
-  var enc=encodeURIComponent(espn), encN=encodeURIComponent(espnNow);
-  // Try the explicit local date first, then ESPN's own current-day slate, across several
-  // routes — so a timezone date drift or one flaky proxy never leaves the slate empty.
+  // Try the explicit local date first, then ESPN's own current-day slate. The optional
+  // local proxy is useful during development but must return the same official payload.
   var routes=[
     {url:espn, kind:"direct-dated"},
-    {url:espnNow, kind:"direct-now"},
-    {url:"https://corsproxy.io/?url="+enc, kind:"proxy-dated"},
-    {url:"https://corsproxy.io/?url="+encN, kind:"proxy-now"},
-    {url:"https://api.allorigins.win/raw?url="+enc, kind:"proxy"},
-    {url:"https://api.allorigins.win/raw?url="+encN, kind:"proxy-now"},
-    {url:"https://thingproxy.freeboard.io/fetch/"+espn, kind:"proxy"}
+    {url:espnNow, kind:"direct-now"}
   ];
   if(served)routes.unshift({url:"/espn", kind:"localproxy"});
   function tryAt(i){
     if(i>=routes.length)return Promise.reject(new Error("all sources failed"));
     var rt=routes[i];
     return fetch(rt.url).then(function(r){if(!r.ok)throw new Error("http "+r.status);return r.json();})
-      .then(function(j){
-        // allorigins sometimes wraps in {contents:"..."}; unwrap if needed
-        if(j&&j.contents&&typeof j.contents==="string"){try{return JSON.parse(j.contents);}catch(e){return j;}}
-        return j;
-      })
       .then(function(j){if(!j||!j.events||!j.events.length)throw new Error("no events in response");console.log("[MLB] data via "+rt.kind+": "+rt.url.slice(0,48)+" ("+j.events.length+" games)");return j;})
       .catch(function(err){console.log("[MLB] route failed ("+rt.kind+"):",err&&err.message);return tryAt(i+1);});
   }
@@ -3320,14 +3131,16 @@ function loadToday(){
   loadRestData(); // real rest/off-day advantage from yesterday's actual slate
   fetchESPN().then(function(data){
     var ok=buildGamesFromESPN(data);
+    SLATE_LOADING=false;
     if(ok){
       hideOfflineWarning();
       var dt=new Date();
-      var sub=document.querySelector(".sub");
+      var sub=document.getElementById("hdr-date");
       if(sub)sub.textContent=dt.toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"})+" \u00b7 live from ESPN \u00b7 auto-updated";
       console.log("[MLB] Loaded "+GAMES30.length+" real games from ESPN.");
     } else {
-      console.log("[MLB] ESPN returned no games for today; keeping fallback.");
+      GAMES30=[];
+      console.log("[MLB] ESPN returned no games for today.");
       showOfflineWarning();
     }
     renderToday();setLiveBadge();
@@ -3335,8 +3148,9 @@ function loadToday(){
     // information, not just cards the user happens to expand.
     setTimeout(loadAllSP,500);
   }).catch(function(err){
-    console.log("[MLB] Could not reach ESPN:",err&&err.message,"\u2014 showing backup schedule.");
-    refreshStatuses();renderToday();setLiveBadge();showOfflineWarning();
+    SLATE_LOADING=false;GAMES30=[];
+    console.log("[MLB] Could not reach ESPN:",err&&err.message);
+    renderToday();setLiveBadge();showOfflineWarning();
   });
 }
 function showOfflineWarning(){
@@ -3344,10 +3158,10 @@ function showOfflineWarning(){
   if(!div)return;
   var loc=(typeof window!=="undefined"&&window.location&&window.location.protocol)||"";
   var isFile=loc==="file:";
-  div.innerHTML="<b>\u26a0\ufe0f Showing the built-in backup schedule, not today\u2019s real games.</b><br>"
+  div.innerHTML="<b>Official MLB schedule data is temporarily unavailable.</b><br>"
     +(isFile
-      ? "You\u2019ve opened this page directly from a file, so the browser blocks live data requests (CORS). Serve it over http instead \u2014 the hosted site, or any local static server (e.g. <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">python3 -m http.server</code> in this folder, then open <code style=\"background:rgba(184,146,61,.15);padding:1px 5px;border-radius:3px\">http://localhost:8000/</code>). It retries automatically every 15s \u2014 the LIVE badge turns green when a connection succeeds."
-      : "Couldn\u2019t reach ESPN right now (network or CORS). It\u2019ll retry automatically every 15s \u2014 the LIVE badge turns green when it connects.");
+      ? "Serve the repository over HTTP so the browser can request the official feed: <code style=\"background:var(--s2);padding:1px 5px;border-radius:3px\">python3 -m http.server</code>, then open <code style=\"background:var(--s2);padding:1px 5px;border-radius:3px\">http://localhost:8000/</code>."
+      : "No substitute games or projected scores are displayed. The dashboard will retry the official feed automatically every 15 seconds.");
   div.style.display="block";
 }
 function hideOfflineWarning(){var w=document.getElementById("offline-warn");if(w){w.style.display="none";w.innerHTML="";}}
@@ -3357,9 +3171,9 @@ function hideOfflineWarning(){var w=document.getElementById("offline-warn");if(w
 //  the model against real outcomes. Cached in LS so it grows.
 // ═══════════════════════════════════════════════════════════════════
 // parseBacktestStore/isBacktestStale now live in js/persistence.js.
-var BT_KEY="mlb_backtest_games_v1";
+var BT_KEY="mlb_backtest_games_v2";
 function btLoad(){return parseBacktestStore(LS.getItem(BT_KEY));}
-var BT_SCHEMA=2; // bump when feature semantics change (e.g. synthesized pitcher stats removed) so old grades can be flagged
+var BT_SCHEMA=3; // clean verified-feed schema; legacy sample-era stores use a different key
 function btSave(o){try{o.__schema=BT_SCHEMA;LS.setItem(BT_KEY,JSON.stringify(o));}catch(e){}}
 function btStale(){return isBacktestStale(btLoad(),BT_SCHEMA);}
 function staleNoticeHTML(){
@@ -3923,7 +3737,7 @@ var PARLAY=[]; // selected game ids
 // ── PAPER-TRADING BET LOG ── auto-logs each +EV pick when its game goes final,
 // grades it against the real result, and tracks cumulative P/L (flat $100 and
 // quarter-Kelly on a fixed $1,000 baseline, non-compounding for comparability).
-var BETLOG_KEY="mlb_betlog_v1";
+var BETLOG_KEY="mlb_betlog_v2";
 function betlogLoad(){try{return JSON.parse(LS.getItem(BETLOG_KEY))||{};}catch(e){return {};}}
 function betlogSave(o){try{LS.setItem(BETLOG_KEY,JSON.stringify(o));}catch(e){}}
 function deleteBetLogEntry(k){var log=betlogLoad();if(log[k]){delete log[k];betlogSave(log);renderBetting();showToast("Entry removed from paper-trading log");}}
@@ -4166,7 +3980,7 @@ function renderBetting(){
 //  L2 regularization, train/test split, honest out-of-sample eval).
 // ═══════════════════════════════════════════════════════════════════
 var FEATS=["power","hfa","xfip","whip","xwoba","barrel","lineup","bullpen","park","form","recform","rest","h2h","pvt","wx","split","ump","pythag"];
-var TRAINED_KEY="mlb_trained_weights_v1";
+var TRAINED_KEY="mlb_trained_weights_v2";
 // sigmoid, standardize, fitLogisticRegression, evaluateLogisticRegression, and
 // toRawWeights now live in js/ml-train.js.
 function trainModel(){
@@ -4490,7 +4304,7 @@ function answerQuestion(q){
   // best bets / EV
   if(/bet|\bev\b|value|wager|edge|play/.test(t)&&!/underdog|dog/.test(t)){
     var ev=evPlaysList();
-    if(!ev.length)return "No +EV plays on the board right now \u2014 the model needs to beat the market by 4%+ to flag one. No edge, no bet. (Discipline pays.)";
+    if(!ev.length)return "No qualifying markets. Available lines do not currently clear the 4% minimum edge threshold.";
     var s="<b>"+ev.length+" +EV play"+(ev.length>1?"s":"")+"</b> the model likes vs the line:<br>";
     ev.slice(0,5).forEach(function(g){var o=ODDS[g.id];var ph=g.betPick===g.home;var ml=ph?o.homeML:o.awayML;s+="\u2022 <b>"+g.betPick+"</b> ("+(ml>0?"+"+ml:ml)+") vs "+(ph?g.away:g.home)+" \u2014 +"+Math.round(g.betEdge*100)+"% edge"+(o.real?"":" <i>(est. line)</i>")+"<br>";});
     s+="<br>See the Betting tab for Kelly stake sizing.";return s;
@@ -4563,7 +4377,7 @@ function answerQuestion(q){
     if(!g5)return team+" doesn\u2019t appear on today\u2019s slate.";
     var isHome=g5.home===team;var opp=isHome?g5.away:g5.home;var wp=isHome?g5.homeP:g5.awayP;
     var s5="<b>"+team+"</b> "+(isHome?"host":"visit")+" "+opp+" ("+g5.time+"). Model gives "+team+" a <b>"+pct(wp)+"</b> win chance"+(g5.status==="live"?" (LIVE)":g5.status==="final"?" (final)":"")+".";
-    if(g5.betPick===team)s5+=" \ud83d\udcb0 <b>+EV bet</b> (+"+Math.round(g5.betEdge*100)+"% edge vs the line).";else if(g5.betPick)s5+=" The model\u2019s value play here is "+g5.betPick+", not "+team+".";
+    if(g5.betPick===team)s5+=" <b>Qualified market</b> (+"+Math.round(g5.betEdge*100)+"% edge vs the line).";else if(g5.betPick)s5+=" The qualified side is "+g5.betPick+", not "+team+".";
     var inj5=injuryImpact(team);if(inj5.players.length)s5+="<br>Injuries: "+inj5.players.map(function(p){return (p.tier===1?"\u2605":"")+p.name;}).join(", ")+" out.";
     if(g5.ump)s5+="<br>HP umpire (proj): "+g5.ump.name+".";
     return s5;
@@ -4578,7 +4392,7 @@ function answerQuestion(q){
       +"\u2022 Brier: <b>"+rep.brier.toFixed(3)+"</b> (vs "+rep.uncertainty.toFixed(3)+" for a coin flip \u2014 "+(rep.brier<rep.uncertainty?"beating it":"not beating it yet")+")<br>"
       +"\u2022 Calibration error: <b>"+rep.ece.toFixed(3)+"</b> "+(rep.ece<0.05?"(production-grade)":"(still settling)")+"<br>"
       +"\u2022 Skill vs base-rate: <b>"+(rep.bss>=0?"+":"")+(rep.bss*100).toFixed(1)+"%</b>";
-    s+="<br><br><i>Honest: ~57-62% is the realistic ceiling on MLB single games \u2014 the edge is calibration, not raw win rate. Small samples swing a lot.</i>";
+    s+="<br><br><i>Performance should be evaluated on calibration, closing-line value, and a sufficiently large verified sample.</i>";
     return s;
   }
   // PITCHER / starter matchup
@@ -4587,7 +4401,8 @@ function answerQuestion(q){
     if(!gp){var up=GAMES30.filter(function(g){return g.status!=="final";});gp=up.length?up.sort(function(a,b){return b.conf-a.conf;})[0]:null;}
     if(!gp)return "Tell me which team and I\u2019ll give you the pitching matchup \u2014 e.g. <b>\u201cwho\u2019s pitching for the Dodgers\u201d</b>.";
     var spp=SP[gp.id];
-    if(!spp)return "I don\u2019t have the probable starters for that game yet \u2014 they usually post a few hours out. Tap <b>Load real last-3 starts</b> on the card for live form.";
+    if(!spp||!spp.h||!spp.a)return "Probable starters are not available for that game yet. Use <b>Load today\u2019s starters</b> to retry the verified feed.";
+    if(!spp.h.realQ||!spp.a.realQ)return "The probable names may be posted, but verified metrics are not available for both starters yet. Pitching inputs remain neutral.";
     var s="<b>"+gp.away+" @ "+gp.home+"</b> pitching:<br>"
       +"\u2022 "+gp.home+": <b>"+spp.h.name+"</b> \u2014 "+spp.h.era+" ERA, "+spp.h.whip+" WHIP, "+spp.h.k9+" K/9<br>"
       +"\u2022 "+gp.away+": <b>"+spp.a.name+"</b> \u2014 "+spp.a.era+" ERA, "+spp.a.whip+" WHIP, "+spp.a.k9+" K/9<br>"
@@ -4600,9 +4415,9 @@ function answerQuestion(q){
     var topG=GAMES30.filter(function(g){return g.status!=="final";}).slice().sort(function(a,b){return b.conf-a.conf;})[0];
     var s6="<b>Today:</b> "+n+" games"+(live2?", "+live2+" live now":"")+". "+ev2+" +EV play"+(ev2!==1?"s":"")+" flagged.";
     if(topG){var tp=topG.homeP>=topG.awayP?topG.home:topG.away;s6+="<br>Top pick: <b>"+tp+"</b> ("+pct(topG.conf)+").";}
-    s6+="<br>Ask me about any team, injuries, the umpires, or best bets.";return s6;
+    s6+="<br>Query a team, injury report, market, or model metric for detail.";return s6;
   }
-  return "Not sure I caught that. I can break down <b>any team\u2019s game</b>, compare <b>two teams</b> (\u201cLAD vs SD\u201d), rank <b>best picks</b> &amp; <b>+EV bets</b>, check a <b>live price</b> (\u201cNYY -130 live\u201d), show <b>injuries</b>, <b>umpires</b>, <b>totals</b>, or my <b>track record</b>. Type <b>help</b> for the full list.";
+  return "That query was not recognized. Try a team matchup, qualified markets, live price check, injuries, totals, or model performance. Type <b>help</b> for available queries.";
 }
 function chatAdd(html,cls){var b=document.getElementById("chat-body");var d=document.createElement("div");d.className="chat-msg "+cls;d.innerHTML=html;b.appendChild(d);b.scrollTop=b.scrollHeight;}
 function sendChat(){var inp=document.getElementById("chat-input");var q=(inp.value||"").trim();if(!q)return;chatAdd(q.replace(/</g,"&lt;"),"chat-user");inp.value="";setTimeout(function(){chatAdd(answerQuestion(q),"chat-bot");},180);}
@@ -4611,7 +4426,7 @@ var chatInit=false;
 function toggleChat(){
   var p=document.getElementById("chat-panel");var open=p.classList.toggle("open");
   if(open&&!chatInit){chatInit=true;
-    chatAdd("Hi! I\u2019m your dashboard assistant \u2014 I answer from today\u2019s live games and the model. Try one of these:",("chat-bot"));
+    chatAdd("Research today\u2019s slate using verified live inputs and current model outputs:","chat-bot");
     var b=document.getElementById("chat-body");var d=document.createElement("div");
     d.innerHTML='<span class="chat-chip" onclick="chatChip(\'best pick today\')">best pick</span><span class="chat-chip" onclick="chatChip(\'best bets\')">+EV bets</span><span class="chat-chip" onclick="chatChip(\'how accurate are you\')">track record</span><span class="chat-chip" onclick="chatChip(\'live games\')">live now</span><span class="chat-chip" onclick="chatChip(\'underdog value\')">underdogs</span><span class="chat-chip" onclick="chatChip(\'any injuries\')">injuries</span>';
     b.appendChild(d);b.scrollTop=b.scrollHeight;
@@ -4636,6 +4451,7 @@ function purgeSimHistory(){
 }
 // ── 3D mouse-tilt on game cards (desktop only; delegated so it survives re-renders) ──
 (function initCardTilt(){
+  return; // Flat interaction model: no pointer tilt or perspective effects.
   var gl=document.getElementById("gl");
   if(!gl)return;
   if(window.matchMedia&&window.matchMedia("(hover:none)").matches)return; // skip touch
