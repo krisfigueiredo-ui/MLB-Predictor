@@ -553,6 +553,7 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 <!-- MODEL -->
 <div id="pnl-model" class="pnl">
   <div class="sec"><span>Self-training model</span><span class="badge" id="train-badge">0 games trained</span></div>
+  <div class="disclaimer">&#9888; <b>Point-in-time caveat:</b> team-context features (standings, Elo, recent form, H2H, injuries) are built from CURRENT data, not a snapshot of what was known as of each historical game's own date. Grading a 20-day-old game still uses today's full-season record for both teams. That means the accuracy/AUC/calibration numbers below are somewhat optimistic vs. true forward (live) performance &mdash; treat them as an upper bound, not a live-performance guarantee.</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
     <button class="btn btn-primary" onclick="applyTrained()">Train on real games</button>
     <button class="btn" onclick="runCV()">5-fold cross-validation</button>
@@ -639,6 +640,7 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 <script src="js/persistence.js"></script>
 <script src="js/espn-parse.js"></script>
 <script src="js/predict-core.js"></script>
+<script src="js/ml-train.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
 
 
@@ -981,7 +983,11 @@ function eloRanked(){return Object.keys(ELO).map(function(t){return {team:t,r:EL
 // recencyFormCore (the weighted-decay math) now lives in js/situational.js;
 // this stays here as a thin cache + IO wrapper around it.
 var _recFormCache={}, _recFormStamp=0;
-function recencyForm(team){
+// beforeDate (optional): date-scoped calls (backtest grading) bypass the cache
+// entirely, since each call is for a different historical date and the plain
+// team-keyed cache would otherwise return another date's stale value.
+function recencyForm(team,beforeDate){
+  if(beforeDate)return recencyFormCore(teamGameLog(team,beforeDate));
   if(_recFormCache._stamp!==_recFormStamp){_recFormCache={_stamp:_recFormStamp};}
   if(team in _recFormCache)return _recFormCache[team];
   var val=recencyFormCore(teamGameLog(team));
@@ -989,7 +995,11 @@ function recencyForm(team){
   return val;
 }
 function bumpRecForm(){_recFormStamp++;} // call when game-log data changes (backtest/history)
-function predictFull(home,away,sp,gid){
+// ump (5th arg, some call sites) is accepted for positional compatibility but not
+// read here (umpire assignments are projected/pseudo-random -- see the HONESTY GATE
+// note near c.ump below). beforeDate (6th arg, optional "YYYYMMDD") is used during
+// backtest grading to scope recency-form to games strictly before the graded game.
+function predictFull(home,away,sp,gid,ump,beforeDate){
   var W=MODEL_W;
   var hPwr=PWR[home]||60, aPwr=(away in PWR)?PWR[away]:60;
   var c={}, r={};
@@ -999,7 +1009,7 @@ function predictFull(home,away,sp,gid){
   r.elo=(eloProbHome(home,away)-0.5); c.elo=r.elo*((W.elo!=null)?W.elo:1.1);
   r.hfa=1; c.hfa=W.hfa;
   // recency-weighted form (decay over recent games) — distinct from the flat L10 'form' feature
-  r.recform=(recencyForm(home)-recencyForm(away)); c.recform=r.recform*((W.recform!=null)?W.recform:0);
+  r.recform=(recencyForm(home,beforeDate)-recencyForm(away,beforeDate)); c.recform=r.recform*((W.recform!=null)?W.recform:0);
   r.xfip=0;r.whip=0;r.xwoba=0;r.barrel=0;r.lineup=0;r.bullpen=0;r.park=0;r.form=0;r.h2h=0;r.pvt=0;r.wx=0;r.split=0;r.pythag=0;r.ump=0;r.rest=0;c.rest=0;
   // REST ADVANTAGE — real schedule data: teams coming off an off-day vs a team that played
   // yesterday. Only votes once yesterday's real slate has actually been fetched (REST_OK).
@@ -3369,7 +3379,10 @@ function ymd(d){return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.g
 function dowName(i){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][i];}
 function dowFromYmd(y){if(!y||y.length<8)return null;var d=new Date(parseInt(y.slice(0,4)),parseInt(y.slice(4,6))-1,parseInt(y.slice(6,8)));return dowName(d.getDay());}
 // chronological game log for a team from cached backtest games
-function teamGameLog(team){
+// beforeDate (optional, "YYYYMMDD"): when set, excludes games on/after that date --
+// used during backtest grading so a historical game is only judged on what happened
+// strictly before it, not on data from games that (relative to it) haven't happened yet.
+function teamGameLog(team,beforeDate){
   var store=btLoad();var games=[];
   Object.keys(store).forEach(function(k){
     if(k.indexOf("__")===0)return;var g=store[k];
@@ -3386,6 +3399,7 @@ function teamGameLog(team){
   });}catch(e){}
   // de-dup (a game can be in both stores) then sort oldest->newest
   var seen={};games=games.filter(function(g){var key=g.d+"_"+g.rs+"_"+g.ra;if(seen[key])return false;seen[key]=1;return true;});
+  games=filterBeforeDate(games,beforeDate);
   games.sort(function(a,b){return (a.d||"").localeCompare(b.d||"");});
   return games;
 }
@@ -3567,11 +3581,20 @@ function loadBacktest(days){
         var hScore=parseInt(hC.score||"0",10), aScore=parseInt(aC.score||"0",10);
         if(hScore===aScore)return;
         // grade the model: build estimated features, predict, compare to real winner
+        // KNOWN LIMITATION (look-ahead bias): predictFull still reads TEAM_SPLITS/ELO/H2H/
+        // PVT/INJURIES as they exist RIGHT NOW, not as of `ds` (this game's real date) --
+        // recency-form is the one channel scoped to `ds` below (via beforeDate), since it's
+        // the only one built from a per-game-dated log we can filter. The rest reflect the
+        // full season to date, so grading an older game still sees standings/Elo shaped by
+        // games that happened AFTER it -- inflating apparent accuracy vs. true forward
+        // performance. A correct fix needs point-in-time snapshots of those tables (not
+        // available from the free feeds today); see the UI disclaimer on the Model tab and
+        // TEST_COVERAGE_ANALYSIS.md for the full writeup.
         var hProb=hC.probables&&hC.probables[0], aProb=aC.probables&&aC.probables[0];
         var hPit=(hProb&&hProb.athlete)?hProb.athlete.shortName:null;
         var aPit=(aProb&&aProb.athlete)?aProb.athlete.shortName:null;
         var sp=genSP(home,away,hPit,aPit);
-        var pf=predictFull(home,away,sp,ev.id,projectUmp(ev.id));
+        var pf=predictFull(home,away,sp,ev.id,projectUmp(ev.id),ds);
         var hp=pf.prob;
         var pick=hp>=0.5?"home":"away";
         var actual=hScore>aScore?"home":"away";
@@ -4142,94 +4165,29 @@ function renderBetting(){
 // ═══════════════════════════════════════════════════════════════════
 var FEATS=["power","hfa","xfip","whip","xwoba","barrel","lineup","bullpen","park","form","recform","rest","h2h","pvt","wx","split","ump","pythag"];
 var TRAINED_KEY="mlb_trained_weights_v1";
-function sigmoid(z){return 1/(1+Math.exp(-z));}
+// sigmoid, standardize, fitLogisticRegression, evaluateLogisticRegression, and
+// toRawWeights now live in js/ml-train.js.
 function trainModel(){
   var store=btLoad();
   var games=Object.keys(store).filter(function(k){return k.indexOf("__")!==0;}).map(function(k){return store[k];}).filter(function(g){return g.feat&&g.y!=null;});
   if(games.length<40)return {error:"Need at least 40 graded games with feature vectors. Load more in the Backtest tab (older games before this update lack vectors \u2014 reload them).",have:games.length};
-  // shuffle deterministically then split 80/20
   games.sort(function(a,b){return (a.d||"").localeCompare(b.d||"");});
-  // standardize features: compute mean/std on the FULL set
-  var mean={},std={};
-  FEATS.forEach(function(f){
-    var vals=games.map(function(g){return g.feat[f]||0;});
-    var m=vals.reduce(function(s,v){return s+v;},0)/vals.length;
-    var vr=vals.reduce(function(s,v){return s+(v-m)*(v-m);},0)/vals.length;
-    mean[f]=m; std[f]=Math.sqrt(vr)||1;
-  });
-  function vec(g){return FEATS.map(function(f){return ((g.feat[f]||0)-mean[f])/std[f];});}
-  // time-based split: train on older 80%, test on most recent 20% (honest forward test)
+  // time-based split FIRST: train on older 80%, test on most recent 20% (honest forward test)
   var cut=Math.floor(games.length*0.8);
   var train=games.slice(0,cut), test=games.slice(cut);
-  // logistic regression via gradient descent with L2
-  var nF=FEATS.length;
-  var w=new Array(nF).fill(0), b=0;
-  var lr=0.1, lambda=0.02, epochs=400;
-  var lossCurve=[];
-  for(var ep=0;ep<epochs;ep++){
-    var gw=new Array(nF).fill(0), gb=0, loss=0;
-    train.forEach(function(g){
-      var x=vec(g), z=b;
-      for(var j=0;j<nF;j++)z+=w[j]*x[j];
-      var p=sigmoid(z), y=g.y;
-      var err=p-y;
-      for(var j2=0;j2<nF;j2++)gw[j2]+=err*x[j2];
-      gb+=err;
-      var pc=Math.min(1-1e-9,Math.max(1e-9,p));
-      loss+=-(y*Math.log(pc)+(1-y)*Math.log(1-pc));
-    });
-    for(var j3=0;j3<nF;j3++){w[j3]-=lr*(gw[j3]/train.length+lambda*w[j3]);}
-    b-=lr*(gb/train.length);
-    if(ep%20===0||ep===epochs-1)lossCurve.push(loss/train.length);
-  }
-  // evaluate
-  function evalSet(set){
-    var correct=0,brier=0,logloss=0;
-    set.forEach(function(g){
-      var x=vec(g),z=b;for(var j=0;j<nF;j++)z+=w[j]*x[j];
-      var p=sigmoid(z),y=g.y;
-      if((p>=0.5?1:0)===y)correct++;
-      brier+=(p-y)*(p-y);
-      var pc=Math.min(1-1e-9,Math.max(1e-9,p));logloss+=-(y*Math.log(pc)+(1-y)*Math.log(1-pc));
-    });
-    return {n:set.length,acc:correct/set.length,brier:brier/set.length,logloss:logloss/set.length};
-  }
-  var trainEval=evalSet(train), testEval=evalSet(test);
-  // convert standardized weights back to raw-feature weights so predictFull can use them:
-  // z = b + Σ w_j * (x_j - mean_j)/std_j  =>  rawWeight_j = w_j/std_j ; intercept folds into hfa
-  var learned={};
-  var intercept=b;
-  FEATS.forEach(function(f,j){
-    if(f==="hfa"){learned.hfa=w[j]/std.hfa;}
-    else{learned[f]=w[j]/std[f]; intercept-=w[j]*mean[f]/std[f];}
-  });
-  // fold global intercept into hfa (hfa raw is always 1)
-  learned.hfa=(learned.hfa||0)+intercept;
+  // standardize on the TRAIN split only \u2014 fitting on the full set (train+test)
+  // would leak the held-out test set's feature distribution into training,
+  // undermining the "honest out-of-sample eval" this split exists for.
+  var st=standardize(train,FEATS), mean=st.mean, std=st.std;
+  var model=fitLogisticRegression(train,FEATS,mean,std,{lr:0.1,lambda:0.02,epochs:400});
+  var trainEval=evaluateLogisticRegression(train,FEATS,model,mean,std);
+  var testEval=evaluateLogisticRegression(test,FEATS,model,mean,std);
+  var learned=toRawWeights(model.w,model.b,FEATS,mean,std,"hfa");
   learned.shrink=1.0; // trained model already calibrated-ish; keep mild
-  return {learned:learned,trainEval:trainEval,testEval:testEval,lossCurve:lossCurve,nGames:games.length,trainN:train.length,testN:test.length,mean:mean,std:std};
+  return {learned:learned,trainEval:trainEval,testEval:testEval,lossCurve:model.lossCurve,nGames:games.length,trainN:train.length,testN:test.length,mean:mean,std:std};
 }
 
-// ─── ROC-AUC: probability the model ranks a random actual-win above a random loss ───
-function rocAUC(pairs){
-  var pos=[],neg=[];
-  pairs.forEach(function(d){(d.y===1?pos:neg).push(d.p);});
-  if(!pos.length||!neg.length)return null;
-  var c=0;
-  for(var i=0;i<pos.length;i++)for(var j=0;j<neg.length;j++){
-    if(pos[i]>neg[j])c+=1; else if(pos[i]===neg[j])c+=0.5;
-  }
-  return c/(pos.length*neg.length);
-}
-
-// ─── ROC curve points: sweep the decision threshold high→low over pooled CV predictions ───
-function rocCurve(pairs){
-  var pos=0,neg=0;pairs.forEach(function(d){if(d.y===1)pos++;else neg++;});
-  if(!pos||!neg)return [];
-  var sorted=pairs.slice().sort(function(a,b){return b.p-a.p;});
-  var tp=0,fp=0,pts=[{fpr:0,tpr:0}];
-  sorted.forEach(function(d){if(d.y===1)tp++;else fp++;pts.push({fpr:fp/neg,tpr:tp/pos});});
-  return pts;
-}
+// rocAUC and rocCurve now live in js/ml-train.js.
 function drawROC(canvasId,pts,auc){
   var canvas=document.getElementById(canvasId);if(!canvas||!pts.length)return;
   var dpr=Math.min(window.devicePixelRatio||1,2);
@@ -4253,18 +4211,14 @@ function learningCurve(){
   var store=btLoad();
   var games=Object.keys(store).filter(function(k){return k.indexOf("__")!==0;}).map(function(k){return store[k];}).filter(function(g){return g.feat&&g.y!=null;});
   if(games.length<40)return {error:"need 40+"};
-  var seed=999;function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;}
-  var arr=games.slice();for(var s=arr.length-1;s>0;s--){var q=Math.floor(rnd()*(s+1));var t=arr[s];arr[s]=arr[q];arr[q]=t;}
-  var nVal=Math.floor(arr.length*0.25);var val=arr.slice(0,nVal),pool=arr.slice(nVal),nF=FEATS.length;
+  var arr=seededShuffle(games,999);
+  var nVal=Math.floor(arr.length*0.25);var val=arr.slice(0,nVal),pool=arr.slice(nVal);
   function fit(train){
-    var mean={},std={};
-    FEATS.forEach(function(ft){var vals=train.map(function(g){return g.feat[ft]||0;});var mn=vals.reduce(function(a,v){return a+v;},0)/vals.length;var vr=vals.reduce(function(a,v){return a+(v-mn)*(v-mn);},0)/vals.length;mean[ft]=mn;std[ft]=Math.sqrt(vr)||1;});
-    function vec(g){return FEATS.map(function(ft){return ((g.feat[ft]||0)-mean[ft])/std[ft];});}
-    var w=new Array(nF).fill(0),b=0,lr=0.1,lambda=0.02,epochs=250;
-    for(var ep=0;ep<epochs;ep++){var gw=new Array(nF).fill(0),gb=0;train.forEach(function(g){var x=vec(g),z=b;for(var a=0;a<nF;a++)z+=w[a]*x[a];var p=sigmoid(z),err=p-g.y;for(var a2=0;a2<nF;a2++)gw[a2]+=err*x[a2];gb+=err;});for(var a3=0;a3<nF;a3++)w[a3]-=lr*(gw[a3]/train.length+lambda*w[a3]);b-=lr*(gb/train.length);}
-    return {w:w,b:b,vec:vec};
+    var st=standardize(train,FEATS);
+    var model=fitLogisticRegression(train,FEATS,st.mean,st.std,{lr:0.1,lambda:0.02,epochs:250});
+    return {model:model,mean:st.mean,std:st.std};
   }
-  function acc(m,set){var ok=0;set.forEach(function(g){var x=m.vec(g),z=m.b;for(var a=0;a<nF;a++)z+=m.w[a]*x[a];var p=sigmoid(z);if((p>=0.5?1:0)===g.y)ok++;});return set.length?ok/set.length:0;}
+  function acc(m,set){return evaluateLogisticRegression(set,FEATS,m.model,m.mean,m.std).acc;}
   var fracs=[0.25,0.5,0.75,1.0],sizes=[],trainAcc=[],valAcc=[];
   fracs.forEach(function(fr){var nTr=Math.max(12,Math.floor(pool.length*fr));var train=pool.slice(0,nTr);var m=fit(train);sizes.push(nTr);trainAcc.push(acc(m,train));valAcc.push(acc(m,val));});
   return {sizes:sizes,trainAcc:trainAcc,valAcc:valAcc,nVal:val.length};
@@ -4295,52 +4249,24 @@ function crossValidate(K){
   var store=btLoad();
   var games=Object.keys(store).filter(function(k){return k.indexOf("__")!==0;}).map(function(k){return store[k];}).filter(function(g){return g.feat&&g.y!=null;});
   if(games.length<40)return {error:"Need \u226540 graded games with feature vectors. Run the Backtest tab first to generate them.",have:games.length};
-  var seed=12345; function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;}
-  var arr=games.slice();
-  for(var s=arr.length-1;s>0;s--){var q=Math.floor(rnd()*(s+1));var t=arr[s];arr[s]=arr[q];arr[q]=t;}
-  var nF=FEATS.length, folds=[]; for(var f=0;f<K;f++)folds.push([]);
+  var arr=seededShuffle(games,12345);
+  var folds=[]; for(var f=0;f<K;f++)folds.push([]);
   arr.forEach(function(g,idx){folds[idx%K].push(g);});
   var perFold=[], pooled=[];
   for(var k=0;k<K;k++){
     var val=folds[k], train=[];
     for(var mm=0;mm<K;mm++)if(mm!==k)train=train.concat(folds[mm]);
-    var mean={},std={};
-    FEATS.forEach(function(ft){
-      var vals=train.map(function(g){return g.feat[ft]||0;});
-      var mn=vals.reduce(function(a,v){return a+v;},0)/vals.length;
-      var vr=vals.reduce(function(a,v){return a+(v-mn)*(v-mn);},0)/vals.length;
-      mean[ft]=mn; std[ft]=Math.sqrt(vr)||1;
-    });
-    function vec(g){return FEATS.map(function(ft){return ((g.feat[ft]||0)-mean[ft])/std[ft];});}
-    var w=new Array(nF).fill(0), b=0, lr=0.1, lambda=0.02, epochs=300;
-    for(var ep=0;ep<epochs;ep++){
-      var gw=new Array(nF).fill(0), gb=0;
-      train.forEach(function(g){
-        var x=vec(g),z=b;for(var a=0;a<nF;a++)z+=w[a]*x[a];
-        var p=sigmoid(z),err=p-g.y;
-        for(var a2=0;a2<nF;a2++)gw[a2]+=err*x[a2];
-        gb+=err;
-      });
-      for(var a3=0;a3<nF;a3++)w[a3]-=lr*(gw[a3]/train.length+lambda*w[a3]);
-      b-=lr*(gb/train.length);
-    }
-    var correct=0,brier=0,logloss=0,fp=[];
-    val.forEach(function(g){
-      var x=vec(g),z=b;for(var a=0;a<nF;a++)z+=w[a]*x[a];
-      var p=sigmoid(z),y=g.y;
-      if((p>=0.5?1:0)===y)correct++;
-      brier+=(p-y)*(p-y);
-      var pc=Math.min(1-1e-9,Math.max(1e-9,p));logloss+=-(y*Math.log(pc)+(1-y)*Math.log(1-pc));
-      fp.push({p:p,y:y}); pooled.push({p:p,y:y});
-    });
-    perFold.push({n:val.length,acc:correct/val.length,brier:brier/val.length,logloss:logloss/val.length,auc:rocAUC(fp)});
+    // standardize on this fold's TRAIN split only -- no information from the
+    // held-out fold leaks into scaling.
+    var st=standardize(train,FEATS);
+    var model=fitLogisticRegression(train,FEATS,st.mean,st.std,{lr:0.1,lambda:0.02,epochs:300});
+    var foldEval=evaluateLogisticRegression(val,FEATS,model,st.mean,st.std);
+    pooled=pooled.concat(foldEval.pairs);
+    perFold.push({n:val.length,acc:foldEval.acc,brier:foldEval.brier,logloss:foldEval.logloss,auc:rocAUC(foldEval.pairs)});
   }
   function ms(key){var v=perFold.map(function(f){return f[key];}).filter(function(x){return x!=null;});var m=v.reduce(function(a,x){return a+x;},0)/v.length;var sd=Math.sqrt(v.reduce(function(a,x){return a+(x-m)*(x-m);},0)/v.length);return {m:m,sd:sd};}
-  var TP=0,FP=0,TN=0,FN=0;
-  pooled.forEach(function(d){var pred=d.p>=0.5?1:0;if(pred===1&&d.y===1)TP++;else if(pred===1&&d.y===0)FP++;else if(pred===0&&d.y===0)TN++;else FN++;});
-  var precision=TP+FP>0?TP/(TP+FP):0, recall=TP+FN>0?TP/(TP+FN):0;
-  var f1=precision+recall>0?2*precision*recall/(precision+recall):0;
-  return {K:K,n:games.length,perFold:perFold,acc:ms("acc"),brier:ms("brier"),logloss:ms("logloss"),auc:ms("auc"),pooledAUC:rocAUC(pooled),pooled:pooled,cm:{TP:TP,FP:FP,TN:TN,FN:FN},precision:precision,recall:recall,f1:f1};
+  var cmStats=confusionMatrixStats(pooled);
+  return {K:K,n:games.length,perFold:perFold,acc:ms("acc"),brier:ms("brier"),logloss:ms("logloss"),auc:ms("auc"),pooledAUC:rocAUC(pooled),pooled:pooled,cm:{TP:cmStats.TP,FP:cmStats.FP,TN:cmStats.TN,FN:cmStats.FN},precision:cmStats.precision,recall:cmStats.recall,f1:cmStats.f1};
 }
 function renderCVResult(res){
   var el=document.getElementById("cv-result");
