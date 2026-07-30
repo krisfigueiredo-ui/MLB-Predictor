@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, applyRealRecordCore } from "../js/espn-parse.js";
+import { ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, applyRealRecordCore, teamMoneyLine, parseAmericanML } from "../js/espn-parse.js";
 
 describe("ourAbbrFromEspn", () => {
   it("maps the 3 teams where ESPN's abbreviation differs from ours", () => {
@@ -65,6 +65,58 @@ describe("realOddsFromESPN", () => {
   it("defaults the provider name when ESPN doesn't supply one", () => {
     const comp = { odds: [{ homeTeamOdds: { moneyLine: 100 }, awayTeamOdds: { moneyLine: -120 } }] };
     expect(realOddsFromESPN(comp, 0.5).provider).toBe("ESPN BET");
+  });
+  it("reads moneylines nested under current.moneyLine.american (newer ESPN shape)", () => {
+    // ESPN's current scoreboard nests the price as an american-odds string,
+    // with no flat homeTeamOdds.moneyLine field. Edges silently vanished before
+    // this shape was handled.
+    const comp = { odds: [{
+      provider: { name: "ESPN BET" },
+      current: { total: { american: "8.5" } },
+      homeTeamOdds: { favorite: true, current: { moneyLine: { american: "-150" } } },
+      awayTeamOdds: { favorite: false, current: { moneyLine: { american: "+130" } } }
+    }] };
+    const r = realOddsFromESPN(comp, 0.5);
+    expect(r).not.toBeNull();
+    expect(r.homeML).toBe(-150);
+    expect(r.awayML).toBe(130);
+    expect(r.overUnder).toBe(8.5);
+    expect(r.homeImpl + r.awayImpl).toBeCloseTo(1, 5);
+  });
+  it("reads moneylines from the open.moneyLine.value fallback", () => {
+    const comp = { odds: [{
+      homeTeamOdds: { open: { moneyLine: { value: -110 } } },
+      awayTeamOdds: { open: { moneyLine: { value: -110 } } }
+    }] };
+    const r = realOddsFromESPN(comp, 0.5);
+    expect(r.homeML).toBe(-110);
+    expect(r.awayML).toBe(-110);
+    expect(r.homeImpl).toBeCloseTo(0.5, 5);
+  });
+  it("treats an EVEN moneyline as +100", () => {
+    const comp = { odds: [{ homeTeamOdds: { moneyLine: "EVEN" }, awayTeamOdds: { moneyLine: "-120" } }] };
+    const r = realOddsFromESPN(comp, 0.5);
+    expect(r.homeML).toBe(100);
+    expect(r.awayML).toBe(-120);
+  });
+});
+
+describe("teamMoneyLine / parseAmericanML", () => {
+  it("parses numbers, signed strings, and EVEN", () => {
+    expect(parseAmericanML(-150)).toBe(-150);
+    expect(parseAmericanML("+130")).toBe(130);
+    expect(parseAmericanML("-150")).toBe(-150);
+    expect(parseAmericanML("EVEN")).toBe(100);
+    expect(parseAmericanML("")).toBeNull();
+    expect(parseAmericanML(null)).toBeNull();
+    expect(parseAmericanML("n/a")).toBeNull();
+  });
+  it("prefers a flat numeric moneyLine over nested shapes", () => {
+    expect(teamMoneyLine({ moneyLine: -145, current: { moneyLine: { american: "+999" } } })).toBe(-145);
+  });
+  it("returns null when a team has no usable price", () => {
+    expect(teamMoneyLine(null)).toBeNull();
+    expect(teamMoneyLine({ favorite: true })).toBeNull();
   });
 });
 
