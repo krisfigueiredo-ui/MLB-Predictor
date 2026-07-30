@@ -34,21 +34,56 @@ function weatherFromESPN(ev, comp) {
   return parts.length ? parts.join(" ") : null;
 }
 
+// Coerce an ESPN moneyline value into a number. ESPN mixes numeric fields
+// (-150) with american-odds strings ("+130", "-150", "EVEN") depending on the
+// endpoint/provider, so accept both.
+function parseAmericanML(v) {
+  if (v == null) return null;
+  if (typeof v === "number") return isFinite(v) ? v : null;
+  var s = ("" + v).replace(/\s/g, "");
+  if (s === "") return null;
+  if (/^even$/i.test(s)) return 100;
+  var n = parseFloat(s); // parseFloat handles a leading "+"/"-"
+  return isFinite(n) ? n : null;
+}
+
+// Pull a team's moneyline out of an ESPN homeTeamOdds/awayTeamOdds object.
+// Older scoreboard payloads expose a flat `moneyLine` number; newer ones nest
+// it under `current`/`open` as `moneyLine.american` (a string) or `.value`.
+function teamMoneyLine(to) {
+  if (!to) return null;
+  if (typeof to.moneyLine === "number" && isFinite(to.moneyLine)) return to.moneyLine;
+  var nested = [to.current, to.open];
+  for (var i = 0; i < nested.length; i++) {
+    var s = nested[i];
+    if (s && s.moneyLine != null) {
+      var m = s.moneyLine;
+      var raw = (typeof m === "object") ? (m.american != null ? m.american : m.value) : m;
+      var n = parseAmericanML(raw);
+      if (n != null) return n;
+    }
+  }
+  // flat field present but as a string ("+130")
+  return parseAmericanML(to.moneyLine);
+}
+
 // Parse ESPN's odds array into our {homeML,awayML,homeImpl,awayImpl,overUnder,provider} shape.
 // Returns null if there's no clean moneyline to convert (e.g. spread-only entries).
 function realOddsFromESPN(comp, homeP) {
   var arr = comp && comp.odds;
   if (!arr || !arr.length) return null;
   var o = arr[0];
-  var hML = o.homeTeamOdds && o.homeTeamOdds.moneyLine, aML = o.awayTeamOdds && o.awayTeamOdds.moneyLine;
+  var hML = teamMoneyLine(o.homeTeamOdds), aML = teamMoneyLine(o.awayTeamOdds);
   if (hML == null || aML == null) return null;
+  var overUnder = (o.overUnder != null ? o.overUnder
+    : (o.current && o.current.total ? parseAmericanML(o.current.total.american != null ? o.current.total.american : o.current.total.value) : null));
   function impl(ml) { return ml < 0 ? (-ml) / ((-ml) + 100) : 100 / (ml + 100); }
   var hi = impl(hML), ai = impl(aML);
   var tot = hi + ai; if (tot > 0) { hi = hi / tot; ai = ai / tot; } // de-vig to normalize to 100%
   return {
     homeML: Math.round(hML), awayML: Math.round(aML),
     homeImpl: parseFloat(hi.toFixed(3)), awayImpl: parseFloat(ai.toFixed(3)),
-    overUnder: (o.overUnder != null ? o.overUnder : null),
+    overUnder: (overUnder != null ? overUnder : null),
     provider: (o.provider && o.provider.name) ? o.provider.name : "ESPN BET", real: true
   };
 }
@@ -97,6 +132,8 @@ return {
   ourAbbrFromEspn: ourAbbrFromEspn,
   weatherFromESPN: weatherFromESPN,
   realOddsFromESPN: realOddsFromESPN,
+  teamMoneyLine: teamMoneyLine,
+  parseAmericanML: parseAmericanML,
   applyRealPitcher: applyRealPitcher,
   applyRealRecordCore: applyRealRecordCore
 };
