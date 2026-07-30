@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>All-Sports Predictor</title>
 <meta name="description" content="Multi-sport prediction dashboard over the ESPN public API: ratings, backtested models, live win probability and news for every league.">
+
+<!-- Installable app: manifest, icons and platform hints. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="All-Sports">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 /* ---------------------------------------------------------------------------
    Theme. Both light and dark are deliberately chosen (dark is not a flip).
@@ -166,6 +178,23 @@ h1, h2, h3, h4 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
   background: var(--surface-1); cursor: pointer; display: grid; place-items: center; font-size: 14px;
 }
 .icon-btn:hover { border-color: var(--border-strong); background: var(--surface-2); }
+
+/* Installed-app chrome: respect the notch / rounded corners, and drop the
+   browser-only affordances that make no sense in a standalone window. */
+@media (display-mode: standalone), (display-mode: window-controls-overlay) {
+  .topbar { padding-top: calc(10px + env(safe-area-inset-top)); }
+  .rail { padding-top: calc(14px + env(safe-area-inset-top)); }
+  footer.foot { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+  #installBtn { display: none !important; }
+}
+@supports (padding: env(safe-area-inset-left)) {
+  .rail { padding-left: calc(10px + env(safe-area-inset-left)); }
+  .content, .tabs, .topbar, footer.foot { padding-right: max(18px, env(safe-area-inset-right)); }
+}
+#installBtn { display: none; gap: 6px; align-items: center; }
+#installBtn[data-state="available"], #installBtn[data-state="ios"] { display: inline-flex; }
+#offlinePill { display: none; }
+body.is-offline #offlinePill { display: inline-flex; }
 
 .tabs { display: flex; gap: 2px; padding: 0 18px; border-bottom: 1px solid var(--border); overflow-x: auto; background: var(--bg); position: sticky; top: 55px; z-index: 30; }
 .tabs::-webkit-scrollbar { height: 0; }
@@ -361,6 +390,10 @@ footer.foot { padding: 26px 18px 40px; color: var(--text-muted); font-size: 12px
         <button id="dayToday" title="Jump to today">Today</button>
       </div>
       <div class="spacer"></div>
+      <span class="pill warn" id="offlinePill" title="No network — live data can't be fetched">
+        <span class="dot"></span>Offline
+      </span>
+      <button class="btn" id="installBtn" data-state="hidden">⬇ Install app</button>
       <button class="icon-btn" id="refreshBtn" title="Refresh" aria-label="Refresh">⟳</button>
       <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">◐</button>
     </header>
@@ -401,6 +434,7 @@ footer.foot { padding: 26px 18px 40px; color: var(--text-muted); font-size: 12px
 <script src="js/ms-model.js"></script>
 <script src="js/ms-live.js"></script>
 <script src="js/ms-news.js"></script>
+<script src="js/ms-pwa.js"></script>
 <script src="js/ms-app.js"></script>
 </body>
 </html>

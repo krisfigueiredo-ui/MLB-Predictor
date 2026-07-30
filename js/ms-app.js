@@ -10,7 +10,7 @@
 "use strict";
 
 var L = MS.leagues, E = MS.espn, LOGO = MS.logos, R = MS.ratings, F = MS.features,
-    BT = MS.backtest, MODEL = MS.model, LIVE = MS.live, NEWS = MS.news;
+    BT = MS.backtest, MODEL = MS.model, LIVE = MS.live, NEWS = MS.news, PWA = MS.pwa;
 
 // ml-train.js / calibration.js / betting.js still publish flat globals.
 var deps = {
@@ -47,7 +47,9 @@ var S = {
   lookbackDays: 180,
   detail: null,
   pollTimer: null,
-  discovery: "idle"
+  discovery: "idle",
+  deferredPrompt: null,
+  online: typeof navigator === "undefined" || navigator.onLine !== false
 };
 
 // ---------------------------------------------------------------- utilities
@@ -153,24 +155,115 @@ function pool(items, limit, worker, onProgress) {
 }
 
 // ------------------------------------------------------------------ boot
+var TABS = ["slate", "live", "news", "model", "power", "leagues"];
+
 function boot() {
   var prefs = loadPrefs();
   if (prefs.theme) document.documentElement.setAttribute("data-theme", prefs.theme);
   if (prefs.lookbackDays) S.lookbackDays = prefs.lookbackDays;
 
   S.catalog = L.buildCatalog();
-  S.league = (prefs.leagueId && L.findLeague(S.catalog, prefs.leagueId)) ||
+
+  // App shortcuts and shared links arrive as ?tab=live&league=soccer/eng.1
+  var params = new URLSearchParams(location.search);
+  var wantLeague = params.get("league");
+  var wantTab = params.get("tab");
+
+  S.league = (wantLeague && L.findLeague(S.catalog, wantLeague)) ||
+             (prefs.leagueId && L.findLeague(S.catalog, prefs.leagueId)) ||
              L.findLeague(S.catalog, "baseball/mlb") || S.catalog[0];
   S.date = todayISO();
 
   $("#datePick").value = S.date;
   wireChrome();
+  wireInstall();
   renderRail();
   renderLeagueBtn();
-  setTab(prefs.tab && ["slate","live","news","model","power","leagues"].indexOf(prefs.tab) >= 0 ? prefs.tab : "slate");
+
+  var startTab = (wantTab && TABS.indexOf(wantTab) >= 0) ? wantTab
+    : (prefs.tab && TABS.indexOf(prefs.tab) >= 0 ? prefs.tab : "slate");
+  setTab(startTab);
 
   discoverLeagues();
   refreshAll();
+  registerServiceWorker();
+}
+
+// ---- installable app -------------------------------------------------------
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  // A file:// page has no service-worker scope; skip rather than throw.
+  if (location.protocol === "file:") return;
+  navigator.serviceWorker.register("sw.js").catch(function() {
+    // Registration failing just means no offline shell -- the app still works.
+  });
+}
+
+function wireInstall() {
+  var btn = $("#installBtn");
+
+  function refreshState() {
+    var standalone = PWA.isStandalone(navigator, window.matchMedia.bind(window));
+    var state = PWA.installState({
+      standalone: standalone,
+      deferredPrompt: !!S.deferredPrompt,
+      iosSafari: PWA.isIosSafari(navigator.userAgent)
+    });
+    btn.dataset.state = state;
+    btn.textContent = state === "ios" ? "⬇ Add to Home Screen" : "⬇ Install app";
+  }
+
+  window.addEventListener("beforeinstallprompt", function(e) {
+    // Suppress the browser's own mini-infobar so the button is the one entry
+    // point, and keep the event so the button can replay it.
+    e.preventDefault();
+    S.deferredPrompt = e;
+    refreshState();
+  });
+
+  window.addEventListener("appinstalled", function() {
+    S.deferredPrompt = null;
+    refreshState();
+  });
+
+  btn.addEventListener("click", function() {
+    if (S.deferredPrompt) {
+      S.deferredPrompt.prompt();
+      S.deferredPrompt.userChoice.then(function() {
+        S.deferredPrompt = null;
+        refreshState();
+      });
+      return;
+    }
+    // iOS gives no programmatic install, so explain the manual route.
+    showIosInstallHelp();
+  });
+
+  // Offline state drives a header pill; the feed log already reports the
+  // individual failures.
+  function setOnline(v) {
+    S.online = v;
+    document.body.classList.toggle("is-offline", !v);
+  }
+  window.addEventListener("online", function() { setOnline(true); refreshAll(true); });
+  window.addEventListener("offline", function() { setOnline(false); });
+  setOnline(navigator.onLine !== false);
+
+  refreshState();
+}
+
+function showIosInstallHelp() {
+  $("#modalHost").innerHTML =
+    '<div class="overlay" data-action="close-modal"><div class="modal" style="max-width:440px" role="dialog" aria-label="Install" onclick="event.stopPropagation()">' +
+    '<div class="modal-head"><strong style="flex:1">Add to Home Screen</strong>' +
+    '<button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button></div>' +
+    '<div class="modal-body"><p class="small">iOS doesn\'t let a site trigger installation itself, so this one is manual:</p>' +
+    '<ol class="small" style="line-height:1.9;padding-left:20px">' +
+    "<li>Tap the <strong>Share</strong> button in Safari's toolbar.</li>" +
+    "<li>Scroll down and choose <strong>Add to Home Screen</strong>.</li>" +
+    "<li>Tap <strong>Add</strong>.</li></ol>" +
+    '<p class="small muted">It then opens full-screen with its own icon, and the dashboard shell works without a connection ' +
+    "(live scores still need one).</p></div></div></div>";
 }
 
 function wireChrome() {
@@ -212,12 +305,25 @@ function wireChrome() {
 function setTab(tab) {
   S.tab = tab;
   savePrefs({ tab: tab });
+  syncUrl();
   document.querySelectorAll(".tab").forEach(function(b) {
     b.setAttribute("aria-selected", String(b.dataset.tab === tab));
   });
   if (tab === "news" && !S.news) loadNews();
   if (tab === "power" && !S.ratingsState) buildHistory(false);
   render();
+}
+
+// Keep the address bar in step with what's on screen, so a link to a
+// particular league and tab can be shared or bookmarked -- and so the
+// manifest's app shortcuts land somewhere real.
+function syncUrl() {
+  if (!history.replaceState) return;
+  var p = new URLSearchParams();
+  if (S.tab && S.tab !== "slate") p.set("tab", S.tab);
+  if (S.league) p.set("league", S.league.id);
+  var qs = p.toString();
+  history.replaceState(null, "", location.pathname + (qs ? "?" + qs : ""));
 }
 
 function setDate(iso) {
@@ -233,6 +339,7 @@ function pickLeague(id) {
   S.slate = null; S.model = null; S.ratingsState = null; S.historyFor = null;
   S.news = null; S.standings = null; S.historySummary = null;
   savePrefs({ leagueId: id });
+  syncUrl();
   renderLeagueBtn();
   renderRail();
   closeModal();
@@ -494,18 +601,33 @@ function renderProgressOnly() {
 function render() {
   var view = $("#view");
   if (!view) return;
-  var html = "";
-  if (S.tab === "slate") html = viewSlate();
-  else if (S.tab === "live") html = viewLive();
-  else if (S.tab === "news") html = viewNews();
-  else if (S.tab === "model") html = viewModel();
-  else if (S.tab === "power") html = viewPower();
-  else if (S.tab === "leagues") html = viewLeagues();
+  // Offline is explained once, above whatever tab is open. Without this the
+  // Model tab would report "not enough graded games" and the Power tab would
+  // report no ratings, both of which are true but neither of which is the
+  // actual reason.
+  var html = offlineBanner();
+  if (S.tab === "slate") html = html + viewSlate();
+  else if (S.tab === "live") html += viewLive();
+  else if (S.tab === "news") html += viewNews();
+  else if (S.tab === "model") html += viewModel();
+  else if (S.tab === "power") html += viewPower();
+  else if (S.tab === "leagues") html += viewLeagues();
   view.innerHTML = html;
   renderFeedFoot();
   updateLiveBadge(liveGames().length);
   // Charts are drawn after innerHTML so they can measure their container.
   drawPendingCharts(view);
+}
+
+// Shown above every tab while the network is down, so no tab can blame its
+// empty state on something that isn't the real cause.
+function offlineBanner() {
+  if (S.online) return "";
+  return '<div style="margin-bottom:14px">' + banner("warn",
+    "<strong>You're offline.</strong> The app itself is installed and cached, so it opens without a connection — " +
+    "but scores, odds, standings and news are deliberately <em>never</em> cached, because a stale scoreboard would " +
+    "show a finished game as if it were still live. Anything below is either already-loaded data or empty. " +
+    "It reloads by itself when you reconnect.") + "</div>";
 }
 
 function progressBlock() {
@@ -524,6 +646,8 @@ function viewSlate() {
     return out + '<div class="empty"><div class="big"><span class="spin"></span></div>Loading ' + esc(S.league.name) + "…</div>";
   }
   if (!S.slate) {
+    // The offline case is already explained by the banner above every tab.
+    if (!S.online) return out;
     return out + banner("crit", "The ESPN scoreboard feed did not return for " + esc(S.league.name) +
       " on " + esc(fmtDay(S.date)) + ". Nothing is shown rather than a substitute slate. Try refreshing, or another date.");
   }

@@ -162,6 +162,35 @@ These are deliberate, and visible in the UI:
 - Per-play baseball win probability is evaluated at the start of each half-inning, because ESPN
   does not carry base-out state on individual plays.
 
+## Installing it as an app
+
+`sports.html` is a progressive web app, so it installs to a phone home screen,
+a desktop dock, or a Windows/Linux app list — no store, no build step.
+
+- **Android / Chrome / Edge / desktop Chrome** — an **Install app** button appears in the header.
+- **iPhone / iPad** — Safari's *Share → Add to Home Screen*. iOS gives no programmatic install, so
+  the button opens the instructions instead.
+- **Long-press the installed icon** for shortcuts straight to *Live now*, *News* or *Model*.
+
+Installed, it opens full-screen with its own icon, respects the notch, and starts from the cached
+shell rather than a blank page.
+
+### What works offline, and what deliberately doesn't
+
+| | Offline |
+|---|---|
+| App shell (both dashboards, all modules, icons) | ✅ cached, opens instantly |
+| Team crests and league logos | ✅ cached after first sight |
+| Scores, odds, standings, news | ❌ **never cached, by design** |
+
+Live data is the one thing a sports app must not serve stale. A cached scoreboard would show a
+finished game as if it were still in progress, so `sw.js` routes every API host as network-only.
+Offline, the app opens, says plainly that it's offline and why, and shows nothing it can't stand
+behind. It reloads itself when the connection returns.
+
+Cache names are versioned (`ms-shell-v1`, `ms-img-v1`); a deploy that bumps `VERSION` in
+`js/ms-pwa.js` evicts the old ones on activation. The image cache is capped at 400 entries.
+
 ## Modules
 
 | Module | What's in it |
@@ -176,8 +205,13 @@ These are deliberate, and visible in the UI:
 | `js/ms-live.js` | Live situation/plays parsing and the in-game win-probability models |
 | `js/ms-news.js` | Multi-league news merge, dedupe, grouping |
 | `js/ms-app.js` | Dashboard shell: fetching, state, rendering, SVG charts |
+| `js/ms-pwa.js` | Install/offline policy — which requests may be cached, and which must never be |
+| `sw.js` | Service worker applying that policy |
 
 ```bash
 npm install
-npm test        # 519 unit tests across both apps
+npm test        # 552 unit tests across both apps
 ```
+
+The service worker's routing policy lives in `js/ms-pwa.js` rather than in `sw.js` so it can be
+unit tested in Node — including the rule that live-data hosts are never cached.
