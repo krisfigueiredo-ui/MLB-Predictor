@@ -64,7 +64,7 @@ describe("classifyRequest", () => {
   });
 
   it("treats our own static assets as shell", () => {
-    expect(classifyRequest(self + "/all-sports-predictor/sports.html", { selfOrigin: self })).toBe("shell");
+    expect(classifyRequest(self + "/all-sports-predictor/index.html", { selfOrigin: self })).toBe("shell");
     expect(classifyRequest(self + "/all-sports-predictor/js/ms-app.js", { selfOrigin: self })).toBe("shell");
     expect(classifyRequest(self + "/all-sports-predictor/manifest.webmanifest", { selfOrigin: self })).toBe("shell");
     expect(classifyRequest(self + "/all-sports-predictor/", { selfOrigin: self })).toBe("shell");
@@ -72,7 +72,7 @@ describe("classifyRequest", () => {
   });
 
   it("ignores query strings when deciding", () => {
-    expect(classifyRequest(self + "/all-sports-predictor/sports.html?tab=live", { selfOrigin: self })).toBe("shell");
+    expect(classifyRequest(self + "/all-sports-predictor/index.html?tab=live", { selfOrigin: self })).toBe("shell");
   });
 
   it("leaves unrecognised cross-origin requests alone", () => {
@@ -195,6 +195,6 @@ describe("relative URLs", () => {
     // must not mistake a relative path for a foreign host.
     expect(hostOf("./js/ms-app.js")).toBe("");
     expect(classifyRequest("./js/ms-app.js", { selfOrigin: "https://example.github.io" })).toBe("shell");
-    expect(classifyRequest("/all-sports-predictor/sports.html", { selfOrigin: "https://example.github.io" })).toBe("shell");
+    expect(classifyRequest("/all-sports-predictor/index.html", { selfOrigin: "https://example.github.io" })).toBe("shell");
   });
 });

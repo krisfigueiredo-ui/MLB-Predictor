@@ -1,4 +1,4 @@
-// Dashboard application layer for sports.html.
+// Dashboard application layer for index.html.
 //
 // All the maths lives in the MS.* modules; this file is the shell around them:
 // fetching, caching, state, rendering and interaction. It deliberately keeps a
@@ -12,7 +12,7 @@
 var L = MS.leagues, E = MS.espn, LOGO = MS.logos, R = MS.ratings, F = MS.features,
     BT = MS.backtest, MODEL = MS.model, LIVE = MS.live, NEWS = MS.news, PWA = MS.pwa;
 
-// ml-train.js / calibration.js / betting.js still publish flat globals.
+// ml-train.js and calibration.js still publish flat globals.
 var deps = {
   leagues: L, espn: E, logos: LOGO, ratings: R, features: F,
   backtest: BT, live: LIVE, news: NEWS,
