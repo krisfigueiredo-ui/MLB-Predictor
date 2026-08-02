@@ -2699,7 +2699,7 @@ function renderAccuracy(){var hist=loadHistory();var st=accStats(hist);var all=h
 
 function drawRolling(labels,data){var canvas=document.getElementById("rc");if(!canvas)return;var dpr=Math.min(window.devicePixelRatio||1,2);var cssW=Math.max(280,(canvas.parentElement.offsetWidth||920)-20),cssH=180;canvas.style.width=cssW+"px";canvas.style.height=cssH+"px";canvas.width=Math.round(cssW*dpr);canvas.height=Math.round(cssH*dpr);var ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);var W=cssW,H=cssH,pad={t:14,r:16,b:32,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);[0,.25,.5,.75,1].forEach(function(v){var y=pad.t+ch*(1-v);ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="right";ctx.fillText(Math.round(v*100)+"%",pad.l-5,y+3);});if(!data.length)return;var by=pad.t+ch*(1-0.567);ctx.setLineDash([5,4]);ctx.strokeStyle="rgba(232,179,57,0.65)";ctx.beginPath();ctx.moveTo(pad.l,by);ctx.lineTo(pad.l+cw,by);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="rgba(232,179,57,0.6)";ctx.font="9px 'Space Mono',monospace";ctx.textAlign="left";ctx.fillText("56.7% market baseline",pad.l+3,by-3);var step=data.length>1?cw/(data.length-1):cw,pts=data.map(function(v,i){return{x:pad.l+step*i,y:pad.t+ch*(1-v)};});ctx.beginPath();ctx.moveTo(pts[0].x,pad.t+ch);pts.forEach(function(p){ctx.lineTo(p.x,p.y);});ctx.lineTo(pts[pts.length-1].x,pad.t+ch);ctx.closePath();ctx.fillStyle="rgba(91,141,239,0.15)";ctx.fill();ctx.beginPath();ctx.strokeStyle="#5b8def";ctx.lineWidth=2.75;pts.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});ctx.stroke();pts.forEach(function(p){ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle="#5b8def";ctx.fill();});ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";labels.forEach(function(l,i){if(i%2===0||labels.length<10)ctx.fillText(l,pts[i].x,H-5);});}
 
-function resetWeights(){if(confirm("Reset model weights to defaults? Training progress is kept.")){MODEL_W=Object.assign({},DEFAULT_WEIGHTS);saveWeights(MODEL_W);GAMES30.forEach(function(gg){var f=predictFull(gg.home,gg.away,SP[gg.id],gg.id);gg.homeP=parseFloat(f.prob.toFixed(3));gg.awayP=parseFloat((1-f.prob).toFixed(3));gg.conf=Math.max(gg.homeP,gg.awayP);});renderModel();renderToday();showToast("Weights reset to defaults");}}
+function resetWeights(){if(confirm("Reset model weights to defaults? Training progress is kept.")){MODEL_W=Object.assign({},DEFAULT_WEIGHTS);saveWeights(MODEL_W);recomputeAll();renderModel();showToast("Weights reset to defaults");}}
 
 function renderWeightBars(){
   var badge=document.getElementById("train-badge");
@@ -3032,11 +3032,12 @@ function autoResolveGames(){
     newlyLogged++;
   });
   if(newlyLogged>0){
-    // recompute predictions with freshly trained weights
-    GAMES30.forEach(function(gg){
-      var f=predictFull(gg.home,gg.away,SP[gg.id],gg.id);
-      gg.homeP=parseFloat(f.prob.toFixed(3));gg.awayP=parseFloat((1-f.prob).toFixed(3));gg.conf=Math.max(gg.homeP,gg.awayP);
-    });
+    // Recompute the complete slate after online training. The older shortcut
+    // only changed homeP/awayP/conf and left betPick/betEdge at their previous
+    // values, so the Edges table could show an impossible stale recommendation
+    // (for example, a 55% model probability beside an old +8% edge versus a
+    // 62% market). recomputeAll also re-derives the market side and Kelly inputs.
+    recomputeAll();
   }
   return newlyLogged;
 }
