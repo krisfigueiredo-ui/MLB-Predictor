@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0a0e17">
-<title>MLB Predictor 2026</title>
+<meta name="theme-color" content="#0c1015">
+<meta name="description" content="MLB Quant Lab — source-aware game probabilities, market comparison, forward validation, and spatial ballpark analysis.">
+<title>MLB Quant Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -457,21 +458,30 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 @media(max-width:900px){.map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){body{padding:16px;padding-bottom:88px}.hdr-r{width:100%;overflow-x:auto}.history-actions{width:100%}.history-actions .btn{flex:1;text-align:center;white-space:nowrap}.map-grid{grid-template-columns:1fr}.disclaimer{font-size:11.5px}}
 </style>
+<link rel="stylesheet" href="css/quant-lab.css">
 </head>
 <body>
 
-<div class="hdr">
-  <div class="hdr-l">
-    <div class="logo"><svg class="ball" viewBox="0 0 40 40" width="26" height="26" aria-hidden="true"><defs><radialGradient id="bsh" cx="38%" cy="32%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="70%" stop-color="#f4f1e8"/><stop offset="100%" stop-color="#ddd8c8"/></radialGradient></defs><circle cx="20" cy="20" r="18.5" fill="url(#bsh)"/><path d="M9.2 4.8 Q3.4 20 9.2 35.2" fill="none" stroke="#d8352e" stroke-width="1.5" stroke-dasharray="0.7 3.1" stroke-linecap="round"/><path d="M30.8 4.8 Q36.6 20 30.8 35.2" fill="none" stroke="#d8352e" stroke-width="1.5" stroke-dasharray="0.7 3.1" stroke-linecap="round"/><circle cx="20" cy="20" r="18.5" fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="0.6"/></svg></div>
-    <div><div class="h-title">MLB Predictor</div><div class="h-sub" id="hdr-date">Today&rsquo;s card</div></div>
+<header class="ql-topbar">
+  <div class="ql-brand">
+    <div class="ql-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div><div class="ql-brand-name">MLB Quant Lab</div><div class="ql-brand-sub" id="hdr-date">Today&rsquo;s slate</div></div>
   </div>
-  <div class="hdr-r">
-    <span class="hdr-rec" id="hdr-rec" style="display:none"></span>
-    <span class="snap"><span class="pulse"></span> <span id="live-badge">LIVE</span></span>
-    <button class="btn" onclick="loadToday()">&#8635; Refresh</button>
+  <div class="ql-status-strip" aria-label="Model and feed status">
+    <div class="ql-meta"><span>Model</span><strong>v2.0 shadow</strong></div>
+    <div class="ql-meta"><span>Last update</span><strong id="ql-last-update">Pending</strong></div>
+    <div class="ql-meta"><span>Odds source</span><strong id="ql-odds-source">Pending</strong></div>
+  </div>
+  <div class="ql-risk-strip" aria-label="Risk settings">
+    <label><span>Bankroll</span><span class="ql-input-wrap">$<input id="bankroll-in-top" type="number" min="1" value="1000" onchange="saveBankroll(this.value);QuantLabUI.syncSettings()"></span></label>
+    <label><span>Kelly</span><select id="kelly-frac-top" onchange="saveKelly(this.value);QuantLabUI.syncSettings()"><option value="0.1">0.10</option><option value="0.25" selected>0.25</option><option value="0.5">0.50</option><option value="1">1.00</option></select></label>
+    <div class="ql-meta ql-threshold"><span>Edge threshold</span><strong>4.0%</strong></div>
+  </div>
+  <div class="ql-live-tools">
+    <span class="snap" title="The slate refreshes automatically"><span class="pulse"></span> <span id="live-badge">Connecting</span></span>
     <button class="btn al-bell" onclick="toggleAlerts()" title="Live alerts" aria-label="Open live alerts"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="al-badge" id="al-badge">0</span></button>
   </div>
-</div>
+</header>
 <div class="al-panel" id="al-panel">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 9px 8px">
     <span style="font-size:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut2)">Live alerts</span>
@@ -480,20 +490,20 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <div id="al-list"><div class="al-empty">No alerts yet &mdash; they fire on first pitch, lead changes, late&#8209;and&#8209;close spots, and finals (with the pick result). Real score changes only.</div></div>
 </div>
 
-<div class="tabbar">
-  <button class="tab active" onclick="setTab('today')">Today</button>
-  <button class="tab" onclick="setTab('history')">Log</button>
-  <button class="tab" onclick="setTab('calib')">Calibration</button>
-  <button class="tab" onclick="setTab('accuracy')">Accuracy</button>
-  <button class="tab" onclick="setTab('model')">Model</button>
-  <button class="tab" onclick="setTab('betting')">Edges</button>
-  <button class="tab" onclick="setTab('backtest')">Backtest</button>
-  <button class="tab" onclick="setTab('bracket')">Playoffs</button>
-  <button class="tab" onclick="setTab('ai')">Research</button>
-</div>
+<nav class="tabbar ql-nav" aria-label="Primary navigation">
+  <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
+  <button class="tab" data-view="game" onclick="setTab('game')">Game</button>
+  <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark Live</button>
+  <button class="tab" data-view="model" onclick="setTab('model')">Model</button>
+  <button class="tab" data-view="performance" onclick="setTab('performance')">Performance</button>
+  <button class="tab" data-view="market" onclick="setTab('market')">Market</button>
+  <button class="tab" data-view="data" onclick="setTab('data')">Data</button>
+</nav>
 
 <!-- TODAY -->
 <div id="pnl-today" class="pnl active">
+  <div id="ql-slate-root" class="ql-root"></div>
+  <div class="legacy-slate" aria-hidden="true">
   <div class="disclaimer"><b>Data policy:</b> the live slate, scores, starters, standings, and betting lines are shown only when a verified feed is available. Unavailable inputs remain neutral and are labeled as pending. Completed games are logged locally for calibration and can be exported from the Log tab.</div>
   <div id="live-banner" class="live-banner"></div>
   <div id="offline-warn" class="offline-warn"></div>
@@ -533,6 +543,17 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <div id="gl" class="games"></div>
   <div class="sec" id="rr-sec" style="display:none"><span>Recent results</span><span style="letter-spacing:0" id="rr-sum"></span></div>
   <div class="rr-list" id="recent-results"></div>
+  </div>
+</div>
+
+<!-- GAME WORKSPACE -->
+<div id="pnl-game" class="pnl">
+  <div id="ql-game-root" class="ql-root"></div>
+</div>
+
+<!-- BALLPARK LIVE -->
+<div id="pnl-ballpark" class="pnl ql-ballpark-panel">
+  <div id="ql-ballpark-root" class="ql-root"></div>
 </div>
 
 <!-- HISTORY -->
@@ -581,6 +602,10 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
 
 <!-- MODEL -->
 <div id="pnl-model" class="pnl">
+  <div id="ql-model-root" class="ql-root"></div>
+  <details class="ql-legacy-tools">
+    <summary>Legacy training tools</summary>
+    <div class="ql-legacy-tools-body">
   <div class="sec"><span>Self-training model</span><span class="badge" id="train-badge">0 games trained</span></div>
   <div class="disclaimer">&#9888; <b>Point-in-time caveat:</b> team-context features (standings, Elo, recent form, H2H, injuries) are built from CURRENT data, not a snapshot of what was known as of each historical game's own date. Grading a 20-day-old game still uses today's full-season record for both teams. That means the accuracy/AUC/calibration numbers below are somewhat optimistic vs. true forward (live) performance &mdash; treat them as an upper bound, not a live-performance guarantee.</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
@@ -597,6 +622,8 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <div id="weight-bars" style="margin-bottom:16px"></div>
   <div class="sec">Feature importance (live, from current slate)</div>
   <div id="fi"></div>
+    </div>
+  </details>
 </div>
 
 <!-- BETTING -->
@@ -629,10 +656,20 @@ body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
   <div id="ai-resp" class="ai-body"></div>
 </div>
 
+<!-- CONSOLIDATED PERFORMANCE -->
+<div id="pnl-performance" class="pnl">
+  <div id="ql-performance-root" class="ql-root"></div>
+</div>
+
+<!-- DATA HEALTH / PROVENANCE -->
+<div id="pnl-data" class="pnl">
+  <div id="ql-data-root" class="ql-root"></div>
+</div>
+
 <!-- contextual research panel -->
-<button id="chat-fab" onclick="toggleChat()" title="Open research panel">Research</button>
+<button id="chat-fab" onclick="toggleChat()" title="Open slate query panel">Slate query</button>
 <div id="chat-panel">
-  <div class="chat-hdr">Slate research <small>rules-based · live inputs only</small></div>
+  <div class="chat-hdr">Slate query <small>rules-based · verified inputs</small></div>
   <div id="chat-body"></div>
   <div class="chat-foot">
     <input id="chat-input" placeholder="Ask about a team, bet, or stat&hellip;" onkeydown="if(event.key==='Enter')sendChat()">
@@ -1076,7 +1113,9 @@ function trackLine(gid,odds,startMs){
   if(!gid||!odds||!odds.real)return;
   var now=Date.now(), rec=LINES[gid]||(LINES[gid]={});
   if(rec.oHi==null){rec.oHML=odds.homeML;rec.oAML=odds.awayML;rec.oHi=odds.homeImpl;rec.oAi=odds.awayImpl;rec.oTs=now;}
-  if(startMs==null||now<=startMs+3*3600000){rec.cHML=odds.homeML;rec.cAML=odds.awayML;rec.cHi=odds.homeImpl;rec.cAi=odds.awayImpl;rec.cTs=now;}
+  // Closing-line candidates must remain pregame. Updating this record after first
+  // pitch would contaminate CLV with an in-play price.
+  if(startMs==null||now<=startMs){rec.cHML=odds.homeML;rec.cAML=odds.awayML;rec.cHi=odds.homeImpl;rec.cAi=odds.awayImpl;rec.cTs=now;}
   saveLines();
 }
 function clvFor(gid,pickSide){
@@ -3877,7 +3916,7 @@ function bettingMetaHTML(){
     +item("Backtest sample",""+btN+" games")
     +item("Mode","Paper trading only")
     +item("CLV tracking",""+clvN+" lines tracked")
-    +item("Model refresh","every "+refreshTxt)
+    +item("Model refresh",refreshTxt)
     +item("Min. edge threshold","4.0%")
     +item("Risk setting","1/"+Math.round(1/getKellyFrac())+" Kelly")
     +'</div>';
@@ -4516,5 +4555,11 @@ buildElo();
 renderToday();
 
 </script>
+<script src="js/model/pipeline.js"></script>
+<script src="js/model/walk-forward.js"></script>
+<script src="js/data/snapshots.js"></script>
+<script src="js/three/stadium-configs.js"></script>
+<script src="js/three/ballpark.js"></script>
+<script src="js/ui/quant-lab.js"></script>
 </body>
 </html>

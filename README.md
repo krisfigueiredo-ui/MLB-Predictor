@@ -1,81 +1,105 @@
-# MLB Predictor
+# MLB Quant Lab
 
-A single-page MLB game-prediction dashboard: it blends an Elo rating engine, a Poisson run model,
-and a feature-weighted logistic model into daily win probabilities, compares them against real
-betting lines, and grades itself honestly against real results.
+MLB Quant Lab is a browser-based baseball forecasting and model-audit workspace. It combines a feature-weighted logistic model, a Poisson run model, and Elo ratings; compares forecasts with verified market prices; freezes point-in-time predictions; and provides an optional procedural 3D view of the selected ballpark.
 
-**Live site:** https://krisfigueiredo-ui.github.io/MLB-Predictor/
+**Live application:** https://krisfigueiredo-ui.github.io/MLB-Predictor/
 
-> Paper analysis only — not betting advice. The betting tools track *paper* stakes against real
-> lines to measure whether the model's edge is real. No accuracy or ROI is promised.
+> Research and paper-trading software only. It does not promise predictive accuracy or investment returns.
 
-## What it does
+## Product structure
 
-- **Daily slate** — win probability for games returned by the verified ESPN scoreboard feed, with
-  verified starters, standings, injuries, weather, and real market lines added when available.
-  No substitute schedule, projected score, or manufactured betting line is shown when a feed fails.
-- **Ensemble model** — a logistic blend of ~19 features (Elo, power ratings, pitcher quality,
-  home/away splits, Pythagorean expectation, recent form, rest, head-to-head, …) combined with an
-  independent Poisson run model. Honesty gates keep synthesized or pseudo-random inputs (fake
-  bullpen fatigue, projected umpires, invented weather splits) from ever voting.
-- **Self-training** — online gradient descent after each real result, plus a batch trainer
-  (logistic regression with train/test split and 5-fold cross-validation) over the backtest store.
-- **Model health** — calibration curve, Brier decomposition, ECE, sharpness, ROC-AUC, and a
-  recalibration (shrink) tool.
-- **Betting tools** — edge detection vs real moneylines (4% minimum), Kelly stake sizing, a parlay
-  builder, paper-trading P/L tracking, and closing-line-value measurement.
-- **Live mode** — in-game win probability, leverage index, and fair-line comparison while games
-  are in progress.
-- **Portable log** — completed predictions are stored locally and can be downloaded as CSV or as a
-  restorable JSON backup from the Log tab.
+- **Slate** — a compact, sortable daily table with model probability, market probability, edge, projected runs, source coverage, and a persistent matchup inspector.
+- **Game** — matchup evidence, feature contributions, base-model disagreement, probability flow, a non-destructive Model Lab, and measured pitch locations when available.
+- **Ballpark Live** — lazy-loaded procedural Three.js geometry, six camera presets, live score and win-probability overlays, an event timeline, and a 2D SVG fallback.
+- **Model** — prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
+- **Performance** — forward snapshot metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
+- **Market** — the existing real-line edge, Kelly sizing, parlay, paper P/L, and CLV tools.
+- **Data** — feed coverage, provenance, immutable prediction snapshots, legacy-history labeling, and snapshot export.
 
-## Running it
+The historical calibration, backtest, playoff projection, prediction log, and rules-based slate query remain available from the relevant Model and Performance pages.
 
-It's a static site — no build step.
+## Modeling and validation
+
+The production probability remains separate from experimental shadow output. A three-model shadow path combines available Elo, Poisson, and feature probabilities, reports base-model dispersion, then applies a simple calibration shrinkage fitted only on prior graded snapshots. It does not silently promote itself over the published model.
+
+The primary validation utilities use rolling-origin splits:
+
+1. Sort games chronologically.
+2. Fit normalization and logistic weights on the earlier window.
+3. Evaluate only on the later unseen window.
+4. Advance the cutoff and repeat.
+5. Report accuracy, Brier score, log loss, ROC-AUC, and ECE.
+
+Randomized cross-validation remains visible only as a legacy educational comparison. Existing history without complete pregame features is labeled `LEGACY` and is not mixed into prospective claims.
+
+### Point-in-time snapshots
+
+Within 30 minutes of a verified first pitch, the browser stores a deeply immutable snapshot containing:
+
+- model, weight, and calibration versions;
+- training cutoff and prediction timestamp;
+- raw, calibrated, published, Elo, Poisson, and feature probabilities;
+- raw features and weighted contributions;
+- data-quality flags and the available market record;
+- matchup and first-pitch identifiers.
+
+The record is graded only after a verified final score. The original analytical inputs are never recomputed with present-day data. Snapshots can be downloaded from the Data page.
+
+## Ballpark architecture
+
+The 3D bundle is requested only after the user enters Ballpark Live. Shared procedural components create the diamond, bases, grass, foul lines, walls, warning track, low-poly seating, defensive markers, and scoreboard. Repeated seating and player markers use instancing; the renderer draws only when a view changes or a pitch animation is active, pauses when hidden or outside the viewport, and disposes GPU resources on exit.
+
+Configured parks currently include:
+
+- Fenway Park
+- Yankee Stadium
+- Wrigley Field
+- Dodger Stadium
+- Great American Ball Park
+- Rogers Centre
+
+Other home teams receive an explicitly labeled schematic field derived from a neutral park profile—not invented official dimensions. Configured dimensions cite official team/MLB ballpark pages in the application. Pitch endpoints come from the MLB live feed; the connecting 3D arc is clearly labeled as a derived schematic interpolation.
+
+Quality modes are High, Medium, and Low, with Low selected automatically on mobile. If Three.js, WebGL, or the CDN is unavailable, the same game renders as an analytical SVG field while the score, game state, probability, timeline, and provenance remain accessible as HTML.
+
+## Data policy
+
+Live schedules, scores, posted starters, standings, injuries, weather, odds, and pitch locations are displayed only when a source returns them. Unavailable model inputs stay neutral and render as `—`. The application does not manufacture betting lines, injuries, bullpen fatigue, umpire assignments, weather, pitch movement, hit trajectories, or historical snapshots.
+
+The app first requests official ESPN and MLB endpoints directly or through the included same-origin development server. Some browser-only paths retain third-party CORS relay fallbacks for availability; source status and provenance remain visible, and relay responses are still parsed as the original provider's payload. No API key is required.
+
+## Run locally
+
+The application is static and has no build step.
 
 ```bash
-# any static server works; from the repo root:
 python3 -m http.server 8000
-# then open http://localhost:8000/
 ```
 
-Opening `index.html` directly as a `file://` URL is not recommended because browsers can block live
-data requests. When the official feed is unavailable, the dashboard shows a clear unavailable-data
-state and retries automatically; it does not display sample games.
-
-Deploys happen automatically: every push to `main` publishes `index.html` + `js/` to GitHub Pages
-via `.github/workflows/pages.yml`.
+Then open `http://localhost:8000/`. A local HTTP server is recommended because browsers commonly restrict feed requests from `file://` pages.
 
 ## Development
 
-The prediction/betting/ML math lives in small, tested modules under `js/`, loaded by `index.html`
-as plain script tags and imported directly by the test suite:
-
-| Module | What's in it |
-|---|---|
-| `js/predict-core.js` | Core prediction math: stat regression/clamping, Pythagorean expectation, logit combine |
-| `js/elo.js` | Elo seeding, ratings → win probability, margin-of-victory updates |
-| `js/poisson.js` | Poisson run model (PMF, pitcher suppression, win-probability core) |
-| `js/ml-train.js` | Logistic regression trainer, standardization, ROC-AUC, cross-validation metrics |
-| `js/calibration.js` | Wilson CI, log loss, Brier/ECE/sharpness calibration report |
-| `js/betting.js` | Odds conversion, Kelly staking, bet-edge threshold rule |
-| `js/situational.js` | Recent form, streaks, venue splits, point-in-time date filtering |
-| `js/injuries.js` | Injury-report classification and capped win-probability impact |
-| `js/espn-parse.js` | ESPN scoreboard/odds/pitcher/record response parsing |
-| `js/persistence.js` | localStorage schema migration and corrupt-data handling |
-
 ```bash
 npm install
-npm test        # 179 unit tests (Vitest); also runs in CI on every push/PR
+npm test
 ```
 
-`TEST_COVERAGE_ANALYSIS.md` documents the testing effort, the nine real bugs it found (including
-two ML-methodology issues: standardization leakage in the batch trainer, and the online learner
-training weights on features that never voted), and the known remaining limitation (backtest
-grading uses current-day team tables rather than point-in-time snapshots — flagged in the UI).
+The test suite currently contains **210 tests across 15 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the new probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, procedural stadium configuration, responsive application shell, deployment packaging, and 2D fallback.
 
-## Data sources
+Key directories:
 
-ESPN public scoreboard, standings, and injury feeds (requested directly, with an optional
-same-origin development proxy) plus the MLB Stats API for supported splits. Third-party CORS
-relays and substitute datasets are not used. No API keys are required.
+```text
+css/             Quant Lab design system and responsive layouts
+js/data/         Point-in-time snapshot schema and migration helpers
+js/model/        Ensemble, calibration, walk-forward validation, ablation
+js/three/        Stadium configurations and lazy procedural renderer
+js/ui/           Slate, Game, Model, Performance, Data, and Ballpark views
+tests/           Vitest coverage for original and rebuilt modules
+```
+
+See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system map and [VALIDATION.md](docs/VALIDATION.md) for the methodology audit, known limitations, and forward-validation plan.
+
+## Deployment
+
+Every push to `main` runs unit tests and packages `index.html`, `css/`, and the complete `js/` tree for GitHub Pages. The Three.js module remains external and lazy-loaded from a pinned CDN version.
