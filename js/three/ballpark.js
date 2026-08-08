@@ -131,6 +131,8 @@
     this.createField();
     this.createWalls();
     this.createSeating();
+    this.createCrowd();
+    this.createPlayers();
     this.createPositions();
     this.createDimensionLabels();
     this.bindControls();
@@ -245,12 +247,58 @@
     this.scene.add(group);
   };
 
+  BallparkEngine.prototype.createCrowd = function() {
+    var T=this.THREE,group=this.groups.crowd=new T.Group();
+    var count=this.quality==="low"?96:this.quality==="high"?320:190;
+    var heads=new T.InstancedMesh(new T.SphereGeometry(.105,6,5),new T.MeshStandardMaterial({color:0xffffff,roughness:1}),count);
+    var torsos=new T.InstancedMesh(new T.BoxGeometry(.28,.34,.15),new T.MeshStandardMaterial({color:0xffffff,roughness:1}),count);
+    var arms=new T.InstancedMesh(new T.BoxGeometry(.48,.08,.09),new T.MeshStandardMaterial({color:0xffffff,roughness:1}),count);
+    var transform=new T.Object3D(),palette=[0xd9dde2,0x263d57,0x8e2f32,0xe1e4e7,0x4a5c6d,0x213a31,0xb69a7c,0x788592];
+    for(var i=0;i<count;i++){
+      var theta=(-68+(136/(count-1))*i+(i%5)*.18)*Math.PI/180;
+      var tier=i%3,radius=23.3+tier*4.35+(i%7)*.03,base=1.5+tier*.72;
+      var x=Math.sin(theta)*radius,z=Math.cos(theta)*radius+1.5;
+      transform.position.set(x,base+.52,z);transform.rotation.set(0,theta,0);transform.scale.set(1,1,1);transform.updateMatrix();heads.setMatrixAt(i,transform.matrix);
+      transform.position.set(x,base+.28,z);transform.scale.set(1+(i%4)*.04,.9+(i%3)*.05,1);transform.updateMatrix();torsos.setMatrixAt(i,transform.matrix);
+      transform.position.set(x,base+.33,z-.01);transform.rotation.set(0,theta,(i%11===0?.45:i%13===0?-.4:0));transform.scale.set(1,1,1);transform.updateMatrix();arms.setMatrixAt(i,transform.matrix);
+      var skin=new T.Color([0xf1c9a5,0xc98f65,0x8f5f42,0xe3b58b][i%4]);heads.setColorAt(i,skin);
+      var shirt=new T.Color(i%9===0?this.config.accent:palette[i%palette.length]);torsos.setColorAt(i,shirt);arms.setColorAt(i,shirt);
+    }
+    heads.instanceMatrix.needsUpdate=true;torsos.instanceMatrix.needsUpdate=true;arms.instanceMatrix.needsUpdate=true;
+    if(heads.instanceColor)heads.instanceColor.needsUpdate=true;if(torsos.instanceColor)torsos.instanceColor.needsUpdate=true;if(arms.instanceColor)arms.instanceColor.needsUpdate=true;
+    group.add(torsos,arms,heads);this.scene.add(group);
+  };
+
+  BallparkEngine.prototype.makePlayer = function(color,pants,role) {
+    var T=this.THREE,player=new T.Group();
+    var jersey=new T.MeshStandardMaterial({color:color,roughness:.78}),cloth=new T.MeshStandardMaterial({color:pants,roughness:.86}),skin=new T.MeshStandardMaterial({color:0xc99168,roughness:.9}),dark=new T.MeshStandardMaterial({color:0x182028,roughness:.82});
+    var torso=new T.Mesh(new T.BoxGeometry(.42,.64,.24),jersey);torso.position.y=1.13;player.add(torso);
+    var head=new T.Mesh(new T.SphereGeometry(.18,10,8),skin);head.position.y=1.62;player.add(head);
+    var cap=new T.Mesh(new T.CylinderGeometry(.19,.19,.08,10),dark);cap.position.set(0,1.78,0);player.add(cap);
+    var brim=new T.Mesh(new T.BoxGeometry(.24,.035,.14),dark);brim.position.set(0,1.75,-.13);player.add(brim);
+    [[-.24,1.16],[.24,1.16]].forEach(function(pos,index){var arm=new T.Mesh(new T.CylinderGeometry(.065,.075,.55,7),jersey);arm.position.set(pos[0],pos[1],0);arm.rotation.z=index?-.22:.22;player.add(arm);});
+    [[-.12,.52],[.12,.52]].forEach(function(pos){var leg=new T.Mesh(new T.CylinderGeometry(.075,.095,.75,7),cloth);leg.position.set(pos[0],pos[1],0);player.add(leg);var shoe=new T.Mesh(new T.BoxGeometry(.16,.09,.28),dark);shoe.position.set(pos[0],.12,-.07);player.add(shoe);});
+    if(role==="batter"){var bat=new T.Mesh(new T.CylinderGeometry(.025,.045,1.18,7),new T.MeshStandardMaterial({color:0xb68b56,roughness:.72}));bat.position.set(.36,1.42,.03);bat.rotation.z=-.34;player.add(bat);player.rotation.y=-.55;}
+    if(role==="catcher"){player.scale.set(.9,.82,.9);player.rotation.x=.16;}
+    player.userData.role=role;return player;
+  };
+
+  BallparkEngine.prototype.createPlayers = function() {
+    var T=this.THREE,group=this.groups.players=new T.Group(),home=new T.Color(this.config.accent||0x365d86),away=0xd7dce0,positions=[
+      {p:[0,0,3.1],r:"catcher",c:home},{p:[0,0,3.75],r:"batter",c:away},{p:[0,0,7.1],r:"pitcher",c:home},
+      {p:[4.8,0,5.6],r:"fielder",c:home},{p:[-4.8,0,5.6],r:"fielder",c:home},{p:[0,0,11.5],r:"fielder",c:home},
+      {p:[-9.3,0,15.5],r:"fielder",c:home},{p:[0,0,19],r:"fielder",c:home},{p:[9.3,0,15.5],r:"fielder",c:home}
+    ];
+    var self=this;positions.forEach(function(item,index){var player=self.makePlayer(item.c,index===1?0xededed:0xf2f2f2,item.r);player.position.set(item.p[0],item.p[1],item.p[2]);if(item.r==="pitcher")player.rotation.y=Math.PI;group.add(player);});
+    this.scene.add(group);
+  };
+
   BallparkEngine.prototype.createPositions = function() {
     var T=this.THREE, group=this.groups.defense=new T.Group();
     var positions=[[0,.2,3.4],[0,.2,6.5],[4.5,.2,5.2],[-4.5,.2,5.2],[0,.2,10.7],[-9,.2,14],[0,.2,18],[9,.2,14]];
-    var markers=new T.InstancedMesh(new T.CylinderGeometry(.17,.17,.36,12),new T.MeshStandardMaterial({color:0xd8e2e8,roughness:.6}),positions.length);
+    var markers=new T.InstancedMesh(new T.RingGeometry(.26,.31,20),new T.MeshBasicMaterial({color:0x9fc1df,side:T.DoubleSide,transparent:true,opacity:.8}),positions.length);
     var transform=new T.Object3D();
-    positions.forEach(function(p,index){transform.position.set(p[0],p[1],p[2]);transform.updateMatrix();markers.setMatrixAt(index,transform.matrix);});
+    positions.forEach(function(p,index){transform.position.set(p[0],.04,p[2]);transform.rotation.set(-Math.PI/2,0,0);transform.updateMatrix();markers.setMatrixAt(index,transform.matrix);});
     markers.instanceMatrix.needsUpdate=true;group.add(markers);
     group.visible=false;
     this.scene.add(group);

@@ -1,0 +1,12 @@
+@keyframes bpLoad { 0%, 100% { transform: scaleY(.35); opacity: .35; } 50% { transform: scaleY(1); opacity: 1; } }
+@keyframes dsLive { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.ql-table tbody tr.live .ql-state, .ds-feed i { animation: dsLive 1.8s ease-in-out infinite; }
+.pnl.active .ql-root { animation: dsWorkspaceIn 170ms ease-out; }
+@keyframes dsWorkspaceIn { from { opacity: .35; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.ds-reduced-motion *,
+.ds-reduced-motion *::before,
+.ds-reduced-motion *::after { scroll-behavior: auto !important; animation: none !important; transition-duration: .001ms !important; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition-duration: .001ms !important; }
+}

@@ -98,21 +98,52 @@
     TEX:"Globe Life Field", WSH:"Nationals Park"
   };
 
+  var TEAM_PARK_PROFILES = {
+    AZ:["Phoenix, Arizona","retractable","turf",330,407,334,25,"Pool pavilion and retractable roof"],
+    ATL:["Atlanta, Georgia","open","grass",335,400,325,8,"Three-tier outfield social deck"],
+    BAL:["Baltimore, Maryland","open","grass",333,410,318,13,"B&O Warehouse and deep left field"],
+    CLE:["Cleveland, Ohio","open","grass",325,410,325,19,"Left-field wall and downtown skyline"],
+    COL:["Denver, Colorado","open","grass",347,415,350,8,"Rockpile center field and mountain setting"],
+    CWS:["Chicago, Illinois","open","grass",330,400,335,8,"Pinwheel scoreboard profile"],
+    DET:["Detroit, Michigan","open","grass",345,420,330,8,"Deep center field and brick outfield arcade"],
+    HOU:["Houston, Texas","retractable","grass",315,409,326,19,"Crawford Boxes and train-track façade"],
+    KC:["Kansas City, Missouri","open","grass",330,410,330,12,"Outfield fountains and crown scoreboard"],
+    LAA:["Anaheim, California","open","grass",347,396,350,8,"Rock fountain in left-center field"],
+    MIA:["Miami, Florida","retractable","turf",344,407,335,12,"Retractable roof and glass outfield wall"],
+    MIL:["Milwaukee, Wisconsin","retractable","grass",344,400,345,8,"Fan-shaped retractable roof"],
+    MIN:["Minneapolis, Minnesota","open","grass",339,411,328,23,"Limestone façade and right-field plaza"],
+    NYM:["Queens, New York","open","grass",335,408,330,8,"Jackie Robinson Rotunda and bridge motif"],
+    ATH:["West Sacramento, California","open","grass",330,403,325,8,"Compact riverfront minor-league bowl"],
+    PHI:["Philadelphia, Pennsylvania","open","grass",329,401,330,13,"Liberty Bell scoreboard in right-center"],
+    PIT:["Pittsburgh, Pennsylvania","open","grass",325,399,320,21,"Allegheny River and downtown skyline"],
+    SD:["San Diego, California","open","grass",336,396,322,8,"Western Metal Supply Co. building"],
+    SEA:["Seattle, Washington","retractable","grass",331,401,326,8,"Retractable roof canopy and city rail line"],
+    SF:["San Francisco, California","open","grass",339,391,309,25,"McCovey Cove and right-field arcade"],
+    STL:["St. Louis, Missouri","open","grass",336,400,335,8,"Gateway Arch sightline and open center field"],
+    TB:["Tampa, Florida","open","grass",318,408,314,8,"Spring-training bowl and palm-lined concourse"],
+    TEX:["Arlington, Texas","retractable","turf",329,407,326,8,"Retractable roof and multi-level outfield"],
+    WSH:["Washington, District of Columbia","open","grass",336,402,335,8,"Capitol-axis concourse and red porch seating"]
+  };
+
+  var TEAM_SLUGS = {AZ:"dbacks",ATL:"braves",BAL:"orioles",CLE:"guardians",COL:"rockies",CWS:"whitesox",DET:"tigers",HOU:"astros",KC:"royals",LAA:"angels",MIA:"marlins",MIL:"brewers",MIN:"twins",NYM:"mets",ATH:"athletics",PHI:"phillies",PIT:"pirates",SD:"padres",SEA:"mariners",SF:"giants",STL:"cardinals",TB:"rays",TEX:"rangers",WSH:"nationals"};
+
   function genericStadium(team, parkFactor) {
+    var profile=TEAM_PARK_PROFILES[team]||["","unknown","grass",330,400,330,8,"Configured MLB field profile"];
+    var lf=profile[3],cf=profile[4],rf=profile[5],height=profile[6];
     return {
-      parkId: "schematic-" + (team || "mlb").toLowerCase(),
+      parkId: "park-" + (team || "mlb").toLowerCase(),
       name: TEAM_PARK_NAMES[team] || "MLB Ballpark",
-      city: "", team: team || null, roofType: "unknown", fieldOrientation: null,
-      surface: "unknown", parkFactor: parkFactor == null ? null : parkFactor,
-      accent: "#52677d", wall: "#3f5665", distinctive: "Schematic league geometry",
+      city: profile[0], team: team || null, roofType: profile[1], fieldOrientation: null,
+      surface: profile[2], parkFactor: parkFactor == null ? null : parkFactor,
+      accent: "#526f8b", wall: team==="SF"?"#6d5338":team==="PIT"?"#315d49":"#3f5665", distinctive: profile[7],
       wallPoints: [
-        point(-45, 330, 8, "LF 330′", false), point(-24, 375, 8, null, false),
-        point(0, 400, 8, "CF 400′", false), point(24, 375, 8, null, false),
-        point(45, 330, 8, "RF 330′", false)
+        point(-45, lf, height, "LF "+lf+"′"), point(-24, Math.round((lf+cf)/2), height, null, false),
+        point(0, cf, height, "CF "+cf+"′"), point(24, Math.round((rf+cf)/2), height, null, false),
+        point(45, rf, height, "RF "+rf+"′")
       ],
-      sourceUrl: null,
-      sourceLabel: "Schematic geometry — official dimensions not configured",
-      schematic: true
+      sourceUrl: TEAM_SLUGS[team]?"https://www.mlb.com/"+TEAM_SLUGS[team]+"/ballpark":null,
+      sourceLabel: (TEAM_PARK_NAMES[team]||"MLB Ballpark")+" — official club ballpark page",
+      schematic: false
     };
   }
 

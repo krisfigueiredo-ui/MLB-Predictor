@@ -8,14 +8,23 @@ import { stadiumForTeam } from "../js/three/stadium-configs.js";
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const html = readFileSync(join(root, "index.html"), "utf8");
-const css = readFileSync(join(root, "css/quant-lab.css"), "utf8");
+const css = ["tokens.css", "shell.css", "slate.css", "game.css", "research.css", "ballpark.css", "responsive.css", "motion.css"]
+  .map(file => readFileSync(join(root, "css", file), "utf8"))
+  .join("\n");
 const workflow = readFileSync(join(root, ".github/workflows/pages.yml"), "utf8");
 
-describe("Quant Lab application shell", () => {
+describe("Diamond Signal application shell", () => {
   it("exposes the complete primary information architecture", () => {
     ["slate", "game", "ballpark", "model", "performance", "market", "data"].forEach(view => {
       expect(html).toContain(`data-view="${view}"`);
     });
+  });
+
+  it("ships the Diamond Signal shell without the deprecated hidden interface", () => {
+    expect(html).toContain("DIAMOND SIGNAL");
+    expect(html).toContain('id="ds-settings"');
+    expect(html).not.toContain("legacy-slate");
+    expect(html).not.toContain("bankroll-in-top");
   });
 
   it("loads analytics first and the 3D engine as a separate module", () => {
@@ -25,8 +34,8 @@ describe("Quant Lab application shell", () => {
   });
 
   it("defines all requested responsive QA breakpoints and reduced motion", () => {
-    ["1220px", "1024px", "760px", "420px"].forEach(width => expect(css).toContain(`max-width:${width}`));
-    expect(css).toContain("prefers-reduced-motion:reduce");
+    ["1260px", "1024px", "767px", "430px"].forEach(width => expect(css).toContain(`max-width: ${width}`));
+    expect(css).toContain("prefers-reduced-motion: reduce");
   });
 
   it("keeps the full module tree in the GitHub Pages artifact", () => {
