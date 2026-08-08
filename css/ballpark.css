@@ -1,0 +1,56 @@
+.ql-ballpark-panel { margin: -24px; }
+.ql-ballpark-shell { min-height: calc(100vh - 113px); display: grid; grid-template-rows: 48px 1fr; background: #071014; }
+.ql-ballpark-bar { display: flex; align-items: center; gap: 14px; padding: 0 18px; border-bottom: 1px solid #23323c; background: #0a1419; }
+.ql-ballpark-title { margin-right: auto; }
+.ql-ballpark-title strong { display: block; font-size: 13px; }
+.ql-ballpark-title span { display: block; color: #72818b; font-size: 9px; }
+.ql-camera-group { position: relative; }
+.ql-camera-group::before { content: "VIEW"; margin-right: 7px; color: #6f7e88; font-size: 9px; }
+.ql-camera-group button, .ql-overlay-group button, .ql-quality-select { height: 28px; border: 0; border-bottom: 1px solid transparent; background: transparent; color: #80909a; font-size: 10px; }
+.ql-camera-group button:hover, .ql-overlay-group button:hover { color: #dce5e9; }
+.ql-camera-group button.active, .ql-overlay-group button.active { color: #eef4f6; border-bottom-color: #8bb2d8; }
+.ql-quality-select { border: 1px solid #2a3a44; background: #101b21; }
+.ql-ballpark-main { display: grid; grid-template-columns: minmax(0, 1fr) 286px; min-height: 0; }
+.ql-ballpark-stage { position: relative; min-height: calc(100vh - 161px); overflow: hidden; background: #081015; }
+.ql-ballpark-host { position: absolute; inset: 0; }
+.bp-canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.bp-loading { height: 100%; display: flex; align-items: center; justify-content: center; gap: 4px; color: #8a9aa4; }
+.bp-loading span { width: 3px; height: 15px; background: #8bb2d8; animation: bpLoad 1s ease-in-out infinite; }
+.bp-loading span:nth-child(2) { animation-delay: .1s; }
+.bp-loading span:nth-child(3) { animation-delay: .2s; }
+.bp-loading b { margin-left: 8px; font-size: 11px; font-weight: 500; }
+.ql-broadcast { position: absolute; z-index: 3; left: 18px; right: 18px; top: 18px; display: flex; align-items: flex-start; justify-content: space-between; pointer-events: none; }
+.ql-scorebug { display: flex; background: rgba(6, 12, 16, .91); border-top: 2px solid #8bb2d8; box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+.ql-scorebug-team { min-width: 82px; padding: 7px 9px; border-right: 1px solid rgba(255,255,255,.12); }
+.ql-scorebug-team span { color: #aebbc3; font: 10px var(--mono); }
+.ql-scorebug-team strong { float: right; font: 600 14px var(--mono); }
+.ql-scorebug-state { min-width: 102px; padding: 7px 10px; }
+.ql-scorebug-state b { display: block; font: 500 10px var(--mono); }
+.ql-scorebug-state span { display: block; margin-top: 2px; color: #7d8b94; font: 8px var(--mono); }
+.ql-wpbug { min-width: 196px; padding: 8px 10px; background: rgba(6, 12, 16, .88); }
+.ql-wpbug-head { display: flex; justify-content: space-between; color: #8d9aa3; font-size: 9px; }
+.ql-wpbug-head strong { color: #edf3f5; font: 600 12px var(--mono); }
+.ql-wpbug-track { height: 2px; margin-top: 7px; background: #26343d; }
+.ql-wpbug-track i { display: block; height: 100%; background: #8bb2d8; }
+.ql-ballpark-rail { overflow-y: auto; border-left: 1px solid #23323c; background: #0a1419; }
+.ql-rail-section { padding: 16px; border-bottom: 1px solid #23323c; }
+.ql-rail-section h3 { margin: 0 0 12px; color: #d7e0e4; font-size: 11px; }
+.ql-rail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ql-rail-stat span { display: block; color: #6f7e88; font-size: 9px; }
+.ql-rail-stat strong { display: block; margin-top: 3px; color: #cfd9de; font: 500 10px var(--mono); }
+.ql-event { display: grid; grid-template-columns: 42px 7px 1fr; gap: 8px; min-height: 34px; color: #8e9ba3; font-size: 10px; }
+.ql-event time { color: #62717a; font-size: 8px; }
+.ql-event i { width: 6px; height: 6px; margin-top: 4px; border-radius: 50%; background: #607581; }
+.ql-event.live i { background: var(--live); }
+.ql-event strong { color: #dbe4e8; font-weight: 500; }
+.ql-legend { display: flex; gap: 12px; }
+.ql-legend span { color: #6f7e88; font-size: 9px; }
+.ql-legend i { display: inline-block; width: 5px; height: 5px; margin-right: 4px; border-radius: 50%; }
+.ql-legend .measured i { background: #65b882; }
+.ql-legend .derived i { background: #80a9d1; }
+.ql-legend .schematic i { background: #d2a14d; }
+.bp-fallback { position: absolute; inset: 0; background: #081015; }
+.bp-fallback svg { width: 100%; height: 100%; }
+.bp-base { fill: #f5f0e5; }
+.bp-svg-title { fill: #edf3f5; font: 600 23px var(--sans); }
+.bp-svg-meta, .bp-svg-label { fill: #8998a1; font: 10px var(--mono); }

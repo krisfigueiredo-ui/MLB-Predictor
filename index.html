@@ -5,698 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0c1015">
-<meta name="description" content="MLB Quant Lab — source-aware game probabilities, market comparison, forward validation, and spatial ballpark analysis.">
-<title>MLB Quant Lab</title>
+<meta name="description" content="Diamond Signal — live MLB probabilities, model research, market comparison, and ballpark intelligence.">
+<title>Diamond Signal — MLB Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0b0d10; --s1:#12161b; --s2:#171c22; --s3:#1d232a;
-  --br:#252c36; --br2:#333c48;
-  --text:#e7eaf0; --mut:#8b949e; --mut2:#aeb6c2;
-  --ink:#60a5fa; --ink2:#152234; --ink3:#25405f;
-  --grn:#22c55e; --grn2:#12241a; --red:#ef4444; --red2:#2a1616;
-  --amb:#f59e0b; --amb2:#26200f; --vio:#9b8ce8; --vio2:#1b1830; --teal:#2dbfae;
-  --gold:#f59e0b; --gold2:#26200f;
-  --r:12px; --rs:8px;
-  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;padding:24px;padding-bottom:88px;max-width:1360px;margin:0 auto;overflow-x:hidden}
-canvas{max-width:100%}
-b{font-weight:700}
-button{font-family:inherit;cursor:pointer}
-input,select{font-family:inherit;font-size:16px;color:var(--text);background:var(--s2)}
-/* header */
-.hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.hdr-l{display:flex;align-items:center;gap:11px;min-width:0}
-.logo{display:flex;align-items:center;justify-content:center;width:44px;height:44px;background:linear-gradient(145deg,#1c2c46,#0e1726);border:1px solid var(--br2);border-radius:13px;flex-shrink:0;box-shadow:0 5px 14px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s}
-.logo:hover{transform:translateY(-2px) rotate(-6deg);box-shadow:0 9px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08)}
-.logo .ball{filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));transition:transform .4s cubic-bezier(.22,1,.36,1)}
-.logo:hover .ball{transform:rotate(18deg)}
-.h-title{font-size:18px;font-weight:800;letter-spacing:-.4px;line-height:1.1}
-.h-sub{font-family:var(--mono);font-size:9.5px;color:var(--mut2);letter-spacing:.2px}
-.hdr-r{display:flex;align-items:center;gap:8px}
-.snap{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--grn);background:var(--grn2);border:1px solid rgba(63,207,142,.32);padding:6px 10px;border-radius:999px}
-.pulse{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pu 1.6s ease-in-out infinite}
-@keyframes pu{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(22,163,74,.4)}50%{opacity:.4;box-shadow:0 0 0 5px rgba(22,163,74,0)}}
-/* tabs */
-.tabbar{display:flex;gap:3px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:4px;margin-bottom:14px;scrollbar-width:none}
-.tabbar::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;padding:8px 13px;font-size:11.5px;font-family:var(--mono);color:var(--mut2);border:none;background:transparent;border-radius:8px;white-space:nowrap;transition:all .2s cubic-bezier(.22,1,.36,1);letter-spacing:.2px}
-.tab:hover{color:var(--text);background:var(--s2)}
-.tab.active{background:var(--ink);color:#fff;box-shadow:0 2px 8px rgba(91,141,239,.32)}
-/* panels */
-.pnl{display:none}.pnl.active{display:block;animation:fade .35s cubic-bezier(.22,1,.36,1)}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* disclaimer / banners */
-.disclaimer{background:var(--amb2);border:1px solid rgba(232,179,57,.32);border-radius:var(--rs);padding:10px 12px;font-size:11px;font-family:var(--mono);color:var(--amb);line-height:1.55;margin-bottom:12px}
-.live-banner{background:var(--red2);border:1px solid rgba(247,109,109,.32);border-radius:var(--rs);padding:9px 12px;font-size:12px;font-family:var(--mono);color:var(--red);margin-bottom:12px;display:none}
-.offline-warn{background:var(--amb2);border:1px solid rgba(232,179,57,.32);border-radius:var(--rs);padding:9px 12px;font-size:11px;font-family:var(--mono);color:var(--amb);margin-bottom:12px;display:none}
-/* metrics */
-.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
-.mc{background:var(--s1);border:1px solid var(--br);border-top:2px solid var(--br2);border-radius:var(--rs);padding:10px 12px 9px;position:relative;overflow:hidden;transition:border-color .2s}
-.mc:hover{border-color:var(--br2)}
-.mc.ink{border-top-color:var(--ink)}.mc.grn{border-top-color:var(--grn)}.mc.amb{border-top-color:var(--amb)}.mc.vio{border-top-color:var(--vio)}
-.mc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ink);opacity:.85}
-.mc.grn::before{background:var(--grn)} .mc.amb::before{background:var(--amb)} .mc.vio::before{background:var(--vio)} .mc.ink::before{background:var(--ink)} .mc.red::before{background:var(--red)}
-.mc-lbl{font-family:var(--mono);font-size:9.5px;color:var(--mut2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.mc-val,.mc-v{font-size:22px;font-weight:800;font-family:var(--mono);letter-spacing:-.6px;transition:color .3s;line-height:1.1}
-.mc-val.g,.mc-v.g{color:var(--grn)} .mc-val.a{color:var(--amb)} .mc-val.red{color:var(--red)}
-.mc-sub{font-family:var(--mono);font-size:9.5px;color:var(--mut);margin-top:4px}
-/* sections */
-.sec{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1.6px;margin:18px 0 8px;font-weight:700;padding-bottom:5px;border-bottom:1px solid var(--br)}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;text-transform:none}
-.fbtn{font-size:11px;font-family:var(--mono);padding:7px 11px;border-radius:999px;border:1px solid var(--br2);background:var(--s1);color:var(--mut2);transition:all .15s}
-.fbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.fbtn.gon{background:var(--grn);color:#fff;border-color:var(--grn)}
-select#srt{padding:7px 10px;border-radius:999px;border:1px solid var(--br2);background:var(--s1);color:var(--mut2);font-family:var(--mono);font-size:11px}
-.btn{background:var(--s1);border:1px solid var(--br2);color:var(--mut2);font-size:12px;font-family:var(--mono);padding:8px 13px;border-radius:var(--rs);transition:all .15s}
-.btn:hover{border-color:var(--ink);color:var(--ink)}
-.btn:active{transform:scale(.97)}
-.chip,.badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:999px;background:var(--s2);border:1px solid var(--br);color:var(--mut2);margin:2px 3px 0 0}
-/* game cards */
-.games{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
-.gc{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .14s ease-out,box-shadow .25s cubic-bezier(.22,1,.36,1),border-color .25s;animation:cardIn .3s cubic-bezier(.22,1,.36,1) both;transform-style:preserve-3d;will-change:transform}
-.gc:hover{border-color:var(--br2);box-shadow:0 12px 32px rgba(0,0,0,.55)}
-@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.gc-top{display:flex;align-items:center;gap:11px;padding:12px 13px}
-.teams-col{flex:1;min-width:0}
-.vs-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--mut);font-family:var(--mono)}
-.time-tag{background:var(--s2);border:1px solid var(--br);border-radius:6px;padding:2px 7px;font-size:11px}
-.ev-tag{background:var(--grn2);color:var(--grn);border:1px solid rgba(63,207,142,.32);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700}
-.edge-badge{background:var(--ink2);color:var(--ink);border:1px solid var(--ink3);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700}
-.live-tag{background:var(--red2);color:var(--red);border:1px solid rgba(247,109,109,.32);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700}
-.pick-tag{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:6px;background:var(--s2);color:var(--mut2);border:1px solid var(--br)}
-.ring-col{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
-.ring-val{font-size:13px;font-weight:800;font-family:var(--mono)}
-.ring-lbl{font-size:8px;font-family:var(--mono);color:var(--mut);text-transform:uppercase}
-.out-col{min-width:62px;text-align:center;flex-shrink:0;font-family:var(--mono);font-size:11px}
-.logo-b,.b-avi{display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:8px;font-weight:700;font-family:var(--mono);flex-shrink:0}
-.b-avi{width:30px;height:30px;border-radius:50%}
-.liveb{font-family:var(--mono);font-size:10px}
-.hi{font-weight:800;color:var(--text)} .neu{color:var(--mut2)}
-/* analytics rows */
-.an-strip{border-top:1px solid var(--br);margin:0;padding:0 14px 12px}
-.an-summary{cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--teal);padding:11px 0;list-style:none;display:flex;align-items:center;font-weight:700}
-.an-summary::-webkit-details-marker{display:none}
-.an-text{flex:1;min-width:0}
-.an-chev{margin-left:8px;flex-shrink:0;transition:transform .2s;color:var(--mut)}
-details[open] .an-chev{transform:rotate(180deg)}
-.an-row{display:flex;gap:9px;margin-bottom:8px;flex-wrap:wrap}
-.an-cell{flex:1;min-width:140px;background:var(--s2);border:1px solid var(--br);border-radius:9px;padding:9px 11px}
-.an-k{font-family:var(--mono);font-size:10px;color:var(--mut2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.an-v{font-size:14px;font-weight:700}
-.an-sub{font-family:var(--mono);font-size:10px;color:var(--mut)}
-.an-divider{height:1px;background:var(--br);margin:12px 0;border:none}
-.an-pos{color:var(--grn)} .an-neg{color:var(--red)} .an-mut{color:var(--mut)}
-/* features */
-.feat-strip{background:var(--s2);border:1px solid var(--br);border-radius:11px;padding:11px;margin:10px 0}
-.feat-title{font-family:var(--mono);font-size:11px;color:var(--mut2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;font-weight:700}
-.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.feat{background:var(--s1);border:1px solid var(--br);border-radius:8px;padding:7px 9px}
-.feat-k{font-family:var(--mono);font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.3px}
-.feat-v{font-size:13px;font-weight:700;font-family:var(--mono)}
-/* pitcher */
-.pitcher-strip{display:flex;gap:9px;padding:0 14px 12px;flex-wrap:wrap}
-.pitcher-box{flex:1;min-width:150px;background:var(--s2);border:1px solid var(--br);border-radius:10px;padding:10px}
-.p-label{font-family:var(--mono);font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.p-name{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13px;margin-bottom:7px}
-.p-stats{display:flex;gap:5px;flex-wrap:wrap}
-.ps{font-family:var(--mono);font-size:10px;background:var(--s1);border:1px solid var(--br);border-radius:5px;padding:2px 6px;color:var(--mut2)}
-.ps.g{color:var(--grn);border-color:rgba(63,207,142,.32)} .ps.red{color:var(--red);border-color:rgba(247,109,109,.32)}
-.diam-strip{display:flex;justify-content:center;padding:6px 0}
-.gstats,.bet-strip{padding:0 14px 12px}
-.gs-k{font-family:var(--mono);font-size:10px;color:var(--mut)} .gs-v{font-weight:700;font-size:13px}
-.bet{background:var(--grn2);border:1px solid rgba(63,207,142,.32);border-radius:9px;padding:9px 11px;font-size:12px;color:var(--grn);font-family:var(--mono)}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-/* ai */
-.ai-body,.ai-box{background:var(--s2);border:1px solid var(--br);border-radius:11px;padding:12px;margin:8px 0;font-size:13px;line-height:1.6}
-.ai-box-body{font-size:13px;line-height:1.6;color:var(--mut2)}
-.ai-hdr,.ai-title{font-weight:800;font-size:14px;margin-bottom:6px;color:var(--text)}
-.ai-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:7px 12px;border-radius:var(--rs);border:1px solid var(--ink3);background:var(--ink2);color:var(--ink);margin-top:9px;transition:all .15s}
-.ai-dots span,.dot-loader span{width:5px;height:5px;border-radius:50%;background:var(--ink);animation:dl 1.2s infinite;display:inline-block;margin:0 1px}
-@keyframes dl{0%,80%,100%{opacity:.15}40%{opacity:1}}
-/* model */
-.mo-card,.mod-card{background:var(--s1);border:1px solid var(--br);border-radius:11px;padding:12px;margin-bottom:9px}
-.mod-name{font-weight:700;font-size:13px;margin-bottom:6px}
-.mod-bar{height:8px;background:var(--s3);border-radius:5px;overflow:hidden}
-.mod-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#5b8def,#2dd4bf)}
-.mod-acc{font-family:var(--mono);font-size:11px;color:var(--mut2);margin-top:4px}
-/* batter / history */
-.batter-section{margin:8px 0} .batter-card{background:var(--s2);border:1px solid var(--br);border-radius:8px;padding:8px;margin-bottom:5px;font-size:12px}
-.hist-table{width:100%;border-collapse:collapse;font-size:11px}
-.hist-table th,.hist-table td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--br);font-family:var(--mono);font-size:11px;white-space:nowrap}
-.hist-table th{color:var(--mut2);text-transform:uppercase;letter-spacing:.4px;font-size:9.5px;background:var(--s2);font-weight:700}
-.hist-table tbody tr{transition:background .15s}
-.hist-table tbody tr:hover{background:var(--s2)}
-.hist-table tbody tr:last-child td{border-bottom:none}
-.tr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0}
-.tn{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--mut2);min-width:0}
-.tn.pick{color:var(--text);font-weight:800}
-.tp{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--mut);flex-shrink:0}
-.tp.pick{color:var(--ink);font-weight:800}
-.badge.win{background:var(--grn2);color:var(--grn);border-color:rgba(63,207,142,.32)}
-.badge.loss{background:var(--red2);color:var(--red);border-color:rgba(247,109,109,.32)}
-.badge.liveb{background:var(--red2);color:var(--red);border-color:rgba(247,109,109,.32)}
-.pick-tag{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:6px;background:var(--s2);color:var(--mut2);border:1px solid var(--br)}
-.pick-tag.strong{background:var(--ink2);color:var(--ink);border-color:var(--ink3);font-weight:700}
-.gc.bet{border-color:rgba(63,207,142,.5);box-shadow:0 1px 3px rgba(22,163,74,.09)}
-.gc.is-live{border-color:rgba(247,109,109,.32)}
-.feat-v.g{color:var(--grn)} .feat-v.red{color:var(--red)}
-/* confidence ring: overlay the % on the donut */
-.ring{position:relative;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ring svg{width:52px;height:52px;position:absolute;top:0;left:0}
-.ring .ring-val{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:800;font-family:var(--mono)}
-/* final score spans: winner bold, loser dimmed */
-.wc{font-weight:800;color:var(--text);font-family:var(--mono)}
-.lc{color:var(--mut);font-family:var(--mono)}
-/* AI section + misc card pieces */
-.ai-strip{padding:0 14px 13px;border-top:1px solid var(--br);margin-top:2px;padding-top:11px}
-.an-body{padding-top:2px}
-.b-name{font-weight:700;font-size:12px;color:var(--text)}
-.band-row{display:flex;align-items:center;gap:9px;margin-bottom:7px;font-family:var(--mono);font-size:11px}
-.b-sub{font-size:10px;color:var(--mut)}
-/* bracket */
-.po-round{margin-bottom:14px} .po-round-lbl{font-family:var(--mono);font-size:11px;color:var(--mut2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;font-weight:700}
-/* calib */
-.calib-wrap,.chart-wrap{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:12px;overflow-x:auto}
-.calib-legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--mut2);margin-bottom:8px}
-.cl-item{display:flex;align-items:center;gap:5px} .cl-dot{width:9px;height:9px;border-radius:50%}
-.calib-note{font-size:12px;color:var(--mut2);line-height:1.6;margin-top:12px;background:var(--s2);border:1px solid var(--br);border-radius:9px;padding:11px}
-/* result options (log modal) */
-.r-opt{flex:1;padding:11px 7px;text-align:center;border-radius:var(--rs);border:1px solid var(--br2);background:var(--s1);font-size:13px;font-family:var(--mono);color:var(--mut2);transition:all .15s}
-.r-opt:hover{border-color:var(--ink);color:var(--ink)}.sc-lbl{font-size:10px;font-family:var(--mono);color:var(--mut2);margin-bottom:5px;display:flex;align-items:center;gap:5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sc-in{width:100%;box-sizing:border-box;font-size:16px;font-family:var(--mono);font-weight:700;text-align:center;padding:10px;border-radius:var(--rs);border:1px solid var(--br2);background:var(--s2);color:var(--text)}.sc-in:focus{outline:none;border-color:var(--ink)}
-.log-btn{font-size:11px;font-family:var(--mono);padding:6px 11px;border-radius:6px;border:1px solid var(--br2);background:var(--s1);color:var(--mut2)}
-.skip{color:var(--mut);font-size:11px;font-family:var(--mono);text-align:center;margin-top:10px;cursor:pointer}
-/* overlay/modal */
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:18px}
-.overlay.open{display:flex}
-.modal-card{background:var(--s1);border-radius:16px;padding:20px;max-width:380px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}
-/* chat */
-#chat-fab{position:fixed;bottom:18px;right:18px;width:56px;height:56px;border-radius:50%;background:var(--ink);color:#fff;border:none;font-size:23px;box-shadow:0 5px 18px rgba(91,141,239,.45);z-index:200;transition:transform .15s}
-#chat-fab:hover{transform:scale(1.08)}
-#chat-panel{position:fixed;bottom:84px;right:18px;width:370px;max-width:calc(100vw - 28px);height:540px;max-height:calc(100vh - 120px);background:var(--s1);border:1px solid var(--br);border-radius:18px;box-shadow:0 16px 48px rgba(30,41,59,.28);z-index:200;display:none;flex-direction:column;overflow:hidden}
-#chat-panel.open{display:flex;animation:panelIn .3s cubic-bezier(.22,1,.36,1)}
-@keyframes panelIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
-.chat-hdr{padding:13px 15px;border-bottom:1px solid var(--br);font-weight:800;font-size:14px;display:flex;align-items:center;gap:7px}
-.chat-hdr small{font-weight:400;font-family:var(--mono);font-size:9px;color:var(--mut);margin-left:auto}
-#chat-body{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;background:var(--s2)}
-.chat-msg{max-width:86%;padding:9px 12px;border-radius:13px;font-size:13px;line-height:1.5;animation:msgIn .28s cubic-bezier(.22,1,.36,1)}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
-.chat-bot{background:var(--s1);border:1px solid var(--br);align-self:flex-start}
-.chat-user{background:var(--ink);color:#fff;align-self:flex-end}
-.chat-chip{display:inline-block;margin:3px 4px 0 0;padding:5px 10px;border:1px solid var(--br);border-radius:14px;background:var(--s1);font-size:11px;color:var(--mut2);font-family:var(--mono)}
-.chat-chip:hover{border-color:var(--ink);color:var(--ink)}
-.chat-foot{display:flex;gap:7px;padding:11px;border-top:1px solid var(--br)}
-#chat-input{flex:1;border:1px solid var(--br2);border-radius:10px;padding:9px 12px;font-size:16px;outline:none}
-#chat-input:focus{border-color:var(--ink)}
-.chat-send{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:0 15px;font-weight:700}
-/* toast */
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:#e8edf7;color:#0a0e17;border-radius:10px;padding:11px 18px;font-size:12px;font-family:var(--mono);opacity:0;transition:all .25s;pointer-events:none;z-index:1000;max-width:90vw;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#live-badge{font-family:var(--mono);font-size:10px}
-.b-avi{background:var(--ink2);color:var(--ink)}
-/* desktop */
-@media(min-width:680px){
-  body{padding:20px;padding-bottom:80px}
-  .metrics{grid-template-columns:repeat(4,1fr);gap:10px}
-  .feat-grid{grid-template-columns:repeat(4,1fr)}
-  .h-title{font-size:20px}
-  .mc-val,.mc-v{font-size:23px}
-}
-@media(min-width:1000px){
-  #gl.games{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
-}
-/* ── interactive buttons + 3D depth ── */
-.btn,.fbtn,.log-btn,select#srt{transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s,background .16s,border-color .16s,color .16s}
-.btn{box-shadow:0 2px 0 rgba(0,0,0,.35),0 3px 9px rgba(0,0,0,.3)}
-.btn:hover{transform:translateY(-2px);border-color:var(--ink);color:var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.35),0 9px 20px rgba(0,0,0,.4)}
-.btn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.3)}
-.btn-primary{background:var(--gold);color:#181205;border:1px solid rgba(0,0,0,.12);padding:10px 18px;border-radius:var(--rs);font-size:12px;font-family:var(--mono);font-weight:700;letter-spacing:.3px;box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 6px 16px rgba(0,0,0,.35)}
-.btn-primary:hover{transform:translateY(-2px);color:#181205;border-color:rgba(0,0,0,.18);filter:brightness(1.06);box-shadow:0 1px 0 rgba(255,255,255,.34) inset,0 10px 22px rgba(0,0,0,.4)}
-.btn-primary:active{transform:translateY(1px);filter:brightness(.97)}
-.fbtn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.35)}
-.fbtn:active,.tab:active,.log-btn:active,.r-opt:active{transform:scale(.95)}
-.tab.active{box-shadow:0 3px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.14)}
-.chat-send,.ai-btn{transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s,filter .16s}
-.chat-send:hover,.ai-btn:hover{transform:translateY(-2px);filter:brightness(1.12);box-shadow:0 6px 16px rgba(0,0,0,.3)}
-.chat-send:active,.ai-btn:active{transform:translateY(1px) scale(.97)}
-#chat-fab{transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
-#chat-fab:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 12px 30px rgba(91,141,239,.55)}
-#chat-fab:active{transform:translateY(0) scale(.96)}
-.mc{transform-style:preserve-3d;will-change:transform}
-.mc:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.5)}
-.r-opt:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.4)}
-.gc.tilt{transition:transform .05s linear,box-shadow .25s,border-color .25s}
-/* premium depth + accent tints */
-.mc{background:linear-gradient(162deg,var(--s1),#10141f)}
-.gc.bet{background:linear-gradient(165deg,var(--s1) 60%,rgba(63,207,142,.05))}
-.gc.is-live{background:linear-gradient(165deg,var(--s1) 60%,rgba(247,109,109,.05))}
-.gc.hc:not(.bet){background:linear-gradient(165deg,var(--s1) 70%,rgba(91,141,239,.04))}
-.snap{box-shadow:0 0 14px rgba(63,207,142,.12)}
-.hdr{padding-bottom:2px}
-
-/* ── Live alerts ── */
-.al-bell{position:relative;width:32px;height:29px;padding:0;display:inline-grid;place-items:center}
-.al-bell svg{width:15px;height:15px;display:block;color:currentColor}
-.al-badge{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-family:var(--mono);font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px;border:1px solid #0a0e17}
-.al-panel{position:fixed;top:54px;right:10px;width:min(340px,92vw);max-height:340px;overflow-y:auto;background:var(--s1);border:1px solid var(--br2);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.6);z-index:400;display:none;padding:8px}
-.al-panel.open{display:block;animation:alIn .18s ease-out}
-@keyframes alIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.al-row{display:flex;gap:8px;align-items:flex-start;padding:8px 9px;border-radius:8px;cursor:pointer;font-size:12px;line-height:1.4;color:var(--text)}
-.al-row:hover{background:var(--s2)}
-.al-time{font-family:var(--mono);font-size:9px;color:var(--mut);white-space:nowrap;margin-top:2px}
-.al-empty{padding:18px 10px;text-align:center;color:var(--mut);font-size:11px;font-family:var(--mono)}
-/* ── Ballpark map ── */
-.map-wrap{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
-.map-head{padding:11px 14px;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;gap:12px;align-items:center}
-.map-head b{font-size:11px;font-weight:600;color:var(--text)}
-.map-head span{font-size:10px;color:var(--mut)}
-.map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--br)}
-.map-game{appearance:none;border:0;background:var(--s1);color:var(--text);text-align:left;padding:12px 14px;cursor:pointer;font:inherit;min-width:0}
-.map-game:hover{background:var(--s2)}
-.map-game:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
-.map-match{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.map-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;font-size:9.5px;color:var(--mut);font-family:var(--mono)}
-.map-state{display:inline-flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.04em}
-.map-state::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mut)}
-.map-state.live::before{background:var(--red)}
-.map-state.final::before{background:var(--grn)}
-.map-empty{padding:20px 14px;color:var(--mut);font-size:12px;text-align:center}
-.gc-flash{box-shadow:0 0 0 2px var(--amb),0 12px 32px rgba(0,0,0,.55)!important;transition:box-shadow .3s}
-
-/* ── 3D layer ── */
-.games{perspective:1100px}
-.gc{position:relative}
-.gc::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,0.10),rgba(255,255,255,0.02) 42%,transparent 62%)}
-.gc.tilting::after{opacity:1}
-.gc.tilting{box-shadow:0 22px 48px rgba(0,0,0,.6);border-color:var(--br2)}
-#map-host{transform:perspective(950px) rotateX(22deg) scale(1.06);transform-origin:50% 62%;transition:transform .3s ease-out;will-change:transform}
-.logo{perspective:240px}
-.ball{animation:ballSpin 8s linear infinite;transform-style:preserve-3d;backface-visibility:visible}
-@keyframes ballSpin{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
-@media (prefers-reduced-motion: reduce){
-  .ball{animation:none}
-  #map-host{transform:none!important}
-  .gc{transform:none!important}
-  .gc::after{display:none}
-}
-
-/* ── redesign layer ── */
-.hdr-rec{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--mut2);background:var(--s2);border:1px solid var(--br);border-radius:6px;padding:4px 8px;white-space:nowrap}
-.hdr-rec b{color:var(--text);font-size:11px}
-.hero{background:linear-gradient(135deg,var(--s2),var(--s1));border:1px solid var(--br2);border-left:3px solid var(--ink);border-radius:var(--r);padding:13px 15px;margin-bottom:14px;cursor:pointer}
-.hero:hover{border-color:var(--ink)}
-.hero-ovl{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);font-weight:700;margin-bottom:7px}
-.hero-match{font-size:17px;font-weight:800;letter-spacing:-0.3px;margin-bottom:2px}
-.hero-sub{font-size:11px;color:var(--mut);font-family:var(--mono);margin-bottom:9px}
-.hero-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hero-pick{font-size:16px;font-weight:700;color:var(--text);font-family:var(--mono);letter-spacing:-.2px}
-.hero-reason{font-size:11.5px;color:var(--mut2);margin-top:8px;line-height:1.45}
-.cmeter{display:inline-flex;gap:2.5px;align-items:center}
-.cmeter i{width:13px;height:5px;border-radius:2px;background:var(--s3);display:block}
-.cmeter i.f{background:var(--ink)}
-.cmeter.hi i.f{background:var(--grn)}
-.gc-reason{padding:0 13px 10px;font-size:11px;color:var(--mut2);line-height:1.45;display:flex;gap:6px;align-items:baseline}
-.gc-reason b{color:var(--mut);font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;flex-shrink:0}
-.tn-nick{font-size:10px;color:var(--mut);font-weight:600;margin-left:4px}
-.rr-list{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
-.rr{display:flex;align-items:center;gap:9px;background:var(--s1);border:1px solid var(--br);border-radius:var(--rs);padding:7px 11px;font-size:11.5px}
-.rr-date{font-family:var(--mono);font-size:9.5px;color:var(--mut);width:46px;flex-shrink:0}
-.rr-m{flex:1;color:var(--mut2);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rr-m b{color:var(--text);font-weight:700}
-.rr-chip{font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0}
-.rr-chip.w{color:var(--grn);background:var(--grn2);border:1px solid rgba(47,191,127,.3)}
-.rr-chip.l{color:var(--red);background:var(--red2);border:1px solid rgba(232,93,93,.3)}
-@media(min-width:920px){
-  .games{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
-  .metrics{grid-template-columns:repeat(4,1fr)}
-}
-
-/* ── design v3: graphite terminal ── */
-.ball{animation:none}
-#map-host{transform:perspective(1100px) rotateX(13deg) scale(1.02)}
-.gc::after{display:none}
-body{font-size:13px}
-.h-title{font-size:19px;font-weight:700;letter-spacing:-0.3px}
-.h-sub{font-family:var(--mono);font-size:10px;letter-spacing:.3px;color:var(--mut)}
-.sec{font-family:var(--sans);font-size:11px;font-weight:700;text-transform:none;letter-spacing:.2px;color:var(--mut2);border-bottom:1px solid var(--br);padding-bottom:6px;margin:16px 0 8px}
-.mc{border-top:1px solid var(--br2);border-radius:var(--rs);padding:8px 11px 7px}
-.mc.ink,.mc.grn,.mc.amb,.mc.vio{border-top-color:var(--br2)}
-.mc-lbl{font-family:var(--sans);font-size:9.5px;text-transform:none;letter-spacing:.2px;color:var(--mut);font-weight:600}
-.mc-val{font-size:19px;font-weight:700;letter-spacing:-0.3px}
-.mc-sub{font-size:9px}
-.fbtn{border-radius:4px;padding:5px 10px;font-size:10.5px;font-family:var(--sans);font-weight:600;letter-spacing:0;background:var(--s1);border:1px solid var(--br);color:var(--mut)}
-.fbtn.on{background:var(--s3);color:var(--text);border-color:var(--br2)}
-.fbtn.gon{background:var(--s3);color:var(--grn);border-color:var(--br2)}
-.btn{border-radius:4px;font-family:var(--sans);font-weight:600;letter-spacing:0}
-.pick-tag,.ev-tag,.time-tag,.live-tag{border-radius:3px;letter-spacing:0}
-.badge{border-radius:3px}
-.games{gap:8px}
-.gc{border-radius:var(--rs)}
-.gc-top{padding:10px 12px}
-.gc-reason{font-size:10.5px}
-.gc-reason b{letter-spacing:.4px}
-.hero{background:linear-gradient(160deg,var(--s2) 0%,var(--s1) 65%);border:1px solid var(--br);border-left:3px solid var(--gold);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 10px 28px rgba(0,0,0,.35)}
-.hero:hover{border-color:var(--br2);border-left-color:var(--gold);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 14px 34px rgba(0,0,0,.42)}
-.hero-ovl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:7px}
-.hero-match{font-size:21px;font-weight:700;letter-spacing:-0.4px;font-family:var(--sans)}
-.hero-sub{margin-bottom:9px}
-.hero-reason{margin-top:8px;font-size:11.5px}
-.hero-ctx{margin-top:9px;padding-top:9px;border-top:1px solid var(--br);font-family:var(--mono);font-size:10px;color:var(--mut);display:flex;gap:14px;flex-wrap:wrap}
-.hero-ctx b{color:var(--mut2)}
-.cmeter i.f{background:var(--ink)}
-.cmeter.hi i.f{background:var(--grn)}
-.hdr-rec{border-radius:4px}
-.rr,.rr-chip{border-radius:4px}
-.al-panel{border-radius:8px}
-.map-wrap{border-radius:var(--rs)}
-/* stat table rows for analytics modules */
-.stat-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
-.stat-tbl td{padding:6px 8px;border-bottom:1px solid var(--br)}
-.stat-tbl td:last-child{text-align:right;font-family:var(--mono);color:var(--text);font-weight:600}
-.stat-tbl td:first-child{color:var(--mut2)}
-.stat-tbl tr:last-child td{border-bottom:none}
-.panel{background:var(--s1);border:1px solid var(--br);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px}
-.panel-h{font-size:11px;font-weight:700;color:var(--mut2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline}
-.panel-h .n{font-family:var(--mono);font-size:9.5px;color:var(--mut);font-weight:400}
-@media(min-width:920px){.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
-
-/* ── design v5: institutional analytics — calm dark theme, sans-serif UI text,
-   monospace reserved for actual numeric/odds fields, tight consistent spacing,
-   no glow, no oversized type ── */
-body{font-size:13.5px;letter-spacing:0;padding:24px;padding-bottom:96px}
-::selection{background:rgba(96,165,250,.3);color:#fff}
-.logo{background:var(--s2);border:1px solid var(--br);box-shadow:none}
-.h-title{font-size:16px;font-weight:700;letter-spacing:-.2px;font-family:var(--sans)}
-.h-sub{color:var(--mut);font-weight:500;font-family:var(--sans);font-size:11px;letter-spacing:0}
-.tabbar{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:4px}
-.tab{border-radius:7px;font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:0;color:var(--mut)}
-.tab:hover{color:var(--text);background:var(--s2)}
-.tab.active{background:var(--s3);color:var(--text);box-shadow:inset 0 0 0 1px var(--br2)}
-.disclaimer{background:var(--s1);border:1px solid var(--br);color:var(--mut2);border-radius:var(--rs);font-family:var(--sans);font-size:12px;line-height:1.6}
-.disclaimer b{color:var(--text);font-weight:600}
-.live-banner,.offline-warn{border-radius:var(--rs)}
-/* cards: hairline border, minimal shadow, no colored top bars */
-.mc,.gc,.hero,.panel,.pitcher-box,.an-cell,.feat,.mod-card,.mo-card,.ai-body,.ai-box,.batter-card,
-.rr,.gc-reason,#calib-recal,.feat-strip{border-color:var(--br)}
-.mc{border-radius:var(--r);border-top:1px solid var(--br);padding:13px 15px 12px;background:var(--s1);box-shadow:none}
-.mc::before{display:none}
-.mc.ink{border-top-color:var(--br)}.mc.grn{border-top-color:var(--br)}.mc.amb{border-top-color:var(--br)}.mc.vio{border-top-color:var(--br)}
-.mc-lbl{font-family:var(--sans);font-weight:500;font-size:10.5px;letter-spacing:0;text-transform:none;color:var(--mut)}
-.mc-val,.mc-v{font-size:21px;font-weight:700;font-family:var(--mono);letter-spacing:-.3px}
-.mc-sub{font-family:var(--sans);font-weight:500;letter-spacing:0}
-.gc{border-radius:var(--r);box-shadow:none;border-color:var(--br)}
-.gc:hover{box-shadow:0 4px 16px rgba(0,0,0,.28);border-color:var(--br2);transform:none}
-.gc-top{padding:14px 16px}
-.sec{font-family:var(--sans);font-weight:600;font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--mut2);border-bottom:1px solid var(--br);margin:22px 0 10px;padding-bottom:8px}
-.btn{background:var(--s2);border:1px solid var(--br);border-radius:7px;font-family:var(--sans);font-weight:500;font-size:12px;padding:7px 13px;color:var(--mut2)}
-.btn:hover{border-color:var(--br2);color:var(--text);background:var(--s3)}
-.btn-primary{background:var(--ink);color:#0b0d10;border:none;border-radius:7px;font-family:var(--sans);font-weight:600;box-shadow:none}
-.btn-primary:hover{background:#7db4fb;filter:none}
-.fbtn{border-radius:7px;font-family:var(--sans);font-weight:500;font-size:11.5px;border:1px solid var(--br);background:var(--s2);color:var(--mut2)}
-.fbtn.on{background:var(--s3);color:var(--text);border-color:var(--br2)}
-.fbtn.gon{background:var(--grn2);color:var(--grn);border-color:rgba(34,197,94,.3)}
-.chip,.badge,.pick-tag,.time-tag,.ev-tag,.edge-badge,.live-tag{border-radius:6px;border-color:var(--br);font-family:var(--sans);font-weight:500}
-.hero{background:var(--s1);border:1px solid var(--br);border-left:1px solid var(--br);border-radius:var(--r);padding:16px 18px;box-shadow:none}
-.hero::before{content:"";display:block;width:28px;height:2px;border-radius:1px;background:var(--amb);margin-bottom:11px}
-.hero:hover{border-color:var(--br2)}
-.hero-ovl{color:var(--amb);font-family:var(--sans);font-weight:600;letter-spacing:.4px;font-size:10.5px}
-.hero-match{font-size:18px;font-weight:700;letter-spacing:-.3px;font-family:var(--sans)}
-.hero-pick{font-size:15px;font-family:var(--mono)}
-.panel,.pitcher-box,.an-cell,.feat,.mod-card,.mo-card,.ai-body,.ai-box{border-radius:var(--r);box-shadow:none}
-.map-wrap{border-radius:var(--r)!important;border-color:var(--br)!important}
-.panel-h,.p-label,.an-k,.feat-k,.mc-lbl,.gs-k,.ai-hdr,.ai-title,.mod-name{font-family:var(--sans)!important}
-.games{gap:10px}
-::-webkit-scrollbar{width:0;height:0}
-#map-host{transform:none!important}
-.logo:hover,.logo:hover .ball{transform:none;box-shadow:none}
-.pnl.active{animation:none}
-.pulse{animation:none;box-shadow:none}
-.gc,.mc,.hero,.btn,.fbtn{transition:border-color .15s,background .15s,color .15s}
-.gc:hover{box-shadow:none;transform:none}
-.snap{box-shadow:none;border-radius:7px}
-.tab:focus{outline:none}
-.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.map-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-.history-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.history-actions .btn{font-size:10.5px;padding:6px 9px;margin:0;cursor:pointer}
-.danger-btn{color:var(--red)!important}
-.gc>.ai-strip{display:none}
-#chat-fab{width:auto;height:34px;bottom:18px;right:18px;border-radius:8px;background:var(--s2);color:var(--mut2);border:1px solid var(--br);font-size:11px;font-weight:600;padding:0 12px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-#chat-fab:hover{transform:none;background:var(--s3);color:var(--text);box-shadow:none}
-@media(min-width:920px){
-  .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);grid-template-areas:"accent accent" "label reason" "match reason" "sub reason" "row reason" "context context";column-gap:24px}
-  .hero::before{grid-area:accent}.hero-ovl{grid-area:label}.hero-match{grid-area:match}.hero-sub{grid-area:sub}.hero-row{grid-area:row}
-  .hero-reason{grid-area:reason;align-self:center;margin:0;padding:12px 0 12px 22px;border-left:1px solid var(--br);display:flex;flex-direction:column;gap:5px}
-  .hero-ctx{grid-area:context}
-}
-@media(max-width:900px){.map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){body{padding:16px;padding-bottom:88px}.hdr-r{width:100%;overflow-x:auto}.history-actions{width:100%}.history-actions .btn{flex:1;text-align:center;white-space:nowrap}.map-grid{grid-template-columns:1fr}.disclaimer{font-size:11.5px}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/quant-lab.css">
 </head>
 <body>
-
-<header class="ql-topbar">
-  <div class="ql-brand">
-    <div class="ql-mark" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div><div class="ql-brand-name">MLB Quant Lab</div><div class="ql-brand-sub" id="hdr-date">Today&rsquo;s slate</div></div>
+<a class="ds-skip" href="#workspace">Skip to workspace</a>
+<header class="ds-header">
+  <div class="ds-header-row">
+    <button class="ds-brand" type="button" onclick="setTab('slate')" aria-label="Diamond Signal home">
+      <span class="ds-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>DIAMOND SIGNAL</strong><small>MLB intelligence</small></span>
+    </button>
+    <div class="ds-session" aria-label="Current data session">
+      <span id="hdr-date">Today's slate</span>
+      <span class="ds-feed"><i></i><b id="live-badge">CONNECTING</b></span>
+      <time id="ds-clock">--:-- --</time>
+    </div>
+    <div class="ds-header-actions">
+      <button class="ds-icon-button" type="button" onclick="toggleAlerts()" aria-label="Open live alerts"><span class="ds-bell" aria-hidden="true"></span><b id="al-badge">0</b></button>
+      <button class="ds-settings-button" type="button" onclick="DiamondSignalUI.toggleSettings(true)" aria-label="Open settings"><span aria-hidden="true">Settings</span></button>
+    </div>
   </div>
-  <div class="ql-status-strip" aria-label="Model and feed status">
-    <div class="ql-meta"><span>Model</span><strong>v2.0 shadow</strong></div>
-    <div class="ql-meta"><span>Last update</span><strong id="ql-last-update">Pending</strong></div>
-    <div class="ql-meta"><span>Odds source</span><strong id="ql-odds-source">Pending</strong></div>
-  </div>
-  <div class="ql-risk-strip" aria-label="Risk settings">
-    <label><span>Bankroll</span><span class="ql-input-wrap">$<input id="bankroll-in-top" type="number" min="1" value="1000" onchange="saveBankroll(this.value);QuantLabUI.syncSettings()"></span></label>
-    <label><span>Kelly</span><select id="kelly-frac-top" onchange="saveKelly(this.value);QuantLabUI.syncSettings()"><option value="0.1">0.10</option><option value="0.25" selected>0.25</option><option value="0.5">0.50</option><option value="1">1.00</option></select></label>
-    <div class="ql-meta ql-threshold"><span>Edge threshold</span><strong>4.0%</strong></div>
-  </div>
-  <div class="ql-live-tools">
-    <span class="snap" title="The slate refreshes automatically"><span class="pulse"></span> <span id="live-badge">Connecting</span></span>
-    <button class="btn al-bell" onclick="toggleAlerts()" title="Live alerts" aria-label="Open live alerts"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="al-badge" id="al-badge">0</span></button>
-  </div>
+  <nav class="ds-nav ql-nav" aria-label="Primary navigation">
+    <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
+    <button class="tab" data-view="game" onclick="setTab('game')">Game</button>
+    <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark</button>
+    <button class="tab" data-view="model" onclick="setTab('model')">Model</button>
+    <button class="tab" data-view="performance" onclick="setTab('performance')">Performance</button>
+    <button class="tab" data-view="market" onclick="setTab('market')">Market</button>
+    <button class="tab" data-view="data" onclick="setTab('data')">Data</button>
+  </nav>
 </header>
-<div class="al-panel" id="al-panel">
-  <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 9px 8px">
-    <span style="font-size:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut2)">Live alerts</span>
-    <button class="btn" id="al-notif-btn" onclick="enableNotifs()" style="font-size:9px;padding:3px 8px">Enable push</button>
+<div class="al-panel" id="al-panel" aria-label="Live alerts">
+  <div class="al-head"><strong>Live alerts</strong><button type="button" onclick="toggleAlerts()">Close</button></div>
+  <button id="al-notif-btn" type="button" onclick="enableNotifs()">Enable notifications</button>
+  <div id="al-list"><div class="al-empty">Game-state alerts will appear here when verified score changes are received.</div></div>
+</div>
+<main id="workspace" class="ds-workspace">
+  <section id="pnl-today" class="pnl active"><div id="ql-slate-root" class="ql-root"></div></section>
+  <section id="pnl-game" class="pnl"><div id="ql-game-root" class="ql-root"></div></section>
+  <section id="pnl-ballpark" class="pnl ql-ballpark-panel"><div id="ql-ballpark-root" class="ql-root"></div></section>
+  <section id="pnl-model" class="pnl"><div id="ql-model-root" class="ql-root"></div></section>
+  <section id="pnl-performance" class="pnl"><div id="ql-performance-root" class="ql-root"></div></section>
+  <section id="pnl-betting" class="pnl"><div id="ql-market-root" class="ql-root"></div></section>
+  <section id="pnl-data" class="pnl"><div id="ql-data-root" class="ql-root"></div></section>
+</main>
+<aside id="ds-settings" class="ds-drawer" aria-hidden="true">
+  <div class="ds-drawer-head"><div><span>Preferences</span><h2>Settings</h2></div><button type="button" onclick="DiamondSignalUI.toggleSettings(false)" aria-label="Close settings">Close</button></div>
+  <div class="ds-settings-section">
+    <h3>Appearance</h3>
+    <label class="ds-setting-row"><span>Reduced motion<small>Limit nonessential transitions</small></span><input id="ds-reduced-motion" type="checkbox" onchange="DiamondSignalUI.setReducedMotion(this.checked)"></label>
+    <label class="ds-setting-row"><span>Ballpark quality<small>Rendering detail</small></span><select id="ds-quality" onchange="QuantLabUI.setQuality(this.value)"><option value="low">Efficient</option><option value="medium" selected>Balanced</option><option value="high">High</option></select></label>
   </div>
-  <div id="al-list"><div class="al-empty">No alerts yet &mdash; they fire on first pitch, lead changes, late&#8209;and&#8209;close spots, and finals (with the pick result). Real score changes only.</div></div>
-</div>
-
-<nav class="tabbar ql-nav" aria-label="Primary navigation">
-  <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
-  <button class="tab" data-view="game" onclick="setTab('game')">Game</button>
-  <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark Live</button>
-  <button class="tab" data-view="model" onclick="setTab('model')">Model</button>
-  <button class="tab" data-view="performance" onclick="setTab('performance')">Performance</button>
-  <button class="tab" data-view="market" onclick="setTab('market')">Market</button>
-  <button class="tab" data-view="data" onclick="setTab('data')">Data</button>
-</nav>
-
-<!-- TODAY -->
-<div id="pnl-today" class="pnl active">
-  <div id="ql-slate-root" class="ql-root"></div>
-  <div class="legacy-slate" aria-hidden="true">
-  <div class="disclaimer"><b>Data policy:</b> the live slate, scores, starters, standings, and betting lines are shown only when a verified feed is available. Unavailable inputs remain neutral and are labeled as pending. Completed games are logged locally for calibration and can be exported from the Log tab.</div>
-  <div id="live-banner" class="live-banner"></div>
-  <div id="offline-warn" class="offline-warn"></div>
-  <section class="map-wrap" id="map-wrap" aria-label="Schedule overview">
-    <div class="map-head"><b>Schedule overview</b><span>ESPN slate · select a matchup</span></div>
-    <div id="map-host"></div>
-  </section>
-  <div style="margin:4px 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-    <button class="btn" id="load-all-sp" onclick="loadAllSP()" style="font-size:11px">Load today’s starters</button>
-    <span style="font-size:9px;font-family:var(--mono);color:var(--mut);line-height:1.4;flex:1;min-width:160px">Pitching stats stay neutral until real starter data loads &mdash; one tap pulls each probable&rsquo;s recent ERA/WHIP so the matchup actually counts.</span>
+  <div class="ds-settings-section">
+    <h3>Market settings</h3>
+    <label class="ds-field"><span>Bankroll</span><span class="ds-money-input">$<input id="bankroll-in" type="number" min="1" value="1000" onchange="saveBankroll(this.value);QuantLabUI.syncSettings()"></span></label>
+    <label class="ds-field"><span>Kelly fraction</span><select id="kelly-frac" onchange="saveKelly(this.value);QuantLabUI.syncSettings()"><option value="0.1">0.10</option><option value="0.25" selected>0.25</option><option value="0.5">0.50</option><option value="1">1.00</option></select></label>
+    <div class="ds-setting-note"><span>Minimum edge</span><strong>4.0%</strong></div>
   </div>
-  <div class="metrics">
-    <div class="mc ink"><div class="mc-lbl">Today Acc</div><div class="mc-val" id="m-acc">&mdash;</div><div class="mc-sub" id="m-acc-s">0 logged</div></div>
-    <div class="mc grn"><div class="mc-lbl">High Conf 60%+</div><div class="mc-val g" id="m-hc">&mdash;</div><div class="mc-sub" id="m-hc-s">waiting</div></div>
-    <div class="mc amb"><div class="mc-lbl">Calibration Err</div><div class="mc-val a" id="m-cal">&mdash;</div><div class="mc-sub">lower = better</div></div>
-    <div class="mc vio"><div class="mc-lbl">+EV bets today</div><div class="mc-val" id="m-ev">&mdash;</div><div class="mc-sub">4%+ edge vs line</div></div>
-  </div>
-  <div id="top-pick"></div>
-  <div id="slate-overview"></div>
-  <div class="sec">
-    <span>Today &mdash; auto-logs &amp; trains as games finish</span>
-    <div class="filter-row">
-      <button class="fbtn on" id="f-all" onclick="setFilter('all')">All</button>
-      <button class="fbtn" id="f-hc" onclick="setFilter('hc')">High conf</button>
-      <button class="fbtn" id="f-bet" onclick="setFilter('bet')">+EV only</button>
-      <button class="fbtn" id="f-pend" onclick="setFilter('pending')">Pending</button>
-      <button class="fbtn" id="f-won" onclick="setFilter('won')">Won</button>
-      <button class="fbtn" id="f-lost" onclick="setFilter('lost')">Lost</button>
-      <button class="fbtn on" id="f-sit" onclick="toggleSit()">Situational: ON</button>
-      <select id="srt" onchange="renderToday()">
-        <option value="time">&#8595; First pitch</option>
-        <option value="conf">&#8595; Confidence</option>
-        <option value="edge">&#8595; Bet edge</option>
-      </select>
-    </div>
-  </div>
-  <div id="gl" class="games"></div>
-  <div class="sec" id="rr-sec" style="display:none"><span>Recent results</span><span style="letter-spacing:0" id="rr-sum"></span></div>
-  <div class="rr-list" id="recent-results"></div>
-  </div>
-</div>
-
-<!-- GAME WORKSPACE -->
-<div id="pnl-game" class="pnl">
-  <div id="ql-game-root" class="ql-root"></div>
-</div>
-
-<!-- BALLPARK LIVE -->
-<div id="pnl-ballpark" class="pnl ql-ballpark-panel">
-  <div id="ql-ballpark-root" class="ql-root"></div>
-</div>
-
-<!-- HISTORY -->
-<div id="pnl-history" class="pnl">
-  <div class="metrics">
-    <div class="mc ink"><div class="mc-lbl">Overall Acc</div><div class="mc-val g" id="h-acc">&mdash;</div><div class="mc-sub" id="h-acc-s">no data</div></div>
-    <div class="mc grn"><div class="mc-lbl">High Conf</div><div class="mc-val g" id="h-hc">&mdash;</div><div class="mc-sub" id="h-hc-s">no data</div></div>
-    <div class="mc amb"><div class="mc-lbl">Last 10</div><div class="mc-val" id="h-l10">&mdash;</div><div class="mc-sub" id="h-l10-s">no data</div></div>
-    <div class="mc vio"><div class="mc-lbl">Total Logged</div><div class="mc-val" id="h-total">0</div><div class="mc-sub" id="h-total-s">real results</div></div>
-  </div>
-  <div class="sec"><span>Full prediction log</span><div class="history-actions"><button class="btn" onclick="exportCSV()">Download CSV</button><button class="btn" onclick="exportJSON()">Download backup</button><label class="btn" for="history-import">Import backup</label><button class="btn danger-btn" onclick="clearHistory()">Clear</button><input id="history-import" type="file" accept="application/json,.json" hidden onchange="importHistoryFile(this.files[0]);this.value=''" /></div></div>
-  <div style="overflow-x:auto;border:1px solid var(--br);border-radius:var(--r);background:var(--s1)"><table id="h-table" class="hist-table"></table></div>
-</div>
-
-<!-- CALIBRATION -->
-<div id="pnl-calib" class="pnl">
-  <div class="sec">Reliability curve &mdash; the metric syndicates buy</div>
-  <div id="calib-meta" style="font-size:11px;font-family:var(--mono);color:var(--mut2);margin-bottom:10px"></div>
-  <div id="calib-metrics" class="metrics" style="margin-bottom:14px"></div>
-  <div class="calib-legend">
-    <div class="cl-item"><div class="cl-dot" style="background:#64748b"></div>Perfect calibration</div>
-    <div class="cl-item"><div class="cl-dot" style="background:#5b8def"></div>Your model (95% CI)</div>
-    <div class="cl-item"><div class="cl-dot" style="background:#2dd4bf"></div>Bin sample size</div>
-  </div>
-  <div class="calib-wrap"><canvas id="calib-canvas" width="940" height="300"></canvas></div>
-  <div id="calib-recal" style="background:var(--s2);border:1px solid var(--br);border-radius:9px;padding:12px;margin:12px 0"></div>
-  <div class="calib-note">A model is <b>well-calibrated</b> when games it calls 60% actually win ~60% of the time. Calibration error (ECE) is <b id="ece-val">&mdash;</b> &mdash; under 0.05 is production-grade.</div>
-</div>
-
-<!-- ACCURACY -->
-<div id="pnl-accuracy" class="pnl">
-  <div id="tp-module"></div>
-  <div class="metrics">
-    <div class="mc ink"><div class="mc-lbl">Rolling Acc</div><div class="mc-val g" id="a-acc">&mdash;</div><div class="mc-sub" id="a-acc-s">no data</div></div>
-    <div class="mc grn"><div class="mc-lbl">High Conf 60%+</div><div class="mc-val g" id="a-hc">&mdash;</div><div class="mc-sub" id="a-hc-s">no data</div></div>
-    <div class="mc amb"><div class="mc-lbl">Brier Score</div><div class="mc-val" id="a-br">&mdash;</div><div class="mc-sub">&#8594; 0.20 target</div></div>
-    <div class="mc vio"><div class="mc-lbl">Log Loss</div><div class="mc-val" id="a-ll">&mdash;</div><div class="mc-sub">baseline 0.693</div></div>
-  </div>
-  <div class="sec">Accuracy by confidence band</div>
-  <div id="bands" style="margin-bottom:16px"></div>
-  <div class="sec">Rolling accuracy</div>
-  <div class="chart-wrap"><canvas id="rc" width="940" height="180"></canvas></div>
-  <div class="sec">Picks correct per team <span style="color:var(--mut);font-weight:400;text-transform:none;letter-spacing:0">(model&#39;s record when it picked them)</span></div>
-  <div id="team-acc" style="margin-bottom:16px"></div>
-</div>
-
-<!-- MODEL -->
-<div id="pnl-model" class="pnl">
-  <div id="ql-model-root" class="ql-root"></div>
-  <details class="ql-legacy-tools">
-    <summary>Legacy training tools</summary>
-    <div class="ql-legacy-tools-body">
-  <div class="sec"><span>Self-training model</span><span class="badge" id="train-badge">0 games trained</span></div>
-  <div class="disclaimer">&#9888; <b>Point-in-time caveat:</b> team-context features (standings, Elo, recent form, H2H, injuries) are built from CURRENT data, not a snapshot of what was known as of each historical game's own date. Grading a 20-day-old game still uses today's full-season record for both teams. That means the accuracy/AUC/calibration numbers below are somewhat optimistic vs. true forward (live) performance &mdash; treat them as an upper bound, not a live-performance guarantee.</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-    <button class="btn btn-primary" onclick="applyTrained()">Train on real games</button>
-    <button class="btn" onclick="runCV()">5-fold cross-validation</button>
-  </div>
-  <div id="train-result" style="margin-bottom:12px"></div>
-  <div id="cv-result" style="margin-bottom:16px"></div>
-  <div class="sec"><span>&#9889; Power ratings (Elo) &mdash; self-updating</span><span class="badge" id="elo-badge">live</span></div>
-  <div id="elo-ratings" style="margin-bottom:16px"></div>
-  <div class="sec">Model components</div>
-  <div id="mg" style="margin-bottom:16px"></div>
-  <div class="sec">Learned feature weights</div>
-  <div id="weight-bars" style="margin-bottom:16px"></div>
-  <div class="sec">Feature importance (live, from current slate)</div>
-  <div id="fi"></div>
-    </div>
-  </details>
-</div>
-
-<!-- BETTING -->
-<div id="pnl-betting" class="pnl">
-  <div class="sec">Bankroll settings</div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-    <div><div class="mc-lbl" style="margin-bottom:4px">Bankroll ($)</div><input id="bankroll-in" type="number" value="1000" onchange="saveBankroll(this.value)" style="width:120px;padding:8px 10px;border:1px solid var(--br2);border-radius:8px"></div>
-    <div><div class="mc-lbl" style="margin-bottom:4px">Kelly fraction</div><input id="kelly-frac" type="number" step="0.05" value="0.25" onchange="saveKelly(this.value)" style="width:120px;padding:8px 10px;border:1px solid var(--br2);border-radius:8px"></div>
-  </div>
-  <div id="betting-body"></div>
-</div>
-
-<!-- BACKTEST -->
-<div id="pnl-backtest" class="pnl">
-  <div class="sec"><span>Backtest on real completed games</span><button class="btn btn-primary" id="bt-run" onclick="loadBacktest(30)">&#8681; Load last 30 days</button></div>
-  <div id="bt-progress" style="font-family:var(--mono);font-size:11px;color:var(--mut2);margin-bottom:10px"></div>
-  <div id="bt-results" style="margin-bottom:16px"></div>
-  <div id="gl2" class="games"></div>
-</div>
-
-<!-- BRACKET -->
-<div id="pnl-bracket" class="pnl">
-  <div class="sec"><span>Playoff bracket projection</span><span class="badge" id="bracket-src">MLB Stats API</span></div>
-  <div id="bracket-body"></div>
-</div>
-
-<!-- RESEARCH -->
-<div id="pnl-ai" class="pnl">
-  <div class="sec">Daily slate summary</div>
-  <div id="ai-resp" class="ai-body"></div>
-</div>
-
-<!-- CONSOLIDATED PERFORMANCE -->
-<div id="pnl-performance" class="pnl">
-  <div id="ql-performance-root" class="ql-root"></div>
-</div>
-
-<!-- DATA HEALTH / PROVENANCE -->
-<div id="pnl-data" class="pnl">
-  <div id="ql-data-root" class="ql-root"></div>
-</div>
-
-<!-- contextual research panel -->
-<button id="chat-fab" onclick="toggleChat()" title="Open slate query panel">Slate query</button>
-<div id="chat-panel">
-  <div class="chat-hdr">Slate query <small>rules-based · verified inputs</small></div>
+</aside>
+<div id="ds-drawer-scrim" class="ds-drawer-scrim" onclick="DiamondSignalUI.toggleSettings(false)"></div>
+<button id="chat-fab" type="button" onclick="toggleChat()" title="Open slate query panel">Slate query</button>
+<div id="chat-panel" aria-label="Slate query">
+  <div class="chat-hdr">Slate query <small>Verified inputs</small></div>
   <div id="chat-body"></div>
-  <div class="chat-foot">
-    <input id="chat-input" placeholder="Ask about a team, bet, or stat&hellip;" onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="chat-send" onclick="sendChat()">&#10148;</button>
-  </div>
+  <div class="chat-foot"><input id="chat-input" placeholder="Ask about a team, game, or model signal" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">Send</button></div>
 </div>
-
-<!-- log modal -->
-<div id="log-modal" class="overlay">
-  <div class="modal-card">
-    <div id="mt" style="font-weight:800;font-size:16px;margin-bottom:3px"></div>
-    <div id="ms" style="font-family:var(--mono);font-size:11px;color:var(--mut2);margin-bottom:14px"></div>
-    <div style="display:flex;gap:10px;align-items:flex-end">
-      <div style="flex:1;min-width:0"><div id="as-lbl" class="sc-lbl"></div><input id="as-in" class="sc-in" type="number" min="0" inputmode="numeric" placeholder="0"></div>
-      <div style="padding-bottom:11px;color:var(--mut);font-family:var(--mono);font-weight:700">&ndash;</div>
-      <div style="flex:1;min-width:0"><div id="hs-lbl" class="sc-lbl"></div><input id="hs-in" class="sc-in" type="number" min="0" inputmode="numeric" placeholder="0"></div>
-    </div>
-    <div id="log-err" style="color:var(--red);font-family:var(--mono);font-size:10.5px;margin-top:8px;min-height:13px"></div>
-    <div style="display:flex;gap:8px;margin-top:4px">
-      <button onclick="closeModal()" class="btn" style="flex:1">Cancel</button>
-      <button onclick="confirmLog()" class="btn btn-primary" style="flex:2">Save &amp; train</button>
-    </div>
-  </div>
-</div>
-
+<div id="log-modal" class="overlay"><div class="modal-card"><div id="mt"></div><div id="ms"></div><div class="ds-score-entry"><label><span id="as-lbl"></span><input id="as-in" type="number" min="0"></label><label><span id="hs-lbl"></span><input id="hs-in" type="number" min="0"></label></div><div id="log-err"></div><div class="ds-modal-actions"><button onclick="closeModal()">Cancel</button><button class="ds-primary" onclick="confirmLog()">Save result</button></div></div></div>
 <div id="toast" class="toast"></div>
-
 <script src="js/betting.js"></script>
 <script src="js/calibration.js"></script>
 <script src="js/poisson.js"></script>
@@ -4552,7 +3932,6 @@ loadToday();
 
 autoResolveGames();
 buildElo();
-renderToday();
 
 </script>
 <script src="js/model/pipeline.js"></script>

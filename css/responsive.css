@@ -1,0 +1,109 @@
+@media (max-width: 1260px) {
+  .ql-workspace { grid-template-columns: minmax(600px, .98fr) minmax(430px, 1.02fr); }
+  .ql-kpis { grid-template-columns: repeat(4, 1fr); }
+  .ql-game-scorecard { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 1024px) {
+  .ds-header-row { grid-template-columns: 1fr auto; }
+  .ds-session { display: none; }
+  .ds-workspace { padding: 20px 16px; }
+  .ql-workspace { grid-template-columns: 1fr; }
+  .ql-slate-pane { border-right: 0; }
+  .ql-inspector { display: none; }
+  .ql-table-scroll { max-height: none; }
+  .ql-game-layout, .ql-performance-grid, .ql-data-grid { grid-template-columns: 1fr; }
+  .ql-game-scorecard { grid-template-columns: repeat(3, 1fr); }
+  .ql-ballpark-panel { margin: -20px -16px; }
+  .ql-ballpark-main { grid-template-columns: 1fr; }
+  .ql-ballpark-rail { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 0; border-top: 1px solid #23323c; }
+  .ql-ballpark-stage { min-height: 620px; }
+}
+
+@media (max-width: 767px) {
+  :root { --header-height: 58px; --nav-height: 46px; }
+  body { padding-bottom: 54px; }
+  .ds-header { position: sticky; }
+  .ds-header-row { height: var(--header-height); padding: 0 12px; }
+  .ds-brand { gap: 9px; }
+  .ds-brand strong { font-size: 11px; }
+  .ds-brand small { display: none; }
+  .ds-mark { width: 24px; height: 24px; }
+  .ds-settings-button span { display: none; }
+  .ds-settings-button { width: 34px; padding: 0; }
+  .ds-settings-button::before { content: "•••"; letter-spacing: 1px; }
+  .ds-nav { position: fixed; z-index: 110; left: 0; right: 0; bottom: 0; height: 54px; justify-content: space-around; gap: 0; padding: 0 4px env(safe-area-inset-bottom); border: 1px solid var(--divider); border-bottom: 0; background: rgba(9, 13, 17, .98); }
+  .ds-nav .tab { flex: 1 1 0; min-width: 45px; font-size: 9px; }
+  .ds-nav .tab.active::after { top: 0; bottom: auto; }
+  .ds-workspace { padding: 16px 12px; }
+  .ql-page-head { display: block; margin-bottom: 16px; }
+  .ql-page-head h1 { font-size: 23px; }
+  .ql-page-head p { max-width: 92%; }
+  .ql-inline-meta { margin-top: 12px; justify-content: space-between; }
+  .ql-workspace { display: block; min-height: 0; border-top-color: var(--divider); }
+  .ql-toolbar { align-items: flex-start; flex-direction: column; }
+  .ql-filter-group { width: 100%; }
+  .ql-control { align-self: flex-end; margin-top: -39px; }
+  .ql-table { table-layout: fixed; }
+  .ql-table thead { display: none; }
+  .ql-table tbody tr { display: grid; grid-template-columns: 62px 1fr 74px; grid-template-rows: 31px 25px; height: 62px; }
+  .ql-table td { display: none; padding: 6px 7px; }
+  .ql-table td:nth-child(1), .ql-table td:nth-child(2), .ql-table td:nth-child(3), .ql-table td:nth-child(4) { display: block; }
+  .ql-table td:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+  .ql-table td:nth-child(2) { grid-column: 2; grid-row: 1; }
+  .ql-table td:nth-child(3) { grid-column: 2; grid-row: 2; padding-top: 0; }
+  .ql-table td:nth-child(4) { grid-column: 3; grid-row: 1 / 3; text-align: right; }
+  .ql-matchup .ql-team-logo { display: none; }
+  .ql-starters { color: var(--text-tertiary); font-size: 9px; }
+  .ql-game-head { grid-template-columns: 1fr; }
+  .ql-game-head .ql-actions { padding-top: 0; }
+  .ql-game-title .ql-team-logo { width: 32px; height: 32px; }
+  .ds-matchup-hero { grid-template-columns: 1fr; gap: 12px; padding-bottom: 18px; }
+  .ds-matchup-context { grid-column: 1; }
+  .ds-matchup-line { grid-template-columns: 1fr 14px 1fr; gap: 5px; }
+  .ds-hero-team { grid-template-columns: 32px minmax(0, 1fr); gap: 7px; }
+  .ds-hero-team .ql-team-logo { width: 32px; height: 32px; }
+  .ds-hero-team small { display: none; }
+  .ds-hero-team > strong { grid-column: 1 / -1; font-size: 25px; }
+  .ds-model-pick { min-width: 0; padding: 11px 0 0; border-left: 0; border-top: 1px solid var(--divider); }
+  .ds-model-pick small { display: inline; margin-left: 8px; }
+  .ds-matchup-hero .ql-actions { grid-column: 1; justify-content: flex-start; }
+  .ql-game-scorecard { grid-template-columns: 1fr 1fr; }
+  .ql-game-scorecard > div { padding: 12px 10px 12px 0; border-bottom: 1px solid var(--divider); }
+  .ql-game-layout { gap: 0; padding-top: 16px; }
+  .ql-section { margin-bottom: 18px; }
+  .ql-section-head { align-items: flex-start; min-height: 44px; padding: 11px 0; }
+  .ql-contribution { grid-template-columns: 110px 1fr 52px; gap: 7px; }
+  .ql-lab-controls { grid-template-columns: 1fr; }
+  .ql-strike-zone { grid-template-columns: 1fr; }
+  .ql-kpis { grid-template-columns: 1fr 1fr; }
+  .ql-market-status, .ds-market-status { grid-template-columns: 1fr 1fr; }
+  .ql-data-grid { gap: 0; }
+  .ql-source-row { grid-template-columns: 1fr auto; }
+  .ql-source-row a, .ql-source-row > span:last-child { grid-column: 1 / -1; padding-bottom: 8px; }
+  .ql-ballpark-panel { margin: -16px -12px -54px; }
+  .ql-ballpark-shell { min-height: calc(100vh - 58px); grid-template-rows: 44px 1fr; }
+  .ql-ballpark-bar { padding: 0 9px; }
+  .ql-ballpark-title span, .ql-overlay-group, .ql-quality-select { display: none; }
+  .ql-camera-group button:not(.active) { display: none; }
+  .ql-camera-group button.active { padding: 0 7px; }
+  .ql-ballpark-stage { min-height: calc(100vh - 102px); }
+  .ql-ballpark-rail { position: absolute; left: 0; right: 0; bottom: 54px; z-index: 4; display: block; max-height: 125px; overflow: auto; background: rgba(8, 16, 21, .92); }
+  .ql-ballpark-rail .ql-rail-section:not(:first-child) { display: none; }
+  .ql-rail-section { padding: 10px 12px; }
+  .ql-broadcast { left: 8px; right: 8px; top: 8px; }
+  .ql-wpbug { min-width: 135px; }
+  .ql-wpbug-head span { display: none; }
+  #chat-fab { display: none; }
+}
+
+@media (max-width: 430px) {
+  .ql-filter:nth-child(n+5) { display: none; }
+  .ql-inline-meta span:last-child { display: none; }
+  .ql-game-title h1 { font-size: 20px; }
+  .ql-game-title .ql-team-logo:nth-child(2) { margin-left: -17px; }
+  .ql-scorebug-team { min-width: 62px; padding: 6px; }
+  .ql-scorebug-state { min-width: 75px; padding: 6px; }
+  .ql-wpbug { display: none; }
+  .ds-market-diagnostics { grid-template-columns: 1fr 1fr; }
+}

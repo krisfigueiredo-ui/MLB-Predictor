@@ -1,4 +1,4 @@
-// Quant Lab probability pipeline helpers. These functions are intentionally
+// Diamond Signal probability pipeline helpers. These functions are intentionally
 // pure so the published model, shadow models, and tests use identical math.
 (function(root, factory) {
   var mod = factory();
