@@ -161,7 +161,9 @@
     shape.moveTo(0, 0);
     (config.wallPoints || []).forEach(function(point) {
       var p = wallXY(point, scale);
-      shape.lineTo(p.x, p.z);
+      // ShapeGeometry's positive Y maps toward negative world Z after the field
+      // is rotated flat, so invert depth to keep the outfield behind second base.
+      shape.lineTo(p.x, -p.z);
     });
     shape.lineTo(0, 0);
     var grass = new T.Mesh(new T.ShapeGeometry(shape), new T.MeshStandardMaterial({ color: config.surface === "turf" ? 0x2f654f : 0x2b5a42, roughness: 0.92 }));
@@ -170,11 +172,11 @@
     this.scene.add(grass);
 
     var dirtMat = new T.MeshStandardMaterial({ color: 0x98734f, roughness: 1 });
-    var infield = new T.Mesh(new T.CircleGeometry(7.5, 64, Math.PI / 4, Math.PI * 2), dirtMat);
+    var infield = new T.Mesh(new T.CircleGeometry(7.35, 4, Math.PI / 4), dirtMat);
     infield.rotation.x = -Math.PI / 2;
     infield.position.set(0, 0.018, 5.9);
     this.scene.add(infield);
-    var innerGrass = new T.Mesh(new T.CircleGeometry(4.2, 48), new T.MeshStandardMaterial({ color: 0x315f46, roughness: 1 }));
+    var innerGrass = new T.Mesh(new T.CircleGeometry(4.05, 4, Math.PI / 4), new T.MeshStandardMaterial({ color: 0x315f46, roughness: 1 }));
     innerGrass.rotation.x = -Math.PI / 2;
     innerGrass.position.set(0, 0.034, 5.9);
     this.scene.add(innerGrass);
@@ -349,10 +351,10 @@
   BallparkEngine.prototype.setCamera = function(mode) {
     if(!this.camera)return;
     var presets={
-      broadcast:{p:[18,14,-14],t:[0,0,9],f:42},
+      broadcast:{p:[0,18,-25],t:[0,0,10],f:46},
       catcher:{p:[0,2.3,-2.1],t:[0,1.25,7],f:50},
       pitcher:{p:[0,2.1,4.2],t:[0,1.15,-.2],f:47},
-      overhead:{p:[0,43,8],t:[0,0,8],f:36},
+      overhead:{p:[0,48,9],t:[0,0,9],f:43},
       outfield:{p:[0,6,26],t:[0,1,5],f:43},
       free:{p:[17,11,-10],t:[0,0,9],f:45}
     };

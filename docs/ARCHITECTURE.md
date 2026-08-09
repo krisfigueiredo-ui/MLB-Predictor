@@ -20,7 +20,8 @@ ESPN scoreboard / odds / injuries       MLB Stats API
                               │
                    browser local storage
                               │
-        Slate / Game / Model / Performance / Data
+ Slate / Live / Picks / Standings / Players / Teams
+        Game / Model / Performance / Data
                               │
                    optional Ballpark Live
 ```
@@ -30,6 +31,8 @@ The legacy prediction engine remains in `index.html` so existing data collection
 - `js/model/pipeline.js` — pure base-model ensemble, calibration, and disagreement math.
 - `js/model/walk-forward.js` — chronological splits, prior-only calibration, metrics, and feature ablation.
 - `js/data/snapshots.js` — versioned pregame records, deep immutability, grading, parsing, and legacy labels.
+- `js/data/baseball-intel.js` — pure normalization for standings, players, lineups, game feeds, moments, recent form, derived win probability, and the Diamond Signal Score.
+- `js/data/mlb-intel-client.js` — on-demand MLB standings, live-game, player, and team endpoints with session caching.
 - `js/ui/quant-lab.js` — application routing and purpose-built analytical views.
 - `js/three/stadium-configs.js` — validated park parameters and explicit schematic fallback.
 - `js/three/ballpark.js` — on-demand Three.js renderer and 2D SVG fallback.
@@ -50,6 +53,18 @@ The renderer uses:
 - an SVG field when WebGL or the module import fails.
 
 Live scores and probabilities update in the HTML overlay without reconstructing the scene. Pitch endpoints use measured plate coordinates. Because release-point and movement vectors are not guaranteed in the current feed path, the connecting curve is a derived visualization and says so in the UI.
+
+## Baseball intelligence records
+
+The MLB client converts provider-specific payloads into stable UI-facing records:
+
+- `standing` — team identity, league/division, record, games back, splits, streak, and run differential;
+- `lineup` — confirmation status, ordered starters, starting pitcher, bench, and bullpen;
+- `player` — identity, role, handedness, core batting/pitching fields, optional advanced fields, and recent hitting windows;
+- `play` — inning, event, description, matchup, score, and deterministic before/after home probability;
+- `moment` — a verified play classified as a home run, run-scoring play, pitching change, double play, error, high-leverage strikeout, or material probability swing.
+
+Views request these records only when needed. The game workspace loads one MLB game feed; that same response populates Lineups, Play-by-play, Moments, the Players index, and relevant Team links without duplicating requests.
 
 ## Data boundaries
 

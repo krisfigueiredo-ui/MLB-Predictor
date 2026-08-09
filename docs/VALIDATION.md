@@ -27,6 +27,9 @@ Earlier repository tests had already corrected standardization leakage in batch 
 - Added deeply immutable, versioned pregame snapshots.
 - Kept incomplete historical records labeled `LEGACY` instead of reconstructing them.
 - Added a forward model-version table without retrospectively selecting a winner.
+- Added pure MLB response normalization and explicit null handling for unavailable player, lineup, standings, and play-by-play fields.
+- Added a deterministic, documented Picks ranking score that cannot manufacture market edge when odds are absent.
+- Added event-derived moments and win-probability points while preserving their measured-versus-derived provenance.
 
 ## Current evidence
 
@@ -50,13 +53,13 @@ Promotion should be based primarily on out-of-time log loss and Brier score, the
 ## Known limitations
 
 - Browser local storage is not a shared database; exports are required for durable cross-device collection.
-- The current public feeds do not guarantee complete xERA, velocity-trend, pitch-mix, bullpen-availability, lineup, weather, umpire, or closing-line fields for every game.
+- The current public feeds do not guarantee complete xERA, velocity-trend, pitch-mix, bullpen-availability, confirmed lineups, weather, umpire, or closing-line fields for every game.
 - Missing legitimate inputs remain neutral rather than estimated.
 - Market snapshots preserve only fields present in the upstream odds object; opening and closing lines cannot be claimed when the provider does not publish them.
 - The 3D pitch curve uses a measured plate endpoint but schematic interpolation when full trajectory vectors are unavailable.
 - Six parks have configured official dimension markers; other parks use a labeled schematic geometry.
-- Visual browser QA of the local preview can be limited by the host application's localhost security policy; source-level responsive checks and automated fallback tests remain in CI.
+- The local win-probability timeline uses frozen pregame probability plus verified score and inning state. It does not yet model count, runners, outs, or team-specific run expectancy and is labeled derived throughout the interface.
 
 ## Test result
 
-At the completion of this rebuild: **210 tests passed across 15 test files**. Run `npm test` to reproduce the suite.
+At the completion of this rebuild: **217 tests passed across 16 test files**. Run `npm test` to reproduce the suite.
