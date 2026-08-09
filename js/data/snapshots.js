@@ -5,7 +5,7 @@
   if (typeof module !== "undefined" && module.exports) module.exports = mod;
   for (var key in mod) root[key] = mod[key];
 })(typeof globalThis !== "undefined" ? globalThis : this, function() {
-  var SNAPSHOT_SCHEMA = 1;
+  var SNAPSHOT_SCHEMA = 2;
 
   function clone(value) {
     return value == null ? value : JSON.parse(JSON.stringify(value));
@@ -48,6 +48,11 @@
       market: clone(input.market || null),
       home: input.home || null,
       away: input.away || null,
+      selection: clone(input.selection || null),
+      projectedScore: clone(input.projectedScore || null),
+      signal: clone(input.signal || null),
+      starters: clone(input.starters || null),
+      lineups: clone(input.lineups || null),
       status: "FROZEN",
       result: clone(input.result || null)
     };
@@ -94,12 +99,17 @@
     if (!existing || existing.result) return base;
     var homeScore = finiteOrNull(result && result.homeScore);
     var awayScore = finiteOrNull(result && result.awayScore);
-    if (homeScore == null || awayScore == null || homeScore === awayScore) return base;
+    if (homeScore == null || awayScore == null) return base;
     var graded = clone(existing);
+    var selectedTeam = graded.selection && graded.selection.team;
+    var selectedHome = selectedTeam ? selectedTeam === graded.home : graded.publishedProb >= 0.5;
+    var won = homeScore === awayScore ? null : selectedHome ? homeScore > awayScore : awayScore > homeScore;
     graded.result = {
       homeScore: homeScore,
       awayScore: awayScore,
-      actualHome: homeScore > awayScore,
+      actualHome: homeScore === awayScore ? null : homeScore > awayScore,
+      selectedTeam: selectedTeam || (selectedHome ? graded.home : graded.away),
+      outcome: homeScore === awayScore ? "PUSH" : won ? "WON" : "LOST",
       gradedAt: finiteOrNull(result.gradedAt) || Date.now()
     };
     base.snapshots[gameId] = graded;

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Stadium visual QA</title>
+  <style>
+    html,body,#park{width:100%;height:100%;margin:0;overflow:hidden;background:#8da4b1}
+    .bp-canvas{display:block;width:100%;height:100%}.bp-loading{height:100%;display:grid;place-items:center;font:14px system-ui;color:#182127}
+  </style>
+</head>
+<body>
+  <main id="park" aria-label="Stadium visual test"></main>
+  <script src="../js/three/stadium-configs.js"></script>
+  <script src="../js/three/ballpark.js"></script>
+  <script>
+    var query=new URLSearchParams(location.search),team=query.get('team')||'CHC',camera=query.get('camera')||'broadcast';
+    var config=stadiumForTeam(team),engine=new BallparkEngine(document.getElementById('park'));
+    engine.init(config,{home:team,away:'MLB',status:'pre'},'medium').then(function(){engine.setCamera(camera);});
+  </script>
+</body>
+</html>

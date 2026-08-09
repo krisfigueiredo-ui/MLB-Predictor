@@ -27,7 +27,10 @@ function input() {
     dataQuality: { complete: 0.9 },
     market: { homeML: -120 },
     home: "TOR",
-    away: "NYY"
+    away: "NYY",
+    selection: { team: "TOR", probability: 0.58, signalScore: 7.4 },
+    projectedScore: { home: 4.6, away: 3.9 },
+    signal: { score: 7.4, components: [{ label: "Confidence", value: 0.58 }] }
   };
 }
 
@@ -39,6 +42,7 @@ describe("point-in-time snapshots", () => {
     expect(Object.isFrozen(snapshot)).toBe(true);
     expect(Object.isFrozen(snapshot.features)).toBe(true);
     expect(Object.isFrozen(snapshot.market)).toBe(true);
+    expect(Object.isFrozen(snapshot.selection)).toBe(true);
     expect(() => { snapshot.features.elo = 99; }).toThrow();
   });
 
@@ -58,6 +62,8 @@ describe("point-in-time snapshots", () => {
     const store = appendImmutableSnapshot(null, createPredictionSnapshot(input(), 1500));
     const graded = gradePredictionSnapshot(store, "401", { homeScore: 5, awayScore: 3, gradedAt: 3000 });
     expect(graded.snapshots["401"].result.actualHome).toBe(true);
+    expect(graded.snapshots["401"].result.outcome).toBe("WON");
+    expect(graded.snapshots["401"].selection.team).toBe("TOR");
     expect(graded.snapshots["401"].rawProb).toBe(0.61);
   });
 

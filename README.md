@@ -10,12 +10,12 @@ Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It
 
 - **Slate** — a dense, sortable baseball board with compact mobile rows, model probability, market state, projected runs, source coverage, and a persistent desktop matchup inspector.
 - **Live** — active and completed games with score, inning, count, outs, base occupancy, live win-probability context, and the latest verified moment once a game feed is loaded.
-- **Picks** — every matchup ranked by the documented 0–10 Diamond Signal Score, with model side, projected score, market state, and the strongest positive and negative signals.
+- **Picks** — ranked upcoming selections, frozen pregame probabilities, live tracking, explicit outcomes, and historical result windows backed only by stored prediction records.
 - **Standings** — MLB, league, and wild-card boards with division position, home/road records, last 10, streak, games back, and run differential.
 - **Players** — an on-demand directory populated from verified game rosters. Player drawers show bio, core season batting or pitching, recent hitting windows, and explicit unavailable states for unsupported advanced fields.
 - **Teams** — a club workspace for standings context, season offense, season pitching, current provider-returned availability, and today’s matchup.
 - **Game** — a full research workspace with Overview, Lineups, Matchup, Ballpark, Play-by-play, Moments, Model, and Market modes. Confirmed orders, bench/bullpen roles, verified events, and derived win-probability swings stay attached to the selected matchup.
-- **Ballpark Live** — a canvas-first, park-specific Three.js broadcast view with occupied stands, stylized baseball players, six camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
+- **Ballpark Live** — a canvas-first, park-specific Three.js broadcast view with occupied stands, regulation-scale field geometry, eight camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
 - **Model** — a research-led pipeline view with prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
 - **Performance** — a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
 - **Market** — verified moneyline coverage, edge comparison, Kelly sizing, paper P/L, CLV readiness, and downloadable records. Risk controls live in one settings drawer.
@@ -46,31 +46,23 @@ Each input is normalized and capped to 0–1 before weighting. A missing moneyli
 
 ### Point-in-time snapshots
 
-Within 30 minutes of a verified first pitch, the browser stores a deeply immutable snapshot containing:
+The first verified pregame view is stored immediately as a deeply immutable snapshot containing:
 
 - model, weight, and calibration versions;
 - training cutoff and prediction timestamp;
 - raw, calibrated, published, Elo, Poisson, and feature probabilities;
 - raw features and weighted contributions;
 - data-quality flags and the available market record;
+- selected side, selected-side probability, projected score, Signal Score components, starters, and lineup state;
 - matchup and first-pitch identifiers.
 
 The record is graded only after a verified final score. The original analytical inputs are never recomputed with present-day data. Snapshots can be downloaded from the Data page.
 
 ## Ballpark architecture
 
-The 3D bundle is requested only after the user enters Ballpark Live. Shared scene components create the diamond, bases, grass, foul lines, walls, warning track, seating, crowd, stylized players, defensive overlays, and scoreboard. Park configuration then adds venue-specific architecture such as roofs, warehouse walls, fountains, rocks, coves, ivy, scoreboards, palms, and skyline cues. The crowd uses instanced heads, torsos, and arms; players use recognizable baseball silhouettes instead of position cylinders. The renderer draws only when a view changes or a pitch animation is active, pauses when hidden or outside the viewport, and disposes GPU resources on exit.
+The 3D bundle is requested only after the user enters Ballpark Live. One scene unit equals one foot: bases are 90 feet apart, the mound is 60.5 feet from home, and player figures are approximately six feet tall. Shared primitives create field surfaces, wall segments, seating decks, scoreboards, landmarks, crowds, players, and overlays, while each of the 30 parks supplies a separate assembly, outfield profile, seating plan, scoreboard placement, bullpen, batter eye, camera framing, and environmental treatment.
 
-Six parks include detailed wall profiles:
-
-- Fenway Park
-- Yankee Stadium
-- Wrigley Field
-- Dodger Stadium
-- Great American Ball Park
-- Rogers Centre
-
-Every other club receives a named home-park profile with its own corner and center-field distances, surface/roof context, architectural treatment, and official club ballpark link. The visualization is an original stylized broadcast model rather than a photogrammetric replica. Intermediate wall segments are derived from each venue profile. Pitch endpoints come from the MLB live feed; the connecting 3D arc is labeled as a derived interpolation.
+All 30 clubs resolve to a validated, uniquely fingerprinted assembly. Signature configurations explicitly preserve Fenway's Monster and deep-center kink, Yankee Stadium's short right field and center-field monuments, Wrigley's ivy/bleachers/manual board, Citizens Bank Park's Monty's Angle and Liberty Bell, Oracle Park's Triples Alley and cove, PNC Park's two-deck river opening, and Petco Park's Western Metal building.
 
 Quality modes are High, Medium, and Low, with Low selected automatically on mobile. If Three.js, WebGL, or the CDN is unavailable, the same game renders as an analytical SVG field while the score, game state, probability, timeline, and provenance remain accessible as HTML.
 
@@ -99,7 +91,7 @@ npm install
 npm test
 ```
 
-The test suite currently contains **217 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, all-club stadium resolution, responsive application shell, deployment packaging, and 2D fallback.
+The test suite currently contains **218 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
 
 Key directories:
 
@@ -107,7 +99,7 @@ Key directories:
 css/             Diamond Signal tokens, shell, page layouts, motion, and responsive modes
 js/data/         Snapshot schema plus MLB standings/game/player/team adapters
 js/model/        Ensemble, calibration, walk-forward validation, ablation
-js/three/        Stadium configurations and lazy procedural renderer
+js/three/        Park-owned assemblies and shared stadium construction primitives
 js/ui/           Slate, Live, Picks, Standings, Players, Teams, Game, Model, Performance, Data, and Ballpark views
 tests/           Vitest coverage for original and rebuilt modules
 ```

@@ -25,6 +25,7 @@ Earlier repository tests had already corrected standardization leakage in batch 
 - Added model-dispersion and agreement diagnostics.
 - Added chronological walk-forward feature ablation.
 - Added deeply immutable, versioned pregame snapshots.
+- Freeze the first verified pregame view immediately, including the selected side, projection, Signal Score, starters, lineup state, and available market context.
 - Kept incomplete historical records labeled `LEGACY` instead of reconstructing them.
 - Added a forward model-version table without retrospectively selecting a winner.
 - Added pure MLB response normalization and explicit null handling for unavailable player, lineup, standings, and play-by-play fields.
@@ -57,7 +58,7 @@ Promotion should be based primarily on out-of-time log loss and Brier score, the
 - Missing legitimate inputs remain neutral rather than estimated.
 - Market snapshots preserve only fields present in the upstream odds object; opening and closing lines cannot be claimed when the provider does not publish them.
 - The 3D pitch curve uses a measured plate endpoint but schematic interpolation when full trajectory vectors are unavailable.
-- Six parks have configured official dimension markers; other parks use a labeled schematic geometry.
+- Stadium geometry is an original interactive model assembled from official dimensions and documented park features, not a survey-grade or photogrammetric replica.
 - The local win-probability timeline uses frozen pregame probability plus verified score and inning state. It does not yet model count, runners, outs, or team-specific run expectancy and is labeled derived throughout the interface.
 
 ## Test result

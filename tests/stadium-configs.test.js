@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { MLB_STADIUMS, stadiumForTeam, validateStadiumConfig } from "../js/three/stadium-configs.js";
+import { MLB_STADIUMS, stadiumForTeam, assemblyFingerprint, validateStadiumConfig } from "../js/three/stadium-configs.js";
 
-describe("procedural stadium configuration", () => {
-  it("ships six detailed wall-profile configurations", () => {
-    expect(Object.keys(MLB_STADIUMS).sort()).toEqual(["BOS", "CHC", "CIN", "LAD", "NYY", "TOR"]);
+describe("stadium-specific configuration", () => {
+  it("ships a complete 30-park assembly registry", () => {
+    expect(Object.keys(MLB_STADIUMS)).toHaveLength(30);
+    expect(new Set(Object.values(MLB_STADIUMS).map(assemblyFingerprint)).size).toBe(30);
   });
 
-  it("validates every measured configuration", () => {
+  it("validates every park assembly", () => {
     Object.values(MLB_STADIUMS).forEach(config => {
       expect(validateStadiumConfig(config)).toEqual({ valid: true, issues: [] });
       expect(config.sourceUrl).toMatch(/^https:\/\/www\.mlb\.com\//);
@@ -17,6 +18,15 @@ describe("procedural stadium configuration", () => {
     const fenway = stadiumForTeam("BOS");
     expect(fenway.wallPoints[0].height).toBe(37);
     expect(fenway.wallPoints.some(point => point.distance === 420)).toBe(true);
+  });
+
+  it("preserves signature architecture for the required visual QA parks", () => {
+    expect(stadiumForTeam("NYY").architecture).toBe("monument");
+    expect(stadiumForTeam("CHC").architecture).toBe("ivy");
+    expect(stadiumForTeam("PHI").architecture).toBe("liberty-bell");
+    expect(stadiumForTeam("PHI").wallPoints.some(point => point.distance === 409 && point.height === 19)).toBe(true);
+    expect(stadiumForTeam("SF").architecture).toBe("cove");
+    expect(stadiumForTeam("SF").wallPoints.some(point => point.distance === 415)).toBe(true);
   });
 
   it("configures the remaining clubs as named home-park profiles", () => {

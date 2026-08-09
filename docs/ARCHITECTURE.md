@@ -34,12 +34,12 @@ The legacy prediction engine remains in `index.html` so existing data collection
 - `js/data/baseball-intel.js` — pure normalization for standings, players, lineups, game feeds, moments, recent form, derived win probability, and the Diamond Signal Score.
 - `js/data/mlb-intel-client.js` — on-demand MLB standings, live-game, player, and team endpoints with session caching.
 - `js/ui/quant-lab.js` — application routing and purpose-built analytical views.
-- `js/three/stadium-configs.js` — validated park parameters and explicit schematic fallback.
+- `js/three/stadium-configs.js` — 30 validated stadium-specific assemblies in foot-scale coordinates.
 - `js/three/ballpark.js` — on-demand Three.js renderer and 2D SVG fallback.
 
 ## Ballpark Live
 
-Configured parks reuse one geometry system rather than independent scene files. Wall points are converted from angle/distance parameters into field coordinates. Segments between official markers are procedural and labeled derived; unconfigured parks are fully schematic.
+The renderer exposes shared construction primitives, but every club supplies a distinct assembly. Wall profiles, seating sections, scoreboard placement, bullpens, batter eye, landmarks, cameras, and environment are configured per venue. One world unit equals one foot.
 
 The renderer uses:
 
@@ -47,7 +47,7 @@ The renderer uses:
 - `IntersectionObserver` and document visibility checks;
 - instanced seating and defensive-position markers;
 - responsive pixel-ratio and shadow settings;
-- six camera presets plus pointer control in Free mode;
+- seven fixed camera presets plus pointer control in Free mode;
 - explicit geometry, material, renderer, observer, and animation disposal;
 - a pinned, dynamically imported Three.js module;
 - an SVG field when WebGL or the module import fails.
