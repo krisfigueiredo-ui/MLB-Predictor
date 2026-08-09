@@ -77,9 +77,10 @@ describe("point-in-time snapshots", () => {
   });
 
   it("recovers the selected side for older frozen records missing selection metadata", () => {
-    const old = { ...input(), selection: null, publishedProb: 0.58 };
+    const old = { ...input(), selection: null, publishedProb: 0.58, result: { homeScore: 2, awayScore: 5, outcome: "LOSS" } };
     const parsed = parseSnapshotStore(JSON.stringify({ snapshots: { "401": old } }));
     expect(parsed.snapshots["401"].selection).toMatchObject({ team: "TOR", probability: 0.58, recovered: true });
+    expect(parsed.snapshots["401"].result).toMatchObject({ selectedTeam: "TOR", actualHome: false, outcome: "LOST" });
   });
 
   it("normalizes only verified legacy results and recomputes the outcome", () => {

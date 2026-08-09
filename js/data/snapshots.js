@@ -39,12 +39,33 @@
     };
   }
 
+  function normalizedResult(input, home, away, selection) {
+    if (!input) return null;
+    var result = clone(input);
+    var homeScore = finiteOrNull(result.homeScore);
+    var awayScore = finiteOrNull(result.awayScore);
+    if (homeScore != null && awayScore != null && selection && selection.team) {
+      var actualHome = homeScore === awayScore ? null : homeScore > awayScore;
+      var selectedHome = selection.team === home;
+      result.homeScore = homeScore;
+      result.awayScore = awayScore;
+      result.actualHome = actualHome;
+      result.selectedTeam = selection.team;
+      result.outcome = actualHome == null ? "PUSH" : selectedHome === actualHome ? "WON" : "LOST";
+      return result;
+    }
+    if (result.outcome === "WIN") result.outcome = "WON";
+    if (result.outcome === "LOSS") result.outcome = "LOST";
+    return result;
+  }
+
   function normalizeSnapshot(input) {
     input = input || {};
     var firstPitch = finiteOrNull(input.firstPitch);
     var timestamp = finiteOrNull(input.timestamp);
     if (!input.gameId || firstPitch == null || timestamp == null) return null;
     var publishedProb = finiteOrNull(input.publishedProb);
+    var selection = normalizedSelection(input, publishedProb);
     return {
       schema: SNAPSHOT_SCHEMA,
       gameId: String(input.gameId),
@@ -66,13 +87,13 @@
       market: clone(input.market || null),
       home: input.home || null,
       away: input.away || null,
-      selection: normalizedSelection(input, publishedProb),
+      selection: selection,
       projectedScore: clone(input.projectedScore || null),
       signal: clone(input.signal || null),
       starters: clone(input.starters || null),
       lineups: clone(input.lineups || null),
       status: "FROZEN",
-      result: clone(input.result || null)
+      result: normalizedResult(input.result, input.home, input.away, selection)
     };
   }
 
