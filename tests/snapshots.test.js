@@ -76,6 +76,12 @@ describe("point-in-time snapshots", () => {
     expect(createPredictionSnapshot({ ...input(), publishedProb: null }, 1500).publishedProb).toBeNull();
   });
 
+  it("recovers the selected side for older frozen records missing selection metadata", () => {
+    const old = { ...input(), selection: null, publishedProb: 0.58 };
+    const parsed = parseSnapshotStore(JSON.stringify({ snapshots: { "401": old } }));
+    expect(parsed.snapshots["401"].selection).toMatchObject({ team: "TOR", probability: 0.58, recovered: true });
+  });
+
   it("normalizes only verified legacy results and recomputes the outcome", () => {
     const legacy = normalizeLegacyPredictionResult({
       gid: "old-1", ts: 5000, home: "BOS", away: "NYY", pick: "NYY",

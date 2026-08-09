@@ -23,11 +23,28 @@
     return isFinite(number) ? number : null;
   }
 
+  function normalizedSelection(input, publishedProb) {
+    var selection = clone(input.selection || null);
+    if (selection && selection.team) {
+      if (finiteOrNull(selection.probability) == null && publishedProb != null) {
+        selection.probability = selection.team === input.home ? publishedProb : 1 - publishedProb;
+      }
+      return selection;
+    }
+    if (!input.home || !input.away || publishedProb == null) return null;
+    return {
+      team: publishedProb >= 0.5 ? input.home : input.away,
+      probability: Math.max(publishedProb, 1 - publishedProb),
+      recovered: true
+    };
+  }
+
   function normalizeSnapshot(input) {
     input = input || {};
     var firstPitch = finiteOrNull(input.firstPitch);
     var timestamp = finiteOrNull(input.timestamp);
     if (!input.gameId || firstPitch == null || timestamp == null) return null;
+    var publishedProb = finiteOrNull(input.publishedProb);
     return {
       schema: SNAPSHOT_SCHEMA,
       gameId: String(input.gameId),
@@ -39,7 +56,7 @@
       trainingCutoff: finiteOrNull(input.trainingCutoff),
       rawProb: finiteOrNull(input.rawProb),
       calibratedProb: finiteOrNull(input.calibratedProb),
-      publishedProb: finiteOrNull(input.publishedProb),
+      publishedProb: publishedProb,
       eloProb: finiteOrNull(input.eloProb),
       poissonProb: finiteOrNull(input.poissonProb),
       featureProb: finiteOrNull(input.featureProb),
@@ -49,7 +66,7 @@
       market: clone(input.market || null),
       home: input.home || null,
       away: input.away || null,
-      selection: clone(input.selection || null),
+      selection: normalizedSelection(input, publishedProb),
       projectedScore: clone(input.projectedScore || null),
       signal: clone(input.signal || null),
       starters: clone(input.starters || null),
