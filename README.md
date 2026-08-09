@@ -1,6 +1,6 @@
 # Diamond Signal
 
-Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It combines a feature-weighted logistic model, a Poisson run model, and Elo ratings; compares forecasts with verified market prices; freezes point-in-time predictions; and provides an immersive procedural view of the selected home park.
+Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It combines a feature-weighted logistic model, a Poisson run model, and Elo ratings; compares forecasts with verified market prices; freezes point-in-time predictions; and provides an immersive, park-specific view of the selected home venue.
 
 **Live application:** https://krisfigueiredo-ui.github.io/MLB-Predictor/
 
@@ -8,11 +8,11 @@ Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It
 
 ## Product structure
 
-- **Slate** — a compact, sortable daily table with model probability, market probability, edge, projected runs, source coverage, and a persistent matchup inspector.
-- **Game** — matchup evidence, feature contributions, base-model disagreement, probability flow, a non-destructive Model Lab, and measured pitch locations when available.
-- **Ballpark** — lazy-loaded park-specific Three.js geometry, low-poly spectators and players, six camera presets, live score and win-probability overlays, an event timeline, and a 2D SVG fallback.
-- **Model** — prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
-- **Performance** — forward snapshot metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
+- **Slate** — a dense, sortable baseball board with compact mobile rows, model probability, market state, projected runs, source coverage, and a persistent desktop matchup inspector.
+- **Game** — a full research workspace with a matchup hero, Diamond Signal probability axis, feature contributions, base-model disagreement, a non-destructive Model Lab, and measured pitch locations when available.
+- **Ballpark Live** — a canvas-first, park-specific Three.js broadcast view with occupied stands, stylized baseball players, six camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
+- **Model** — a research-led pipeline view with prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
+- **Performance** — a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
 - **Market** — verified moneyline coverage, edge comparison, Kelly sizing, paper P/L, CLV readiness, and downloadable records. Risk controls live in one settings drawer.
 - **Data** — feed coverage, provenance, immutable prediction snapshots, legacy-history labeling, and snapshot export.
 
@@ -45,7 +45,7 @@ The record is graded only after a verified final score. The original analytical 
 
 ## Ballpark architecture
 
-The 3D bundle is requested only after the user enters Ballpark. Shared procedural components create the diamond, bases, grass, foul lines, walls, warning track, seating, crowd, stylized players, defensive overlays, and scoreboard. The crowd uses instanced heads, torsos, and arms; players use recognizable baseball silhouettes instead of position cylinders. The renderer draws only when a view changes or a pitch animation is active, pauses when hidden or outside the viewport, and disposes GPU resources on exit.
+The 3D bundle is requested only after the user enters Ballpark Live. Shared scene components create the diamond, bases, grass, foul lines, walls, warning track, seating, crowd, stylized players, defensive overlays, and scoreboard. Park configuration then adds venue-specific architecture such as roofs, warehouse walls, fountains, rocks, coves, ivy, scoreboards, palms, and skyline cues. The crowd uses instanced heads, torsos, and arms; players use recognizable baseball silhouettes instead of position cylinders. The renderer draws only when a view changes or a pitch animation is active, pauses when hidden or outside the viewport, and disposes GPU resources on exit.
 
 Six parks include detailed wall profiles:
 
@@ -56,7 +56,7 @@ Six parks include detailed wall profiles:
 - Great American Ball Park
 - Rogers Centre
 
-Every other club receives a named home-park profile with its own corner and center-field distances, surface/roof context, distinctive architectural cue, and official club ballpark link. The visualization is an original stylized broadcast model rather than a photogrammetric replica. Intermediate wall segments remain procedural. Pitch endpoints come from the MLB live feed; the connecting 3D arc is labeled as a derived interpolation.
+Every other club receives a named home-park profile with its own corner and center-field distances, surface/roof context, architectural treatment, and official club ballpark link. The visualization is an original stylized broadcast model rather than a photogrammetric replica. Intermediate wall segments are derived from each venue profile. Pitch endpoints come from the MLB live feed; the connecting 3D arc is labeled as a derived interpolation.
 
 Quality modes are High, Medium, and Low, with Low selected automatically on mobile. If Three.js, WebGL, or the CDN is unavailable, the same game renders as an analytical SVG field while the score, game state, probability, timeline, and provenance remain accessible as HTML.
 

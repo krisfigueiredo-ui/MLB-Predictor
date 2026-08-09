@@ -23,7 +23,7 @@
     BOS: {
       parkId: "fenway", name: "Fenway Park", city: "Boston, Massachusetts", team: "BOS",
       roofType: "open", fieldOrientation: 54, surface: "grass", parkFactor: 104,
-      accent: "#0c5a3c", wall: "#18573b", distinctive: "Green Monster",
+      accent: "#0c5a3c", wall: "#18573b", distinctive: "Green Monster", architecture: "monster",
       wallPoints: [
         point(-45, 310, 37, "LF 310′"), point(-30, 379, 37, "LC 379′"),
         point(-5, 390, 17, "CF 390′"), point(18, 420, 17, "Deep CF 420′"),
@@ -34,7 +34,7 @@
     NYY: {
       parkId: "yankee", name: "Yankee Stadium", city: "Bronx, New York", team: "NYY",
       roofType: "open", fieldOrientation: 105, surface: "grass", parkFactor: 98,
-      accent: "#17365d", wall: "#244660", distinctive: "Short right-field profile",
+      accent: "#17365d", wall: "#244660", distinctive: "Short right-field profile", architecture: "monument",
       wallPoints: [
         point(-45, 318, 8.5, "LF 318′"), point(-24, 399, 8.5, "LC 399′"),
         point(0, 408, 8.5, "CF 408′"), point(25, 385, 8.2, "RC 385′"),
@@ -45,7 +45,7 @@
     CHC: {
       parkId: "wrigley", name: "Wrigley Field", city: "Chicago, Illinois", team: "CHC",
       roofType: "open", fieldOrientation: 32, surface: "grass", parkFactor: 103,
-      accent: "#234f82", wall: "#1b5536", distinctive: "Ivy wall and compact alleys",
+      accent: "#234f82", wall: "#1b5536", distinctive: "Ivy wall and compact alleys", architecture: "ivy",
       wallPoints: [
         point(-45, 355, 15, "LF 355′"), point(-25, 368, 11.5, "LC 368′"),
         point(0, 400, 11.5, "CF 400′"), point(25, 368, 11.5, "RC 368′"),
@@ -56,7 +56,7 @@
     LAD: {
       parkId: "dodger", name: "Dodger Stadium", city: "Los Angeles, California", team: "LAD",
       roofType: "open", fieldOrientation: 26, surface: "grass", parkFactor: 98,
-      accent: "#2763a7", wall: "#4b72a1", distinctive: "Symmetrical outfield bowl",
+      accent: "#2763a7", wall: "#4b72a1", distinctive: "Symmetrical outfield bowl", architecture: "bowl",
       wallPoints: [
         point(-45, 330, 4.6, "LF 330′"), point(-24, 385, 8, "LC 385′"),
         point(0, 395, 8, "CF 395′"), point(24, 385, 8, "RC 385′"),
@@ -67,7 +67,7 @@
     CIN: {
       parkId: "gabp", name: "Great American Ball Park", city: "Cincinnati, Ohio", team: "CIN",
       roofType: "open", fieldOrientation: 58, surface: "grass", parkFactor: 104,
-      accent: "#b33a32", wall: "#32445a", distinctive: "Compact corners and river-facing outfield",
+      accent: "#b33a32", wall: "#32445a", distinctive: "Compact corners and river-facing outfield", architecture: "river",
       wallPoints: [
         point(-45, 328, 12, "LF 328′"), point(-24, 379, 8, "LC 379′", false),
         point(0, 404, 8, "CF 404′"), point(25, 370, 8, "RC 370′", false),
@@ -78,7 +78,7 @@
     TOR: {
       parkId: "rogers", name: "Rogers Centre", city: "Toronto, Ontario", team: "TOR",
       roofType: "retractable", fieldOrientation: 18, surface: "turf", parkFactor: 100,
-      accent: "#276c9b", wall: "#35566c", distinctive: "Asymmetric renovated outfield",
+      accent: "#276c9b", wall: "#35566c", distinctive: "Asymmetric renovated outfield", architecture: "roof",
       wallPoints: [
         point(-45, 328, 14.33, "LF 328′"), point(-30, 368, 11.17, "LC 368′"),
         point(-16, 381, 12.75, "LC alley 381′"), point(0, 400, 8, "CF 400′"),
@@ -127,7 +127,9 @@
 
   var TEAM_SLUGS = {AZ:"dbacks",ATL:"braves",BAL:"orioles",CLE:"guardians",COL:"rockies",CWS:"whitesox",DET:"tigers",HOU:"astros",KC:"royals",LAA:"angels",MIA:"marlins",MIL:"brewers",MIN:"twins",NYM:"mets",ATH:"athletics",PHI:"phillies",PIT:"pirates",SD:"padres",SEA:"mariners",SF:"giants",STL:"cardinals",TB:"rays",TEX:"rangers",WSH:"nationals"};
 
-  function genericStadium(team, parkFactor) {
+  var TEAM_ARCHITECTURE = {AZ:"roof",ATL:"terrace",BAL:"warehouse",CLE:"skyline",COL:"mountains",CWS:"scoreboard",DET:"arcade",HOU:"boxes",KC:"fountains",LAA:"rocks",MIA:"glass",MIL:"roof",MIN:"limestone",NYM:"bridge",ATH:"river",PHI:"bell",PIT:"skyline",SD:"warehouse",SEA:"roof",SF:"cove",STL:"arch",TB:"palms",TEX:"roof",WSH:"porch"};
+
+  function configuredStadium(team, parkFactor) {
     var profile=TEAM_PARK_PROFILES[team]||["","unknown","grass",330,400,330,8,"Configured MLB field profile"];
     var lf=profile[3],cf=profile[4],rf=profile[5],height=profile[6];
     return {
@@ -135,7 +137,7 @@
       name: TEAM_PARK_NAMES[team] || "MLB Ballpark",
       city: profile[0], team: team || null, roofType: profile[1], fieldOrientation: null,
       surface: profile[2], parkFactor: parkFactor == null ? null : parkFactor,
-      accent: "#526f8b", wall: team==="SF"?"#6d5338":team==="PIT"?"#315d49":"#3f5665", distinctive: profile[7],
+      accent: "#526f8b", wall: team==="SF"?"#6d5338":team==="PIT"?"#315d49":"#3f5665", distinctive: profile[7], architecture: TEAM_ARCHITECTURE[team]||"bowl",
       wallPoints: [
         point(-45, lf, height, "LF "+lf+"′"), point(-24, Math.round((lf+cf)/2), height, null, false),
         point(0, cf, height, "CF "+cf+"′"), point(24, Math.round((rf+cf)/2), height, null, false),
@@ -148,7 +150,7 @@
   }
 
   function stadiumForTeam(team, parkFactor) {
-    return STADIUMS[team] || genericStadium(team, parkFactor);
+    return STADIUMS[team] || configuredStadium(team, parkFactor);
   }
 
   function validateStadiumConfig(config) {

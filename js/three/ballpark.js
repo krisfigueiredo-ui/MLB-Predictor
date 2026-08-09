@@ -70,6 +70,7 @@
     this.pitchBall = null;
     this.animatingPitch = false;
     this.animationStart = 0;
+    this.motionUntil = 0;
     this.frame = 0;
     this.resizeObserver = null;
     this.intersectionObserver = null;
@@ -131,6 +132,7 @@
     this.createField();
     this.createWalls();
     this.createSeating();
+    this.createArchitecture();
     this.createCrowd();
     this.createPlayers();
     this.createPositions();
@@ -247,6 +249,34 @@
     this.scene.add(group);
   };
 
+  BallparkEngine.prototype.createArchitecture = function() {
+    var T=this.THREE,group=this.groups.architecture=new T.Group(),type=this.config.architecture||"bowl",accent=new T.Color(this.config.accent||0x526f8b);
+    var dark=new T.MeshStandardMaterial({color:0x17232b,roughness:.88}),feature=new T.MeshStandardMaterial({color:accent,roughness:.8,metalness:.04}),stone=new T.MeshStandardMaterial({color:0x52606a,roughness:.95});
+    function box(w,h,d,x,y,z,material){var mesh=new T.Mesh(new T.BoxGeometry(w,h,d),material||dark);mesh.position.set(x,y,z);group.add(mesh);return mesh;}
+    [-18,18].forEach(function(x){box(.32,11,.32,x,5.5,22,stone);box(4.8,.18,.18,x,10.7,22,stone);});
+    if(type==="warehouse"||type==="boxes"||type==="terrace"||type==="arcade"||type==="porch"||type==="bridge"){
+      box(type==="warehouse"?14:10,type==="warehouse"?9:5,2.5,type==="warehouse"?-15:14,type==="warehouse"?4.5:2.5,27,type==="warehouse"?new T.MeshStandardMaterial({color:0x6e4030,roughness:.95}):feature);
+      for(var i=0;i<5;i++)box(1.1,1.2,.08,(type==="warehouse"?-20:-1)+i*2.5,type==="warehouse"?5:3.2,25.7,new T.MeshStandardMaterial({color:0x9fb3bd,emissive:0x253943,emissiveIntensity:.15}));
+    } else if(type==="roof"){
+      [-1,1].forEach(function(side){var roof=box(18,.35,8,side*16,9,14,stone);roof.rotation.z=side*-.16;});
+    } else if(type==="fountains"||type==="cove"||type==="river"){
+      var water=new T.Mesh(new T.PlaneGeometry(type==="fountains"?18:40,type==="fountains"?4:13),new T.MeshStandardMaterial({color:0x235e72,roughness:.32,metalness:.08}));water.rotation.x=-Math.PI/2;water.position.set(type==="fountains"?0:10,.01,type==="fountains"?26:34);group.add(water);
+      if(type==="fountains")for(var f=-3;f<=3;f++)box(.12,2,.12,f*2.1,1,25.8,new T.MeshStandardMaterial({color:0x8bc4d6,emissive:0x315b69,emissiveIntensity:.35}));
+    } else if(type==="rocks"||type==="mountains"){
+      for(var r=0;r<9;r++){var rock=new T.Mesh(new T.ConeGeometry(1.7+(r%3),3+(r%4),5),stone);rock.position.set(-15+r*3.8,1.5+(r%2),29+(r%3));group.add(rock);}
+    } else if(type==="arch"){
+      var curve=new T.CatmullRomCurve3([new T.Vector3(-7,0,29),new T.Vector3(-4,8,29),new T.Vector3(0,12,29),new T.Vector3(4,8,29),new T.Vector3(7,0,29)]);group.add(new T.Mesh(new T.TubeGeometry(curve,32,.18,8,false),stone));
+    } else if(type==="palms"){
+      for(var p=-3;p<=3;p++){var trunk=new T.Mesh(new T.CylinderGeometry(.12,.18,4,7),new T.MeshStandardMaterial({color:0x79563c,roughness:1}));trunk.position.set(p*4,2,27);group.add(trunk);var crown=new T.Mesh(new T.SphereGeometry(1.1,7,5),new T.MeshStandardMaterial({color:0x2f6d4a,roughness:1}));crown.scale.set(1.8,.45,1.2);crown.position.set(p*4,4.2,27);group.add(crown);}
+    } else if(type==="glass"||type==="skyline"){
+      for(var s=0;s<8;s++)box(2.3,4+(s%4)*2,2,-14+s*4,2+(s%4),31,new T.MeshStandardMaterial({color:type==="glass"?0x406878:0x2a3842,roughness:.48,metalness:.2}));
+    } else if(type==="bell"||type==="scoreboard"||type==="monument"){
+      box(9,6,.9,0,5.5,27,dark);box(type==="scoreboard"?7:4,.35,.4,0,type==="monument"?8.8:7.2,26.4,feature);
+    }
+    if(type==="monster"||type==="ivy"){var panel=box(type==="monster"?8:18,type==="monster"?6:2,.5,type==="monster"?-14:0,type==="monster"?4.5:1.6,22,new T.MeshStandardMaterial({color:0x1e5a39,roughness:1}));panel.userData.landmark=type;}
+    this.scene.add(group);
+  };
+
   BallparkEngine.prototype.createCrowd = function() {
     var T=this.THREE,group=this.groups.crowd=new T.Group();
     var count=this.quality==="low"?96:this.quality==="high"?320:190;
@@ -276,11 +306,12 @@
     var head=new T.Mesh(new T.SphereGeometry(.18,10,8),skin);head.position.y=1.62;player.add(head);
     var cap=new T.Mesh(new T.CylinderGeometry(.19,.19,.08,10),dark);cap.position.set(0,1.78,0);player.add(cap);
     var brim=new T.Mesh(new T.BoxGeometry(.24,.035,.14),dark);brim.position.set(0,1.75,-.13);player.add(brim);
-    [[-.24,1.16],[.24,1.16]].forEach(function(pos,index){var arm=new T.Mesh(new T.CylinderGeometry(.065,.075,.55,7),jersey);arm.position.set(pos[0],pos[1],0);arm.rotation.z=index?-.22:.22;player.add(arm);});
-    [[-.12,.52],[.12,.52]].forEach(function(pos){var leg=new T.Mesh(new T.CylinderGeometry(.075,.095,.75,7),cloth);leg.position.set(pos[0],pos[1],0);player.add(leg);var shoe=new T.Mesh(new T.BoxGeometry(.16,.09,.28),dark);shoe.position.set(pos[0],.12,-.07);player.add(shoe);});
+    var arms=[],legs=[];
+    [[-.24,1.16],[.24,1.16]].forEach(function(pos,index){var arm=new T.Mesh(new T.CylinderGeometry(.065,.075,.55,7),jersey);arm.position.set(pos[0],pos[1],0);arm.rotation.z=index?-.22:.22;arms.push(arm);player.add(arm);});
+    [[-.12,.52],[.12,.52]].forEach(function(pos){var leg=new T.Mesh(new T.CylinderGeometry(.075,.095,.75,7),cloth);leg.position.set(pos[0],pos[1],0);legs.push(leg);player.add(leg);var shoe=new T.Mesh(new T.BoxGeometry(.16,.09,.28),dark);shoe.position.set(pos[0],.12,-.07);player.add(shoe);});
     if(role==="batter"){var bat=new T.Mesh(new T.CylinderGeometry(.025,.045,1.18,7),new T.MeshStandardMaterial({color:0xb68b56,roughness:.72}));bat.position.set(.36,1.42,.03);bat.rotation.z=-.34;player.add(bat);player.rotation.y=-.55;}
     if(role==="catcher"){player.scale.set(.9,.82,.9);player.rotation.x=.16;}
-    player.userData.role=role;return player;
+    player.userData.role=role;player.userData.arms=arms;player.userData.legs=legs;player.userData.torso=torso;return player;
   };
 
   BallparkEngine.prototype.createPlayers = function() {
@@ -289,7 +320,8 @@
       {p:[4.8,0,5.6],r:"fielder",c:home},{p:[-4.8,0,5.6],r:"fielder",c:home},{p:[0,0,11.5],r:"fielder",c:home},
       {p:[-9.3,0,15.5],r:"fielder",c:home},{p:[0,0,19],r:"fielder",c:home},{p:[9.3,0,15.5],r:"fielder",c:home}
     ];
-    var self=this;positions.forEach(function(item,index){var player=self.makePlayer(item.c,index===1?0xededed:0xf2f2f2,item.r);player.position.set(item.p[0],item.p[1],item.p[2]);if(item.r==="pitcher")player.rotation.y=Math.PI;group.add(player);});
+    var self=this;positions.forEach(function(item,index){var player=self.makePlayer(item.c,index===1?0xededed:0xf2f2f2,item.r);player.position.set(item.p[0],item.p[1],item.p[2]);player.userData.phase=index*.73;if(item.r==="pitcher")player.rotation.y=Math.PI;group.add(player);});
+    this.motionUntil=performance.now()+2200;
     this.scene.add(group);
   };
 
@@ -372,10 +404,11 @@
   BallparkEngine.prototype.render = function(now) {
     if(!this.renderer||!this.scene||!this.camera)return;
     if(this.animatingPitch&&this.pitchBall&&this.pitchCurve){var t=Math.min(1,(now-this.animationStart)/900);this.pitchBall.position.copy(this.pitchCurve.getPoint(t));if(t<1)this.invalidate();else this.animatingPitch=false;}
+    if(now<this.motionUntil&&this.groups.players){this.groups.players.children.forEach(function(player){var phase=(now*.0025)+(player.userData.phase||0),role=player.userData.role,arms=player.userData.arms||[],legs=player.userData.legs||[];player.position.y=Math.sin(phase)*.018;if(role==="pitcher"&&arms.length){arms[0].rotation.x=Math.sin(phase)*.5;arms[1].rotation.x=-Math.sin(phase)*.5;}else if(role==="batter"){player.rotation.z=Math.sin(phase*.7)*.025;}else if(arms.length){arms[0].rotation.z=-.22+Math.sin(phase)*.035;arms[1].rotation.z=.22-Math.sin(phase)*.035;}if(legs.length&&role==="fielder"){legs[0].rotation.x=Math.sin(phase)*.025;legs[1].rotation.x=-Math.sin(phase)*.025;}});if(this.groups.crowd)this.groups.crowd.position.y=Math.sin(now*.003)*.015;this.invalidate();}
     this.renderer.render(this.scene,this.camera);
   };
 
-  BallparkEngine.prototype.updateGame = function(game) { this.game=game||this.game;this.invalidate(); };
+  BallparkEngine.prototype.updateGame = function(game) { this.game=game||this.game;this.motionUntil=performance.now()+1600;this.invalidate(); };
 
   BallparkEngine.prototype.dispose = function() {
     this.disposed=true;this.generation++;
