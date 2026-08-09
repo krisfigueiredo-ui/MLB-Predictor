@@ -4,13 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0c1015">
+<meta name="theme-color" content="#0b0d10">
 <meta name="description" content="Diamond Signal — live MLB probabilities, model research, market comparison, and ballpark intelligence.">
 <title>Diamond Signal — MLB Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/quant-lab.css?v=20260808.9">
+<link rel="stylesheet" href="css/quant-lab.css?v=20260809.1">
 </head>
 <body>
 <a class="ds-skip" href="#workspace">Skip to workspace</a>
@@ -38,7 +35,7 @@
   <nav class="ds-nav ql-nav" aria-label="Primary navigation">
     <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
     <button class="tab" data-view="live" onclick="setTab('live')">Live</button>
-    <button class="tab" data-view="picks" onclick="setTab('picks')">Picks</button>
+    <button class="tab" data-view="picks" onclick="setTab('picks')">Picks &amp; results</button>
     <button class="tab" data-view="standings" onclick="setTab('standings')">Standings</button>
     <button class="tab" data-view="players" onclick="setTab('players')">Players</button>
     <button class="tab" data-view="teams" onclick="setTab('teams')">Teams</button>
@@ -741,7 +738,7 @@ function logoB(a,sz){
 
 function confRing(g){var pct=Math.round(g.conf*100),circ=2*Math.PI*22,dash=(circ*g.conf).toFixed(1),col=pct>=65?"#3fcf8e":pct>=58?"#5b8def":"#e8b339";return '<div class="ring-col"><div class="ring"><svg viewBox="0 0 52 52" style="transform:rotate(-90deg)"><circle cx="26" cy="26" r="22" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="4"/><circle cx="26" cy="26" r="22" fill="none" stroke="'+col+'" stroke-width="4" stroke-dasharray="'+dash+' '+circ.toFixed(1)+'" stroke-linecap="round"/></svg><div class="ring-val" style="color:'+col+'">'+pct+'%</div></div><div class="ring-lbl">conf</div></div>';}
 
-function makeDiamond(g){var sq=66,cx=sq/2,cy=sq/2,b1x=cx+15,b1y=cy,b2x=cx,b2y=cy-15,b3x=cx-15,b3y=cy,hpx=cx,hpy=cy+15;var on="#5b8def",off="rgba(148,163,184,0.08)",ol="rgba(148,163,184,0.15)",r1=false,r2=false,r3=false,outs=0,label="PRE",lc="rgba(148,163,184,0.35)";if(g.status==="live"){label="LIVE";lc="#f76d6d";if(g.live&&g.live.onFirst!==undefined){r1=!!g.live.onFirst;r2=!!g.live.onSecond;r3=!!g.live.onThird;outs=g.live.outs||0;on="#f76d6d";}}else if(g.status==="final"){label="FINAL";lc="rgba(148,163,184,0.25)";on="rgba(148,163,184,0.12)";off="rgba(148,163,184,0.04)";ol="rgba(148,163,184,0.08)";}function poly(ox,oy,sz){var h=sz/2;return ox+","+(oy-h)+" "+(ox+h)+","+oy+" "+ox+","+(oy+h)+" "+(ox-h)+","+oy;}var dots="";if(g.status==="live"){for(var i=0;i<3;i++)dots+='<circle cx="'+(16+i*9)+'" cy="'+(sq-4)+'" r="2.4" fill="'+(i<outs?"#e8b339":"rgba(148,163,184,0.1)")+'"/>';}return '<svg width="'+sq+'" height="'+sq+'" viewBox="0 0 '+sq+' '+sq+'" style="flex-shrink:0"><line x1="'+hpx+'" y1="'+hpy+'" x2="'+b1x+'" y2="'+b1y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b1x+'" y1="'+b1y+'" x2="'+b2x+'" y2="'+b2y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b2x+'" y1="'+b2y+'" x2="'+b3x+'" y2="'+b3y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b3x+'" y1="'+b3y+'" x2="'+hpx+'" y2="'+hpy+'" stroke="'+ol+'" stroke-width=".8"/><polygon points="'+poly(b1x,b1y,9)+'" fill="'+(r1?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(b2x,b2y,9)+'" fill="'+(r2?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(b3x,b3y,9)+'" fill="'+(r3?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(hpx,hpy,9)+'" fill="rgba(148,163,184,0.05)" stroke="'+ol+'" stroke-width="1.1"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="2" fill="rgba(148,163,184,0.2)"/><text x="'+cx+'" y="'+(sq-1)+'" text-anchor="middle" font-size="7" fill="'+lc+'" font-family="Space Mono,monospace" font-weight="700">'+label+'</text>'+dots+'</svg>';}
+function makeDiamond(g){var sq=66,cx=sq/2,cy=sq/2,b1x=cx+15,b1y=cy,b2x=cx,b2y=cy-15,b3x=cx-15,b3y=cy,hpx=cx,hpy=cy+15;var on="#5b8def",off="rgba(148,163,184,0.08)",ol="rgba(148,163,184,0.15)",r1=false,r2=false,r3=false,outs=0,label="PRE",lc="rgba(148,163,184,0.35)";if(g.status==="live"){label="LIVE";lc="#f76d6d";if(g.live&&g.live.onFirst!==undefined){r1=!!g.live.onFirst;r2=!!g.live.onSecond;r3=!!g.live.onThird;outs=g.live.outs||0;on="#f76d6d";}}else if(g.status==="final"){label="FINAL";lc="rgba(148,163,184,0.25)";on="rgba(148,163,184,0.12)";off="rgba(148,163,184,0.04)";ol="rgba(148,163,184,0.08)";}function poly(ox,oy,sz){var h=sz/2;return ox+","+(oy-h)+" "+(ox+h)+","+oy+" "+ox+","+(oy+h)+" "+(ox-h)+","+oy;}var dots="";if(g.status==="live"){for(var i=0;i<3;i++)dots+='<circle cx="'+(16+i*9)+'" cy="'+(sq-4)+'" r="2.4" fill="'+(i<outs?"#e8b339":"rgba(148,163,184,0.1)")+'"/>';}return '<svg width="'+sq+'" height="'+sq+'" viewBox="0 0 '+sq+' '+sq+'" style="flex-shrink:0"><line x1="'+hpx+'" y1="'+hpy+'" x2="'+b1x+'" y2="'+b1y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b1x+'" y1="'+b1y+'" x2="'+b2x+'" y2="'+b2y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b2x+'" y1="'+b2y+'" x2="'+b3x+'" y2="'+b3y+'" stroke="'+ol+'" stroke-width=".8"/><line x1="'+b3x+'" y1="'+b3y+'" x2="'+hpx+'" y2="'+hpy+'" stroke="'+ol+'" stroke-width=".8"/><polygon points="'+poly(b1x,b1y,9)+'" fill="'+(r1?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(b2x,b2y,9)+'" fill="'+(r2?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(b3x,b3y,9)+'" fill="'+(r3?on:off)+'" stroke="'+ol+'" stroke-width="1.1"/><polygon points="'+poly(hpx,hpy,9)+'" fill="rgba(148,163,184,0.05)" stroke="'+ol+'" stroke-width="1.1"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="2" fill="rgba(148,163,184,0.2)"/><text x="'+cx+'" y="'+(sq-1)+'" text-anchor="middle" font-size="7" fill="'+lc+'" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700">'+label+'</text>'+dots+'</svg>';}
 
 function eraCls(e){var v=parseFloat(e);return v<3.0?"g":v>4.3?"b":"";}
 function xwCls(x){var v=parseFloat(x);return v<.290?"g":v>.330?"b":"";}
@@ -770,7 +767,7 @@ function strikeZoneSVG(g,pitches){
   var marginShade='';
   if(Math.abs(scale-1)>0.005){marginShade='<rect x="'+ex+'" y="'+ey+'" width="'+ew+'" height="'+eh+'" fill="'+effCol+'" opacity="0.08"/>';}
   var countTxt='';
-  if(g.status==="live"&&g.live&&g.live.balls!=null){countTxt='<text x="'+(W-6)+'" y="16" text-anchor="end" font-size="11" font-family="DM Mono,monospace" font-weight="500" fill="var(--text)">'+g.live.balls+'-'+g.live.strikes+', '+(g.live.outs||0)+' out</text>';}
+  if(g.status==="live"&&g.live&&g.live.balls!=null){countTxt='<text x="'+(W-6)+'" y="16" text-anchor="end" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="500" fill="var(--text)">'+g.live.balls+'-'+g.live.strikes+', '+(g.live.outs||0)+' out</text>';}
   // REAL pitch dots: map pX/pZ (feet) to SVG. Zone half-width ~0.83ft; vertical from szBot..szTop.
   var pitchDots='';
   if(pitches&&pitches.length){
@@ -784,11 +781,11 @@ function strikeZoneSVG(g,pitches){
       sx=Math.max(8,Math.min(W-8,sx)); sy=Math.max(zy-20,Math.min(py-2,sy));
       var col=p.col;
       pitchDots+='<circle cx="'+sx.toFixed(1)+'" cy="'+sy.toFixed(1)+'" r="6.5" fill="'+col+'" fill-opacity="0.82" stroke="#fff" stroke-width="1"/>'
-        +'<text x="'+sx.toFixed(1)+'" y="'+(sy+3).toFixed(1)+'" text-anchor="middle" font-size="8" font-family="DM Mono,monospace" font-weight="700" fill="#fff">'+p.n+'</text>';
+        +'<text x="'+sx.toFixed(1)+'" y="'+(sy+3).toFixed(1)+'" text-anchor="middle" font-size="8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#fff">'+p.n+'</text>';
     });
   }
   var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:240px">'
-    +'<text x="6" y="16" font-size="10" font-family="DM Mono,monospace" fill="var(--mut)">Catcher\'s view</text>'+countTxt
+    +'<text x="6" y="16" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">Catcher\'s view</text>'+countTxt
     +marginShade
     +'<rect x="'+zx+'" y="'+zy+'" width="'+zw+'" height="'+zh+'" fill="none" stroke="var(--ink)" stroke-width="1.6"/>'
     +grid
@@ -1784,18 +1781,18 @@ function renderSlateOverview(){
   s+='<div style="background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:10px 6px;overflow-x:auto">';
   s+='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="min-width:520px;display:block">';
   s+='<line x1="'+midX+'" y1="'+padT+'" x2="'+midX+'" y2="'+(H-padB)+'" stroke="rgba(148,163,184,0.25)" stroke-width="1"/>';
-  s+='<text x="'+midX+'" y="'+(H-8)+'" text-anchor="middle" font-size="9" fill="rgba(148,163,184,0.55)" font-family="Space Mono,monospace">even</text>';
-  s+='<text x="'+(midX-barMax)+'" y="'+(H-8)+'" text-anchor="start" font-size="9" fill="rgba(148,163,184,0.45)" font-family="Space Mono,monospace">\u2190 away</text>';
-  s+='<text x="'+(midX+barMax)+'" y="'+(H-8)+'" text-anchor="end" font-size="9" fill="rgba(148,163,184,0.45)" font-family="Space Mono,monospace">home \u2192</text>';
+  s+='<text x="'+midX+'" y="'+(H-8)+'" text-anchor="middle" font-size="9" fill="rgba(148,163,184,0.55)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">even</text>';
+  s+='<text x="'+(midX-barMax)+'" y="'+(H-8)+'" text-anchor="start" font-size="9" fill="rgba(148,163,184,0.45)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">\u2190 away</text>';
+  s+='<text x="'+(midX+barMax)+'" y="'+(H-8)+'" text-anchor="end" font-size="9" fill="rgba(148,163,184,0.45)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">home \u2192</text>';
   gs.forEach(function(g,i){
     var y=padT+i*rowH,cy=y+rowH/2,homeLean=g.homeP-0.5,w=Math.abs(homeLean)*2*barMax;
     var x=homeLean>=0?midX:midX-w,bx2=homeLean>=0?midX+w:midX;
     var ev=!!g.betPick&&g.status!=="final",col=ev?"#3fcf8e":(homeLean>=0?"#5b8def":"#6366f1");
     var pick=g.homeP>=g.awayP?g.home:g.away,conf=Math.round(g.conf*100);
-    s+='<text x="6" y="'+(cy+3)+'" font-size="10" font-family="Space Mono,monospace" fill="'+(pick===g.away?"var(--text)":"rgba(148,163,184,0.6)")+'" font-weight="'+(pick===g.away?"700":"400")+'">'+g.away+'</text>';
-    s+='<text x="'+(W-6)+'" y="'+(cy+3)+'" text-anchor="end" font-size="10" font-family="Space Mono,monospace" fill="'+(pick===g.home?"var(--text)":"rgba(148,163,184,0.6)")+'" font-weight="'+(pick===g.home?"700":"400")+'">'+g.home+'</text>';
+    s+='<text x="6" y="'+(cy+3)+'" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="'+(pick===g.away?"var(--text)":"rgba(148,163,184,0.6)")+'" font-weight="'+(pick===g.away?"700":"400")+'">'+g.away+'</text>';
+    s+='<text x="'+(W-6)+'" y="'+(cy+3)+'" text-anchor="end" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="'+(pick===g.home?"var(--text)":"rgba(148,163,184,0.6)")+'" font-weight="'+(pick===g.home?"700":"400")+'">'+g.home+'</text>';
     s+='<rect x="'+x+'" y="'+(cy-6)+'" width="'+Math.max(2,w)+'" height="12" rx="3" fill="'+col+'" opacity="'+(ev?"0.95":"0.7")+'"><title>'+pick+' '+conf+'%'+(ev?" +EV":"")+'</title></rect>';
-    s+='<text x="'+(homeLean>=0?bx2+5:x-5)+'" y="'+(cy+3)+'" text-anchor="'+(homeLean>=0?"start":"end")+'" font-size="9" font-family="Space Mono,monospace" fill="'+col+'" font-weight="700">'+conf+'%'+(ev?" \U0001F4B0":"")+'</text>';
+    s+='<text x="'+(homeLean>=0?bx2+5:x-5)+'" y="'+(cy+3)+'" text-anchor="'+(homeLean>=0?"start":"end")+'" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="'+col+'" font-weight="700">'+conf+'%'+(ev?" \U0001F4B0":"")+'</text>';
   });
   s+='</svg></div>';host.innerHTML=s;
 }
@@ -1840,16 +1837,16 @@ function renderCalib(){
   var ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
   var W=cssW,H=cssH,pad={t:18,r:18,b:38,l:44},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
   ctx.clearRect(0,0,W,H);
-  for(var i=0;i<=5;i++){var v=i/5;var x=pad.l+cw*v,y=pad.t+ch*(1-v);ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,pad.t+ch);ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="right";ctx.fillText(Math.round((0.5+v*0.5)*100)+"%",pad.l-5,y+3);ctx.textAlign="center";ctx.fillText(Math.round((0.5+v*0.5)*100)+"%",x,H-22);}
-  ctx.fillStyle="rgba(180,190,214,0.7)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";ctx.fillText("PREDICTED WIN PROBABILITY",pad.l+cw/2,H-6);ctx.save();ctx.translate(11,pad.t+ch/2);ctx.rotate(-Math.PI/2);ctx.fillText("ACTUAL WIN RATE",0,0);ctx.restore();
+  for(var i=0;i<=5;i++){var v=i/5;var x=pad.l+cw*v,y=pad.t+ch*(1-v);ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,pad.t+ch);ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="right";ctx.fillText(Math.round((0.5+v*0.5)*100)+"%",pad.l-5,y+3);ctx.textAlign="center";ctx.fillText(Math.round((0.5+v*0.5)*100)+"%",x,H-22);}
+  ctx.fillStyle="rgba(180,190,214,0.7)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";ctx.fillText("PREDICTED WIN PROBABILITY",pad.l+cw/2,H-6);ctx.save();ctx.translate(11,pad.t+ch/2);ctx.rotate(-Math.PI/2);ctx.fillText("ACTUAL WIN RATE",0,0);ctx.restore();
   // diagonal (perfect calibration)
   ctx.setLineDash([5,4]);ctx.strokeStyle="#64748b";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t+ch);ctx.lineTo(pad.l+cw,pad.t);ctx.stroke();ctx.setLineDash([]);
   function px(p){return pad.l+cw*Math.max(0,Math.min(1,(p-0.5)/0.5));}
   function py(a){return pad.t+ch*(1-Math.max(0,Math.min(1,(a-0.5)/0.5)));}
   if(!report||report.n<8){
-    ctx.fillStyle="rgba(174,185,207,0.5)";ctx.font="13px 'Space Mono',monospace";ctx.textAlign="center";
+    ctx.fillStyle="rgba(174,185,207,0.5)";ctx.font="13px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";
     ctx.fillText((report?report.n:0)+" graded games so far",pad.l+cw/2,pad.t+ch/2-4);
-    ctx.font="10px 'Space Mono',monospace";ctx.fillStyle="rgba(174,185,207,0.34)";
+    ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.fillStyle="rgba(174,185,207,0.34)";
     ctx.fillText("the reliability curve draws once ~8 real results are in",pad.l+cw/2,pad.t+ch/2+14);
     if(metaEl)metaEl.innerHTML='This page measures whether the model\u2019s probabilities are <b>trustworthy</b> \u2014 do the games it calls 65% actually win ~65% of the time? It fills from real graded results only.'+' <span style="color:var(--mut)">\u00b7 hollow points = under 3 samples (too thin to trust)</span>';
     if(metricsEl)metricsEl.innerHTML='<div style="grid-column:1/-1;background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:18px;text-align:center">'
@@ -2132,7 +2129,7 @@ function renderAccuracy(){var hist=loadHistory();var st=accStats(hist);var all=h
   var bands=[{r:"50-55%",mn:.50,mx:.55},{r:"55-60%",mn:.55,mx:.60},{r:"60-65%",mn:.60,mx:.65},{r:"65-70%",mn:.65,mx:.70},{r:"70%+",mn:.70,mx:1}];var bh="";bands.forEach(function(b){var bg=all.filter(function(g){return g.conf>=b.mn&&g.conf<b.mx;}),bc=bg.filter(function(g){return g.correct;}),pct=bg.length?Math.round(bc.length/bg.length*100):null,col=pct===null?"rgba(148,163,184,0.1)":pct>=60?"#3fcf8e":pct>=45?"#e8b339":"#f76d6d";bh+='<div class="band-row" style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="font-size:10px;font-family:var(--mono);color:var(--mut);min-width:52px">'+b.r+'</div><div style="flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;width:'+(pct||0)+'%;background:'+col+'"></div></div><div style="font-size:10px;font-family:var(--mono);min-width:32px;text-align:right;color:'+(pct===null?"var(--mut)":col)+'">'+(pct!==null?pct+"%":"\u2014")+'</div><div style="font-size:10px;font-family:var(--mono);color:var(--mut);min-width:26px">n='+bg.length+'</div></div>';});document.getElementById("bands").innerHTML=bh;
   var labels=all.map(function(_,i){return"#"+(i+1);}),rolling=all.map(function(_,i){var w=all.slice(Math.max(0,i-9),i+1);return w.filter(function(g){return g.correct;}).length/w.length;});drawRolling(labels,rolling);renderTeamAccuracy();renderTopPickModule();}
 
-function drawRolling(labels,data){var canvas=document.getElementById("rc");if(!canvas)return;var dpr=Math.min(window.devicePixelRatio||1,2);var cssW=Math.max(280,(canvas.parentElement.offsetWidth||920)-20),cssH=180;canvas.style.width=cssW+"px";canvas.style.height=cssH+"px";canvas.width=Math.round(cssW*dpr);canvas.height=Math.round(cssH*dpr);var ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);var W=cssW,H=cssH,pad={t:14,r:16,b:32,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);[0,.25,.5,.75,1].forEach(function(v){var y=pad.t+ch*(1-v);ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="right";ctx.fillText(Math.round(v*100)+"%",pad.l-5,y+3);});if(!data.length)return;var by=pad.t+ch*(1-0.567);ctx.setLineDash([5,4]);ctx.strokeStyle="rgba(232,179,57,0.65)";ctx.beginPath();ctx.moveTo(pad.l,by);ctx.lineTo(pad.l+cw,by);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="rgba(232,179,57,0.6)";ctx.font="9px 'Space Mono',monospace";ctx.textAlign="left";ctx.fillText("56.7% market baseline",pad.l+3,by-3);var step=data.length>1?cw/(data.length-1):cw,pts=data.map(function(v,i){return{x:pad.l+step*i,y:pad.t+ch*(1-v)};});ctx.beginPath();ctx.moveTo(pts[0].x,pad.t+ch);pts.forEach(function(p){ctx.lineTo(p.x,p.y);});ctx.lineTo(pts[pts.length-1].x,pad.t+ch);ctx.closePath();ctx.fillStyle="rgba(91,141,239,0.15)";ctx.fill();ctx.beginPath();ctx.strokeStyle="#5b8def";ctx.lineWidth=2.75;pts.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});ctx.stroke();pts.forEach(function(p){ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle="#5b8def";ctx.fill();});ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";labels.forEach(function(l,i){if(i%2===0||labels.length<10)ctx.fillText(l,pts[i].x,H-5);});}
+function drawRolling(labels,data){var canvas=document.getElementById("rc");if(!canvas)return;var dpr=Math.min(window.devicePixelRatio||1,2);var cssW=Math.max(280,(canvas.parentElement.offsetWidth||920)-20),cssH=180;canvas.style.width=cssW+"px";canvas.style.height=cssH+"px";canvas.width=Math.round(cssW*dpr);canvas.height=Math.round(cssH*dpr);var ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);var W=cssW,H=cssH,pad={t:14,r:16,b:32,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;ctx.clearRect(0,0,W,H);[0,.25,.5,.75,1].forEach(function(v){var y=pad.t+ch*(1-v);ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="right";ctx.fillText(Math.round(v*100)+"%",pad.l-5,y+3);});if(!data.length)return;var by=pad.t+ch*(1-0.567);ctx.setLineDash([5,4]);ctx.strokeStyle="rgba(232,179,57,0.65)";ctx.beginPath();ctx.moveTo(pad.l,by);ctx.lineTo(pad.l+cw,by);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="rgba(232,179,57,0.6)";ctx.font="9px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="left";ctx.fillText("56.7% market baseline",pad.l+3,by-3);var step=data.length>1?cw/(data.length-1):cw,pts=data.map(function(v,i){return{x:pad.l+step*i,y:pad.t+ch*(1-v)};});ctx.beginPath();ctx.moveTo(pts[0].x,pad.t+ch);pts.forEach(function(p){ctx.lineTo(p.x,p.y);});ctx.lineTo(pts[pts.length-1].x,pad.t+ch);ctx.closePath();ctx.fillStyle="rgba(91,141,239,0.15)";ctx.fill();ctx.beginPath();ctx.strokeStyle="#5b8def";ctx.lineWidth=2.75;pts.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});ctx.stroke();pts.forEach(function(p){ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle="#5b8def";ctx.fill();});ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";labels.forEach(function(l,i){if(i%2===0||labels.length<10)ctx.fillText(l,pts[i].x,H-5);});}
 
 function resetWeights(){if(confirm("Reset model weights to defaults? Training progress is kept.")){MODEL_W=Object.assign({},DEFAULT_WEIGHTS);saveWeights(MODEL_W);GAMES30.forEach(function(gg){var f=predictFull(gg.home,gg.away,SP[gg.id],gg.id);gg.homeP=parseFloat(f.prob.toFixed(3));gg.awayP=parseFloat((1-f.prob).toFixed(3));gg.conf=Math.max(gg.homeP,gg.awayP);});renderModel();renderToday();showToast("Weights reset to defaults");}}
 
@@ -2927,10 +2924,10 @@ function renderBacktest(){
     if(buckets.length>1)g+='<polyline points="'+pts+'" fill="none" stroke="var(--ink)" stroke-width="2"/>';
     buckets.forEach(function(bk){var r=Math.max(3,Math.min(9,Math.sqrt(bk.n)));g+='<circle cx="'+X(bk.pred)+'" cy="'+Y(bk.act)+'" r="'+r+'" fill="var(--ink2)" stroke="var(--ink)" stroke-width="1.5"/>';});
     // axis labels
-    g+='<text x="'+X(0.5)+'" y="'+(S-6)+'" text-anchor="middle" font-size="10" font-family="DM Mono,monospace" fill="var(--mut)">Predicted home win %</text>';
-    g+='<text x="12" y="'+Y(0.5)+'" text-anchor="middle" font-size="10" font-family="DM Mono,monospace" fill="var(--mut)" transform="rotate(-90 12 '+Y(0.5)+')">Actual %</text>';
-    g+='<text x="'+X(0)+'" y="'+(S-pad+14)+'" text-anchor="middle" font-size="8" font-family="DM Mono,monospace" fill="var(--mut)">0</text>';
-    g+='<text x="'+X(1)+'" y="'+(S-pad+14)+'" text-anchor="middle" font-size="8" font-family="DM Mono,monospace" fill="var(--mut)">100</text>';
+    g+='<text x="'+X(0.5)+'" y="'+(S-6)+'" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">Predicted home win %</text>';
+    g+='<text x="12" y="'+Y(0.5)+'" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)" transform="rotate(-90 12 '+Y(0.5)+')">Actual %</text>';
+    g+='<text x="'+X(0)+'" y="'+(S-pad+14)+'" text-anchor="middle" font-size="8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">0</text>';
+    g+='<text x="'+X(1)+'" y="'+(S-pad+14)+'" text-anchor="middle" font-size="8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">100</text>';
     g+='</svg>';
     html+=g;
     html+='<div style="font-size:10px;font-family:var(--mono);color:var(--mut);text-align:center;margin-bottom:14px">Dot size = sample size. Points on the dashed line = perfectly calibrated. Above = model under-confident, below = over-confident.</div>';
@@ -3263,27 +3260,27 @@ function betlogSection(){
     for(var gi=0;gi<=4;gi++){
       var gv=mn+(mx-mn)*(gi/4), gy=Y(gv);
       svg+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="var(--br)" stroke-width="1"/>';
-      svg+='<text x="'+(padL-8)+'" y="'+(gy+3)+'" text-anchor="end" font-size="9" font-family="JetBrains Mono,monospace" fill="var(--mut)">'+(gv>=0?"$":"−$")+Math.abs(Math.round(gv))+'</text>';
+      svg+='<text x="'+(padL-8)+'" y="'+(gy+3)+'" text-anchor="end" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">'+(gv>=0?"$":"−$")+Math.abs(Math.round(gv))+'</text>';
     }
     // x-axis bet-number labels (first / mid / last)
     [0,Math.floor((cum.length-1)/2),cum.length-1].forEach(function(i){
-      svg+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" fill="var(--mut)">#'+(i+1)+'</text>';
+      svg+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">#'+(i+1)+'</text>';
     });
     // breakeven reference line
     svg+='<line x1="'+padL+'" y1="'+Y(0)+'" x2="'+(W-padR)+'" y2="'+Y(0)+'" stroke="var(--mut)" stroke-width="1" stroke-dasharray="3 3"/>';
-    svg+='<text x="'+(W-padR)+'" y="'+(Y(0)-4)+'" text-anchor="end" font-size="8.5" font-family="JetBrains Mono,monospace" fill="var(--mut)">breakeven</text>';
+    svg+='<text x="'+(W-padR)+'" y="'+(Y(0)-4)+'" text-anchor="end" font-size="8.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">breakeven</text>';
     // max-drawdown bracket
     if(ddBest>1){
       var ddX=X(ddTroughIdx);
       svg+='<line x1="'+ddX+'" y1="'+Y(cum[ddPeakIdx])+'" x2="'+ddX+'" y2="'+Y(cum[ddTroughIdx])+'" stroke="var(--amb)" stroke-width="1" stroke-dasharray="2 2"/>';
-      svg+='<text x="'+(ddX+5)+'" y="'+((Y(cum[ddPeakIdx])+Y(cum[ddTroughIdx]))/2)+'" font-size="8.5" font-family="JetBrains Mono,monospace" fill="var(--amb)">max DD −$'+Math.round(ddBest)+'</text>';
+      svg+='<text x="'+(ddX+5)+'" y="'+((Y(cum[ddPeakIdx])+Y(cum[ddTroughIdx]))/2)+'" font-size="8.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--amb)">max DD −$'+Math.round(ddBest)+'</text>';
     }
     // P/L line
     svg+='<polyline points="'+pts+'" fill="none" stroke="'+(flatPL>=0?"var(--grn)":"var(--red)")+'" stroke-width="1.5" stroke-linejoin="round"/>';
     // final P/L label, boxed, clear of the line
     var lblX=W-padR-2,lblY=padT+10;
     svg+='<rect x="'+(lblX-58)+'" y="'+(lblY-12)+'" width="58" height="16" rx="3" fill="var(--s2)" stroke="var(--br)"/>';
-    svg+='<text x="'+(lblX-4)+'" y="'+(lblY-1)+'" text-anchor="end" font-size="10" font-weight="700" font-family="JetBrains Mono,monospace" fill="'+(flatPL>=0?"var(--grn)":"var(--red)")+'">'+(flatPL>=0?"+":"")+"$"+Math.round(flatPL)+'</text>';
+    svg+='<text x="'+(lblX-4)+'" y="'+(lblY-1)+'" text-anchor="end" font-size="10" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="'+(flatPL>=0?"var(--grn)":"var(--red)")+'">'+(flatPL>=0?"+":"")+"$"+Math.round(flatPL)+'</text>';
     svg+='</svg>';
     html+=svg;
     html+='<div style="font-size:10px;color:var(--mut);margin-bottom:10px">Bankroll curve &mdash; cumulative flat-stake P/L by bet, in order graded.</div>';
@@ -3447,14 +3444,14 @@ function drawROC(canvasId,pts,auc){
   var ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,cssW,cssH);
   var pad={t:14,r:14,b:34,l:40},cw=cssW-pad.l-pad.r,ch=cssH-pad.t-pad.b;
   function X(f){return pad.l+cw*f;} function Y(t){return pad.t+ch*(1-t);}
-  [0,.25,.5,.75,1].forEach(function(v){ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(v),pad.t);ctx.lineTo(X(v),pad.t+ch);ctx.moveTo(pad.l,Y(v));ctx.lineTo(pad.l+cw,Y(v));ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";ctx.fillText(v.toFixed(1),X(v),cssH-18);ctx.textAlign="right";ctx.fillText(v.toFixed(1),pad.l-5,Y(v)+3);});
+  [0,.25,.5,.75,1].forEach(function(v){ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(v),pad.t);ctx.lineTo(X(v),pad.t+ch);ctx.moveTo(pad.l,Y(v));ctx.lineTo(pad.l+cw,Y(v));ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";ctx.fillText(v.toFixed(1),X(v),cssH-18);ctx.textAlign="right";ctx.fillText(v.toFixed(1),pad.l-5,Y(v)+3);});
   ctx.setLineDash([5,4]);ctx.strokeStyle="rgba(174,185,207,0.4)";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(1),Y(1));ctx.stroke();ctx.setLineDash([]);
   ctx.beginPath();ctx.moveTo(X(0),Y(0));pts.forEach(function(p){ctx.lineTo(X(p.fpr),Y(p.tpr));});ctx.lineTo(X(1),Y(0));ctx.closePath();ctx.fillStyle="rgba(91,141,239,0.18)";ctx.fill();
   ctx.beginPath();pts.forEach(function(p,i){var x=X(p.fpr),y=Y(p.tpr);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.strokeStyle="#5b8def";ctx.lineWidth=3;ctx.stroke();
-  ctx.fillStyle="rgba(174,185,207,0.7)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";ctx.fillText("False Positive Rate",pad.l+cw/2,cssH-4);
+  ctx.fillStyle="rgba(174,185,207,0.7)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";ctx.fillText("False Positive Rate",pad.l+cw/2,cssH-4);
   ctx.save();ctx.translate(11,pad.t+ch/2);ctx.rotate(-Math.PI/2);ctx.fillText("True Positive Rate",0,0);ctx.restore();
-  ctx.fillStyle="#5b8def";ctx.font="bold 13px 'Space Mono',monospace";ctx.textAlign="right";ctx.fillText("AUC "+auc.toFixed(3),pad.l+cw-4,pad.t+ch-8);
-  ctx.fillStyle="rgba(174,185,207,0.6)";ctx.font="9px 'Space Mono',monospace";ctx.textAlign="left";ctx.fillText("ROC curve",pad.l+4,pad.t+11);
+  ctx.fillStyle="#5b8def";ctx.font="bold 13px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="right";ctx.fillText("AUC "+auc.toFixed(3),pad.l+cw-4,pad.t+ch-8);
+  ctx.fillStyle="rgba(174,185,207,0.6)";ctx.font="9px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="left";ctx.fillText("ROC curve",pad.l+4,pad.t+11);
 }
 // ─── Learning curve: train logistic on growing data, compare train vs held-out accuracy ───
 // Wide gap = high variance (more data helps); both low & converged = high bias (underfit).
@@ -3483,12 +3480,12 @@ function drawLearningCurve(canvasId,lc){
   var pad={t:14,r:14,b:34,l:40},cw=cssW-pad.l-pad.r,ch=cssH-pad.t-pad.b;
   var maxN=lc.sizes[lc.sizes.length-1],minN=lc.sizes[0],y0=0.4,y1=1.0;
   function X(n){return pad.l+cw*((n-minN)/((maxN-minN)||1));} function Y(a){return pad.t+ch*(1-(a-y0)/(y1-y0));}
-  [0.4,0.55,0.7,0.85,1.0].forEach(function(v){ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,Y(v));ctx.lineTo(pad.l+cw,Y(v));ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="right";ctx.fillText((v*100).toFixed(0)+"%",pad.l-5,Y(v)+3);});
+  [0.4,0.55,0.7,0.85,1.0].forEach(function(v){ctx.strokeStyle="rgba(148,163,184,0.16)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,Y(v));ctx.lineTo(pad.l+cw,Y(v));ctx.stroke();ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="right";ctx.fillText((v*100).toFixed(0)+"%",pad.l-5,Y(v)+3);});
   function line(a,color){ctx.beginPath();lc.sizes.forEach(function(n,i){var x=X(n),y=Y(a[i]);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();lc.sizes.forEach(function(n,i){ctx.beginPath();ctx.arc(X(n),Y(a[i]),4,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();});}
   line(lc.trainAcc,"#3fcf8e");line(lc.valAcc,"#5b8def");
-  ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px 'Space Mono',monospace";ctx.textAlign="center";lc.sizes.forEach(function(n){ctx.fillText(n,X(n),cssH-18);});
-  ctx.fillStyle="rgba(174,185,207,0.7)";ctx.font="10px 'Space Mono',monospace";ctx.fillText("training set size",pad.l+cw/2,cssH-4);
-  ctx.textAlign="left";ctx.font="10px 'Space Mono',monospace";ctx.fillStyle="#3fcf8e";ctx.fillText("\u25cf train",pad.l+6,pad.t+12);ctx.fillStyle="#5b8def";ctx.fillText("\u25cf validation",pad.l+58,pad.t+12);
+  ctx.fillStyle="rgba(180,190,214,0.75)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.textAlign="center";lc.sizes.forEach(function(n){ctx.fillText(n,X(n),cssH-18);});
+  ctx.fillStyle="rgba(174,185,207,0.7)";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.fillText("training set size",pad.l+cw/2,cssH-4);
+  ctx.textAlign="left";ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";ctx.fillStyle="#3fcf8e";ctx.fillText("\u25cf train",pad.l+6,pad.t+12);ctx.fillStyle="#5b8def";ctx.fillText("\u25cf validation",pad.l+58,pad.t+12);
 }
 
 // ─── k-fold cross-validation (default 5-fold) ───
@@ -3600,9 +3597,9 @@ function renderTrainResult(res){
     var pts=lc.map(function(v,i){return X(i)+","+Y(v);}).join(" ");
     var g='<div class="sec">Training loss (gradient descent convergence)</div><svg viewBox="0 0 '+S_W+' '+S_H+'" width="100%" style="max-width:360px;display:block;margin-bottom:14px">';
     g+='<polyline points="'+pts+'" fill="none" stroke="var(--ink)" stroke-width="2"/>';
-    g+='<text x="'+pad+'" y="'+(S_H-6)+'" font-size="9" font-family="DM Mono,monospace" fill="var(--mut)">epoch 0</text>';
-    g+='<text x="'+(S_W-8)+'" y="'+(S_H-6)+'" text-anchor="end" font-size="9" font-family="DM Mono,monospace" fill="var(--mut)">'+(res.lossCurve.length*20)+'</text>';
-    g+='<text x="4" y="'+Y(mn)+'" font-size="8" font-family="DM Mono,monospace" fill="var(--mut)">'+mn.toFixed(2)+'</text>';
+    g+='<text x="'+pad+'" y="'+(S_H-6)+'" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">epoch 0</text>';
+    g+='<text x="'+(S_W-8)+'" y="'+(S_H-6)+'" text-anchor="end" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">'+(res.lossCurve.length*20)+'</text>';
+    g+='<text x="4" y="'+Y(mn)+'" font-size="8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="var(--mut)">'+mn.toFixed(2)+'</text>';
     g+='</svg>';
     html+=g;
   })();
@@ -3952,11 +3949,11 @@ buildElo();
 </script>
 <script src="js/model/pipeline.js"></script>
 <script src="js/model/walk-forward.js"></script>
-<script src="js/data/snapshots.js?v=20260808.2"></script>
+<script src="js/data/snapshots.js?v=20260809.1"></script>
 <script src="js/data/baseball-intel.js?v=20260808.4"></script>
 <script src="js/data/mlb-intel-client.js?v=20260808.4"></script>
 <script src="js/three/stadium-configs.js?v=20260808.5"></script>
 <script src="js/three/ballpark.js?v=20260808.6"></script>
-<script src="js/ui/quant-lab.js?v=20260808.9"></script>
+<script src="js/ui/quant-lab.js?v=20260809.1"></script>
 </body>
 </html>

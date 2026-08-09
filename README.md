@@ -91,7 +91,7 @@ npm install
 npm test
 ```
 
-The test suite currently contains **218 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
+The test suite currently contains **222 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, verified legacy-result normalization, team and home/away performance summaries, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
 
 Key directories:
 

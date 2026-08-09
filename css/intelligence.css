@@ -127,7 +127,7 @@
 
 .ql-board-tabs { display: flex; min-height: 44px; border-top: 1px solid var(--divider-strong); border-bottom: 1px solid var(--divider-strong); }
 .ql-standings-board { width: 100%; border-collapse: collapse; }
-.ql-standings-board th, .ql-standings-board td { height: 45px; padding: 7px 11px; border-bottom: 1px solid var(--divider); color: var(--text-secondary); font: 11px var(--mono); text-align: right; }
+.ql-standings-board th, .ql-standings-board td { height: 45px; padding: 7px 11px; border-bottom: 1px solid var(--divider); color: var(--text-secondary); font: 11px var(--sans); font-variant-numeric: tabular-nums; text-align: right; }
 .ql-standings-board th { color: var(--text-tertiary); font: 10px var(--sans); text-transform: uppercase; }
 .ql-standings-board th:first-child, .ql-standings-board td:first-child { text-align: left; }
 .ql-standings-board tbody tr { cursor: pointer; }
@@ -190,6 +190,54 @@
 .ql-team-lineup b, .ql-team-lineup span, .ql-team-lineup em { color: var(--text-tertiary); font: 10px var(--mono); font-style: normal; }
 .ql-team-lineup em { text-align: right; }
 
+/* Past-pick review: dense, auditable, and readable without display-font theatrics. */
+.ql-results-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0 0; }
+.ql-results-toolbar .ql-result-filters { margin: 0; }
+.ql-pick-metrics-wide { grid-template-columns: repeat(4, 1fr); margin-top: 18px; background: var(--surface-soft); }
+.ql-pick-metrics-wide > div:nth-child(4n) { border-right: 0; }
+.ql-pick-metrics-wide strong small { display: inline; margin-left: 4px; color: var(--text-tertiary); font: 500 10px var(--sans); }
+.ql-pick-metrics-wide .ql-metric-source { font: 600 12px var(--sans); line-height: 1.4; }
+.ql-results-analysis { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 16px; margin: 0 0 16px; }
+.ql-results-panel { border: 1px solid var(--divider); border-radius: var(--radius-md); background: var(--surface); padding: 18px; }
+.ql-results-panel .ql-section-head { min-height: 36px; margin-bottom: 12px; }
+.ql-result-split { display: grid; grid-template-columns: minmax(190px, .8fr) minmax(180px, 1.2fr) 82px; gap: 16px; align-items: center; min-height: 58px; border-top: 1px solid var(--divider); }
+.ql-result-split > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline; }
+.ql-result-split span { grid-column: 1 / -1; color: var(--text-secondary); font-weight: 600; }
+.ql-result-split strong, .ql-result-split em, .ql-result-split small { font-variant-numeric: tabular-nums; }
+.ql-result-split strong { font: 600 13px var(--mono); }
+.ql-result-split em { color: var(--text); font: 600 13px var(--mono); font-style: normal; }
+.ql-result-split > i { height: 6px; overflow: hidden; border-radius: 99px; background: var(--surface-raised); }
+.ql-result-split > i b { display: block; height: 100%; border-radius: inherit; background: var(--positive); }
+.ql-result-split > small { color: var(--text-tertiary); text-align: right; }
+.ql-confidence-list { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--divider); border-left: 1px solid var(--divider); }
+.ql-confidence-list > div { min-height: 82px; padding: 12px; border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); }
+.ql-confidence-list span, .ql-confidence-list small { display: block; color: var(--text-tertiary); font-size: 10px; }
+.ql-confidence-list strong, .ql-confidence-list em { display: inline-block; margin-top: 8px; font: 600 13px var(--mono); font-style: normal; }
+.ql-confidence-list em { float: right; color: var(--text); }
+.ql-confidence-list small { clear: both; margin-top: 3px; }
+.ql-team-callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.ql-team-callouts > div { min-height: 82px; padding: 12px 14px; border: 1px solid var(--divider); background: var(--surface-soft); }
+.ql-team-callouts span, .ql-team-callouts small { display: block; color: var(--text-tertiary); font-size: 10px; }
+.ql-team-callouts strong { display: flex; align-items: center; gap: 8px; margin: 7px 0 2px; font-size: 14px; }
+.ql-team-callouts .ql-team-logo { width: 22px; height: 22px; }
+.ql-table-scroll { width: 100%; overflow-x: auto; }
+.ql-results-team-table, .ql-results-table { width: 100%; min-width: 880px; border-collapse: collapse; }
+.ql-results-team-table th, .ql-results-team-table td, .ql-results-table th, .ql-results-table td { height: 48px; padding: 9px 12px; border-bottom: 1px solid var(--divider); color: var(--text-secondary); font-size: 11px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ql-results-team-table th, .ql-results-table th { height: 36px; color: var(--text-tertiary); font-size: 9px; font-weight: 600; letter-spacing: .035em; text-transform: uppercase; }
+.ql-results-team-table th:first-child, .ql-results-team-table td:first-child, .ql-results-table th:nth-child(1), .ql-results-table td:nth-child(1), .ql-results-table th:nth-child(2), .ql-results-table td:nth-child(2), .ql-results-table th:nth-child(3), .ql-results-table td:nth-child(3) { text-align: left; }
+.ql-results-team-table td:first-child, .ql-results-table td:nth-child(3) { display: grid; grid-template-columns: 28px 1fr; column-gap: 9px; align-items: center; }
+.ql-results-team-table .ql-team-logo, .ql-results-table .ql-team-logo { grid-row: 1 / 3; width: 26px; height: 26px; }
+.ql-results-team-table td strong, .ql-results-table td strong { color: var(--text); font-size: 11px; }
+.ql-results-team-table td small, .ql-results-table td small { color: var(--text-tertiary); font-size: 9px; }
+.ql-results-history { margin-top: 16px; }
+.ql-result-badge, .ql-record-type { display: inline-flex; align-items: center; min-height: 24px; border: 1px solid var(--divider-strong); border-radius: 99px; padding: 3px 8px; font-size: 9px; font-weight: 650; }
+.ql-result-badge.won { border-color: rgba(117,185,139,.45); color: var(--positive); }
+.ql-result-badge.lost { border-color: rgba(225,109,99,.45); color: var(--negative); }
+.ql-record-type.frozen { color: var(--accent-strong); }
+.ql-record-type.legacy { color: var(--text-secondary); }
+.ql-results-footnote { margin: 12px 0 32px; color: var(--text-tertiary); font-size: 10px; line-height: 1.6; }
+.ql-results-footnote strong { color: var(--text-secondary); }
+
 @media (max-width: 1024px) {
   .ql-lineup-grid, .ql-moments-layout { grid-template-columns: 1fr; }
   .ql-roster-grid { grid-template-columns: 1fr 1fr; }
@@ -199,6 +247,7 @@
   .ql-pick-board-v2 > header, .ql-pick-row-v2 { grid-template-columns: 36px 1fr 1.4fr 65px 84px; }
   .ql-pick-board-v2 > header span:nth-child(6), .ql-pick-board-v2 > header span:nth-child(7), .ql-pick-row-v2 > span:nth-child(6), .ql-pick-row-v2 > span:nth-child(7) { display:none; }
   .ql-pick-detail-grid { grid-template-columns: repeat(3,1fr); }
+  .ql-results-analysis { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 767px) {
@@ -217,6 +266,14 @@
   .ql-pick-row-v2 > span:not(.ql-pick-rank):not(.ql-pick-selection):not(.ql-pick-status) { display:none; }
   .ql-pick-selection { grid-template-columns:36px 1fr; }.ql-pick-selection .ql-team-logo { width:34px;height:34px; }
   .ql-pick-metrics { grid-template-columns:1fr 1fr; }.ql-pick-detail-grid { grid-template-columns:1fr 1fr; }.ql-pick-detail-hero { grid-template-columns:48px 1fr; }.ql-pick-detail-hero .ql-team-logo{width:46px;height:46px}.ql-pick-detail-hero>.ql-pick-status{grid-column:1/-1}
+  .ql-results-toolbar { align-items: flex-start; flex-direction: column; }
+  .ql-results-toolbar .ql-actions { width: 100%; }
+  .ql-results-toolbar .ql-actions button { flex: 1; }
+  .ql-pick-metrics-wide > div:nth-child(2n) { border-right: 0; }
+  .ql-result-split { grid-template-columns: 1fr 70px; gap: 8px 12px; padding: 9px 0; }
+  .ql-result-split > i { grid-column: 1 / -1; grid-row: 2; }
+  .ql-result-split > small { grid-column: 2; grid-row: 1; }
+  .ql-team-callouts { grid-template-columns: 1fr; }
   .ql-standings-board { min-width: 760px; }
   #pnl-standings { overflow-x: auto; }
   .ql-player-index { grid-template-columns: 1fr; }

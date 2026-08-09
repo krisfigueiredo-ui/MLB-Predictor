@@ -45,6 +45,16 @@ describe("Diamond Signal application shell", () => {
     });
   });
 
+  it("surfaces past-pick analysis without external display fonts", () => {
+    const ui = readFileSync(join(root, "js", "ui", "quant-lab.js"), "utf8");
+    ["Past picks", "Accuracy by selected team", "Home vs. away", "Confidence performance", "Download CSV"].forEach(label => {
+      expect(ui).toContain(label);
+    });
+    expect(html).toContain("Picks &amp; results");
+    expect(html).not.toContain("fonts.googleapis.com");
+    expect(css).toContain('BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif');
+  });
+
   it("defines all requested responsive QA breakpoints and reduced motion", () => {
     ["1260px", "1024px", "767px", "430px"].forEach(width => expect(css).toContain(`max-width: ${width}`));
     expect(css).toContain("prefers-reduced-motion: reduce");

@@ -5,7 +5,10 @@ import {
   parseSnapshotStore,
   appendImmutableSnapshot,
   gradePredictionSnapshot,
-  markLegacyRows
+  markLegacyRows,
+  normalizeLegacyPredictionResult,
+  mergePredictionResults,
+  summarizePredictionResults
 } from "../js/data/snapshots.js";
 
 function input() {
@@ -70,5 +73,48 @@ describe("point-in-time snapshots", () => {
   it("survives malformed storage and marks old logs legacy", () => {
     expect(parseSnapshotStore("bad json").snapshots).toEqual({});
     expect(markLegacyRows([{ id: 1 }])[0].snapshotStatus).toBe("LEGACY");
+    expect(createPredictionSnapshot({ ...input(), publishedProb: null }, 1500).publishedProb).toBeNull();
+  });
+
+  it("normalizes only verified legacy results and recomputes the outcome", () => {
+    const legacy = normalizeLegacyPredictionResult({
+      gid: "old-1", ts: 5000, home: "BOS", away: "NYY", pick: "NYY",
+      homeP: 0.44, awayP: 0.56, conf: 0.56, hs: 2, as: 5, real: true,
+      correct: false
+    });
+    expect(legacy.snapshotStatus).toBe("VERIFIED LEGACY");
+    expect(legacy.selection.team).toBe("NYY");
+    expect(legacy.result.outcome).toBe("WON");
+    expect(normalizeLegacyPredictionResult({ home: "BOS", away: "NYY", real: false })).toBeNull();
+  });
+
+  it("prefers the frozen snapshot when the verified legacy log has the same game", () => {
+    const frozen = gradePredictionSnapshot(
+      appendImmutableSnapshot(null, createPredictionSnapshot(input(), 1500)),
+      "401",
+      { homeScore: 5, awayScore: 3, gradedAt: 3000 }
+    ).snapshots["401"];
+    const merged = mergePredictionResults([frozen], [{
+      gid: "401", ts: 2000, home: "TOR", away: "NYY", pick: "NYY",
+      homeP: 0.4, awayP: 0.6, hs: 5, as: 3, real: true
+    }]);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].status).toBe("FROZEN");
+    expect(merged[0].selection.team).toBe("TOR");
+  });
+
+  it("summarizes team accuracy, home-away splits, and confidence tiers", () => {
+    const rows = [
+      { home: "TOR", away: "NYY", selection: { team: "TOR", probability: 0.62 }, result: { outcome: "WON" } },
+      { home: "BOS", away: "TOR", selection: { team: "TOR", probability: 0.58 }, result: { outcome: "LOST" } },
+      { home: "LAD", away: "SD", selection: { team: "SD", probability: 0.66 }, result: { outcome: "WON" } }
+    ];
+    const summary = summarizePredictionResults(rows);
+    expect(summary.picks).toBe(3);
+    expect(summary.wins).toBe(2);
+    expect(summary.home).toMatchObject({ picks: 1, wins: 1 });
+    expect(summary.away).toMatchObject({ picks: 2, wins: 1 });
+    expect(summary.highConfidence).toMatchObject({ picks: 2, wins: 2, accuracy: 1 });
+    expect(summary.teams.find((row) => row.team === "TOR")).toMatchObject({ picks: 2, wins: 1, losses: 1, accuracy: 0.5 });
   });
 });
