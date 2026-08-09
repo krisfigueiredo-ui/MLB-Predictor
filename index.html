@@ -10,15 +10,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/quant-lab.css">
+<link rel="stylesheet" href="css/quant-lab.css?v=20260808.2">
 </head>
 <body>
 <a class="ds-skip" href="#workspace">Skip to workspace</a>
 <header class="ds-header">
   <div class="ds-header-row">
     <button class="ds-brand" type="button" onclick="setTab('slate')" aria-label="Diamond Signal home">
-      <span class="ds-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span><strong>DIAMOND SIGNAL</strong><small>MLB intelligence</small></span>
+      <svg class="ds-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <path class="ds-mark-diamond" d="M5 20 20 5l15 15-15 15Z"/>
+        <path class="ds-mark-infield" d="M13 20 20 13l7 7-7 7Z"/>
+        <path class="ds-mark-signal" d="M25 24h5l2-3h4M25 28h8l2-2h3"/>
+        <circle cx="20" cy="30.2" r="1.5"/>
+      </svg>
+      <span><strong>DIAMOND SIGNAL</strong><small>Baseball intelligence</small></span>
     </button>
     <div class="ds-session" aria-label="Current data session">
       <span id="hdr-date">Today's slate</span>
@@ -33,7 +38,7 @@
   <nav class="ds-nav ql-nav" aria-label="Primary navigation">
     <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
     <button class="tab" data-view="game" onclick="setTab('game')">Game</button>
-    <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark</button>
+    <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark Live</button>
     <button class="tab" data-view="model" onclick="setTab('model')">Model</button>
     <button class="tab" data-view="performance" onclick="setTab('performance')">Performance</button>
     <button class="tab" data-view="market" onclick="setTab('market')">Market</button>
@@ -60,6 +65,8 @@
     <h3>Appearance</h3>
     <label class="ds-setting-row"><span>Reduced motion<small>Limit nonessential transitions</small></span><input id="ds-reduced-motion" type="checkbox" onchange="DiamondSignalUI.setReducedMotion(this.checked)"></label>
     <label class="ds-setting-row"><span>Ballpark quality<small>Rendering detail</small></span><select id="ds-quality" onchange="QuantLabUI.setQuality(this.value)"><option value="low">Efficient</option><option value="medium" selected>Balanced</option><option value="high">High</option></select></label>
+    <label class="ds-setting-row"><span>Probability display<small>Default presentation</small></span><select id="ds-probability-display"><option value="percent" selected>Percent</option><option value="american">American odds</option></select></label>
+    <label class="ds-setting-row"><span>Developer detail<small>Show provenance diagnostics</small></span><input id="ds-developer-mode" type="checkbox"></label>
   </div>
   <div class="ds-settings-section">
     <h3>Market settings</h3>
@@ -69,9 +76,9 @@
   </div>
 </aside>
 <div id="ds-drawer-scrim" class="ds-drawer-scrim" onclick="DiamondSignalUI.toggleSettings(false)"></div>
-<button id="chat-fab" type="button" onclick="toggleChat()" title="Open slate query panel">Slate query</button>
-<div id="chat-panel" aria-label="Slate query">
-  <div class="chat-hdr">Slate query <small>Verified inputs</small></div>
+<button id="chat-fab" type="button" onclick="toggleChat()" title="Search the current slate"><span aria-hidden="true">⌕</span> Search slate</button>
+<div id="chat-panel" aria-label="Search the current slate">
+  <div class="chat-hdr">Search slate <small>Verified inputs</small></div>
   <div id="chat-body"></div>
   <div class="chat-foot"><input id="chat-input" placeholder="Ask about a team, game, or model signal" onkeydown="if(event.key==='Enter')sendChat()"><button class="chat-send" onclick="sendChat()">Send</button></div>
 </div>
@@ -3937,8 +3944,8 @@ buildElo();
 <script src="js/model/pipeline.js"></script>
 <script src="js/model/walk-forward.js"></script>
 <script src="js/data/snapshots.js"></script>
-<script src="js/three/stadium-configs.js"></script>
-<script src="js/three/ballpark.js"></script>
-<script src="js/ui/quant-lab.js"></script>
+<script src="js/three/stadium-configs.js?v=20260808.2"></script>
+<script src="js/three/ballpark.js?v=20260808.2"></script>
+<script src="js/ui/quant-lab.js?v=20260808.2"></script>
 </body>
 </html>
