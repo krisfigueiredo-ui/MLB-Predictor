@@ -8,7 +8,9 @@ import {
   markLegacyRows,
   normalizeLegacyPredictionResult,
   mergePredictionResults,
-  summarizePredictionResults
+  summarizePredictionResults,
+  historyRecordFromSnapshot,
+  upsertPredictionHistory
 } from "../js/data/snapshots.js";
 
 function input() {
@@ -123,5 +125,28 @@ describe("point-in-time snapshots", () => {
     expect(summary.away).toMatchObject({ picks: 2, wins: 1 });
     expect(summary.highConfidence).toMatchObject({ picks: 2, wins: 2, accuracy: 1 });
     expect(summary.teams.find((row) => row.team === "TOR")).toMatchObject({ picks: 2, wins: 1, losses: 1, accuracy: 0.5 });
+  });
+
+  it("creates the permanent history row from the frozen pick rather than a changed live probability", () => {
+    const store = appendImmutableSnapshot(null, createPredictionSnapshot(input(), 1500));
+    const graded = gradePredictionSnapshot(store, "401", { homeScore: 2, awayScore: 5, gradedAt: 3000 });
+    const record = historyRecordFromSnapshot(graded.snapshots["401"], { date: "Aug 9", auto: true });
+    expect(record).toMatchObject({
+      gid: "401", pick: "TOR", homeP: 0.58, awayP: 0.42, conf: 0.58,
+      hs: 2, as: 5, correct: false, frozen: true, recordSource: "frozen_pregame"
+    });
+  });
+
+  it("updates a stale result in place and never duplicates a game id", () => {
+    const stale = [{ gid: 401, home: "TOR", away: "NYY", pick: "NYY", hs: 2, as: 5, real: true }];
+    const corrected = { gid: "401", home: "TOR", away: "NYY", pick: "TOR", hs: 2, as: 5, real: true, frozen: true };
+    const once = upsertPredictionHistory(stale, corrected);
+    const twice = upsertPredictionHistory(once.history, corrected);
+    expect(once.action).toBe("updated");
+    expect(once.history).toHaveLength(1);
+    expect(once.history[0].pick).toBe("TOR");
+    expect(twice.action).toBe("unchanged");
+    expect(twice.history).toHaveLength(1);
+    expect(upsertPredictionHistory([], { gid: "tie", home: "TOR", away: "NYY", hs: "3", as: "3", real: true }).action).toBe("rejected");
   });
 });

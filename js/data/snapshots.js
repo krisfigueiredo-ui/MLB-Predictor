@@ -300,6 +300,73 @@
     return summary;
   }
 
+  function historyRecordFromSnapshot(snapshot, extras) {
+    extras = extras || {};
+    var row = normalizeSnapshot(snapshot);
+    if (!row || !row.result || !row.selection || !row.selection.team) return null;
+    var homeScore = finiteOrNull(row.result.homeScore);
+    var awayScore = finiteOrNull(row.result.awayScore);
+    if (homeScore == null || awayScore == null || homeScore === awayScore) return null;
+    var homeProb = finiteOrNull(row.publishedProb);
+    var selectedProb = finiteOrNull(row.selection.probability);
+    if (homeProb == null && selectedProb != null) homeProb = row.selection.team === row.home ? selectedProb : 1 - selectedProb;
+    var awayProb = homeProb == null ? null : Number((1 - homeProb).toFixed(6));
+    var actualTeam = homeScore > awayScore ? row.home : row.away;
+    return {
+      gid: String(row.gameId),
+      date: extras.date || "",
+      home: row.home,
+      away: row.away,
+      homeP: homeProb,
+      awayP: awayProb,
+      conf: selectedProb == null ? (homeProb == null ? null : Math.max(homeProb, awayProb)) : selectedProb,
+      pick: row.selection.team,
+      actual: actualTeam,
+      correct: row.selection.team === actualTeam,
+      hs: homeScore,
+      as: awayScore,
+      real: true,
+      auto: extras.auto !== false,
+      frozen: true,
+      recordSource: "frozen_pregame",
+      predictionTs: row.timestamp,
+      ts: row.firstPitch,
+      modelVersion: row.modelVersion,
+      weightVersion: row.weightVersion,
+      betPick: extras.betPick || "",
+      betEdge: finiteOrNull(extras.betEdge),
+      homeML: finiteOrNull(row.selection.marketOdds != null && row.selection.team === row.home ? row.selection.marketOdds : extras.homeML),
+      awayML: finiteOrNull(row.selection.marketOdds != null && row.selection.team === row.away ? row.selection.marketOdds : extras.awayML),
+      sp: extras.sp || ""
+    };
+  }
+
+  function upsertPredictionHistory(rows, record) {
+    var history = Array.isArray(rows) ? clone(rows) : [];
+    var homeScore = finiteOrNull(record && record.hs), awayScore = finiteOrNull(record && record.as);
+    if (!record || record.real !== true || homeScore == null || awayScore == null || homeScore === awayScore) {
+      return { history: history, action: "rejected", index: -1 };
+    }
+    var gameId = record.gid == null ? "" : String(record.gid);
+    var index = -1;
+    for (var i = 0; i < history.length; i++) {
+      var currentId = history[i].gid == null ? "" : String(history[i].gid);
+      if ((gameId && currentId === gameId) ||
+          (!gameId && history[i].home === record.home && history[i].away === record.away && history[i].date === record.date)) {
+        index = i;
+        break;
+      }
+    }
+    if (index < 0) {
+      history.push(clone(record));
+      return { history: history, action: "added", index: history.length - 1 };
+    }
+    var merged = Object.assign({}, history[index], clone(record));
+    if (JSON.stringify(merged) === JSON.stringify(history[index])) return { history: history, action: "unchanged", index: index };
+    history[index] = merged;
+    return { history: history, action: "updated", index: index };
+  }
+
   return {
     SNAPSHOT_SCHEMA: SNAPSHOT_SCHEMA,
     normalizePredictionSnapshot: normalizeSnapshot,
@@ -310,6 +377,8 @@
     markLegacyRows: markLegacyRows,
     normalizeLegacyPredictionResult: normalizeLegacyPredictionResult,
     mergePredictionResults: mergePredictionResults,
-    summarizePredictionResults: summarizePredictionResults
+    summarizePredictionResults: summarizePredictionResults,
+    historyRecordFromSnapshot: historyRecordFromSnapshot,
+    upsertPredictionHistory: upsertPredictionHistory
   };
 });

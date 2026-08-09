@@ -206,7 +206,7 @@
       }, now);
       if (snapshot) { store = root.appendImmutableSnapshot(store, snapshot); changed = true; }
     });
-    if (changed) saveSnapshotStore(store);
+    if (changed) { saveSnapshotStore(store); safeCall('reconcileFrozenSnapshotHistory'); }
   }
 
   function slateRows() {
@@ -631,7 +631,7 @@
     }catch(error){}
   }
 
-  function init(){if(state.initialized)return;state.initialized=true;state.quality=matchMedia('(max-width: 760px)').matches?'low':'medium';root.renderToday=renderCurrent;root.setTab=setTab;root.jumpToGame=function(id){state.selectedGameId=String(id);state.gameMode='overview';openGame();};if(games().length)state.selectedGameId=String(games()[0].id);try{var reduced=localStorage.getItem('diamond_signal_reduced_motion')==='1';var control=document.getElementById('ds-reduced-motion');if(control)control.checked=reduced;setReducedMotion(reduced);}catch(error){}updateTopbar();maybeFreezeSnapshots();renderSlate();renderLive();renderPicks();renderStandings();renderPlayers();renderTeams();renderGame();renderModelPage();renderPerformance();renderMarket();renderData();setInterval(function(){updateTopbar();if(['slate','live','picks','standings','players','teams','game','performance','model','market','data','ballpark'].indexOf(state.view)>=0)renderCurrent();},15000);}
+  function init(){if(state.initialized)return;state.initialized=true;state.quality=matchMedia('(max-width: 760px)').matches?'low':'medium';root.renderToday=renderCurrent;root.setTab=setTab;root.jumpToGame=function(id){state.selectedGameId=String(id);state.gameMode='overview';openGame();};if(games().length)state.selectedGameId=String(games()[0].id);try{var reduced=localStorage.getItem('diamond_signal_reduced_motion')==='1';var control=document.getElementById('ds-reduced-motion');if(control)control.checked=reduced;setReducedMotion(reduced);}catch(error){}updateTopbar();maybeFreezeSnapshots();safeCall('reconcileFrozenSnapshotHistory');renderSlate();renderLive();renderPicks();renderStandings();renderPlayers();renderTeams();renderGame();renderModelPage();renderPerformance();renderMarket();renderData();setInterval(function(){updateTopbar();if(['slate','live','picks','standings','players','teams','game','performance','model','market','data','ballpark'].indexOf(state.view)>=0)renderCurrent();},15000);}
 
   root.QuantLabUI={init:init,setTab:setTab,selectGame:selectGame,openGame:openGame,openGameById:openGameById,openPick:openPick,enterBallpark:enterBallpark,setGameMode:setGameMode,selectMoment:selectMoment,refreshGameIntel:refreshGameIntel,loadSelectedGameIntel:loadSelectedGameIntel,openPlayer:openPlayer,closePlayer:closePlayer,setPlayerQuery:setPlayerQuery,setStandingsScope:setStandingsScope,setPickScope:setPickScope,setResultWindow:setResultWindow,refreshStandings:refreshStandings,openTeam:openTeam,selectTeam:selectTeam,setSlateFilter:setSlateFilter,setMarketFilter:setMarketFilter,setConfidenceFilter:setConfidenceFilter,setSlateSort:setSlateSort,toggleModelFeature:toggleModelFeature,setCamera:setCamera,setCameraSelect:setCameraSelect,toggleOverlay:toggleOverlay,setQuality:setQuality,setPerformanceMetric:setPerformanceMetric,setPerformanceRolling:setPerformanceRolling,selectSource:selectSource,openData:openData,retryMarket:retryMarket,loadPitches:loadPitches,exportSnapshots:exportSnapshots,exportPickResults:exportPickResults,exportTradingLog:exportTradingLog,syncSettings:syncSettings,render:renderCurrent};
   root.DiamondSignalUI={toggleSettings:toggleSettings,setReducedMotion:setReducedMotion};

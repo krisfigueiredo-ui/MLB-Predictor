@@ -1629,6 +1629,7 @@ function renderToday(){
 
 // ─── ROLLING HISTORY (persistent storage) ───
 var HIST_KEY="mlb_pred_history_v3";
+var SNAPSHOT_STORAGE_KEY="mlb_prediction_snapshots_v1";
 var LEGACY_HIST_KEYS=["mlb_pred_history_v1","mlb_pred_history_v2"];
 var OPEN_PANELS={}; // game ids whose Deep-analytics panel is expanded (preserved across refreshes)
 var STANDINGS_OK=false; // becomes true once the live standings overlay (L10/streak/run-diff) succeeds
@@ -1660,9 +1661,17 @@ function saveHistory(arr){
 function addToHistory(rec){
   if(!isRealResult(rec))return; // never log a result we can't back with a real, decisive score
   var h=loadHistory();
-  // avoid duplicate by date+teams
-  var dup=h.some(function(x){return x.home===rec.home&&x.away===rec.away&&x.date===rec.date;});
-  if(!dup){h.push(rec);saveHistory(h);}
+  var write;
+  if(typeof upsertPredictionHistory==="function")write=upsertPredictionHistory(h,rec);
+  else{
+    var idx=-1;for(var i=0;i<h.length;i++){
+      if((String(h[i].gid||"")===String(rec.gid||"")&&String(rec.gid||"")!=="")||(h[i].home===rec.home&&h[i].away===rec.away&&h[i].date===rec.date)){idx=i;break;}
+    }
+    if(idx<0){h.push(rec);write={history:h,action:"added",index:h.length-1};}
+    else{var merged=Object.assign({},h[idx],rec);var changed=JSON.stringify(merged)!==JSON.stringify(h[idx]);if(changed)h[idx]=merged;write={history:h,action:changed?"updated":"unchanged",index:idx};}
+  }
+  if(write.action==="added"||write.action==="updated")saveHistory(write.history);
+  return write;
 }
 function downloadBlob(content,filename,type){
   var blob=new Blob([content],{type:type});
@@ -2339,25 +2348,19 @@ function confirmLog(){
   if(isNaN(aS)||isNaN(hS)||aS<0||hS<0){errEl.textContent="Scores must be whole numbers (0 or more).";return;}
   if(aS===hS){errEl.textContent="An MLB game can\u2019t end in a tie \u2014 double-check the score.";return;}
   var homeWon=hS>aS;
-  var pick=g.homeP>=g.awayP?g.home:g.away;
   var actualTeam=homeWon?g.home:g.away;
-  var correct=(pick===actualTeam);
-  var logOdds=ODDS[g.id]||{};
-  g.result=g.homeP>=g.awayP?"home":"away"; g.actual=homeWon?"home":"away";
-  // log with a REAL score + real:true so it passes isRealResult and actually feeds Elo,
-  // calibration, recency form and per-team accuracy (winner-only logs were being dropped)
-  addToHistory({
-    gid:g.id,date:(new Date(g.startMs||Date.now())).toLocaleDateString("en-US",{month:"short",day:"numeric"}),
-    home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,pick:pick,actual:actualTeam,correct:correct,
-    hs:hS,as:aS,real:true,betPick:g.betPick||"",betEdge:g.betEdge||0,
-    homeML:logOdds.homeML,awayML:logOdds.awayML,
-    sp:(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:""),ts:g.startMs||Date.now()
-  });
-  learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id); // SGD on pitcher-form weights (if SP loaded)
-  bumpTrainedCount();
-  recomputeAll(); // rebuild Elo from the new result + refresh EVERY prediction (the real learning step)
+  var record=historyRecordForFinalGame(g,{h:hS,a:aS},false);
+  var write=addToHistory(record)||{action:"rejected"};
+  var correct=record&&record.pick===actualTeam;
+  g.result=record&&record.pick===g.home?"home":"away"; g.actual=homeWon?"home":"away";
+  if(write.action==="added"){
+    learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id); // exactly once per verified game
+    bumpTrainedCount();
+  }
+  if(write.action==="added"||write.action==="updated")recomputeAll();
+  else renderToday();
   closeModal();
-  showToast((correct?"\u2713 Correct! ":"\u2717 Wrong. ")+g.away+" "+aS+"\u2013"+hS+" "+g.home+" logged \u2014 model retrained ("+modelTrainedGames()+" games)");
+  showToast((correct?"\u2713 Correct. ":"\u2717 Incorrect. ")+g.away+" "+aS+"\u2013"+hS+" "+g.home+(write.action==="updated"?" log corrected":" logged")+(write.action==="added"?" \u00b7 model updated":""));
 }
 function closeModal(){document.getElementById("log-modal").classList.remove("open");logTarget=null;selRes=null;}
 
@@ -2424,14 +2427,60 @@ function showToast(msg){var t=document.getElementById("toast");t.textContent=msg
 // A game resolves ONLY when a real final score is available (ESPN final or closed
 // live feed). No simulated outcomes, ever — see the guard inside.
 function gameSeed(id){var h=0;for(var i=0;i<id.length;i++){h=(h*31+id.charCodeAt(i))>>>0;}return h;}
+function loadPredictionSnapshotStore(){
+  if(typeof parseSnapshotStore!=="function")return null;
+  try{return parseSnapshotStore(LS.getItem(SNAPSHOT_STORAGE_KEY));}catch(e){return null;}
+}
+function savePredictionSnapshotStore(store){
+  if(!store)return;
+  try{LS.setItem(SNAPSHOT_STORAGE_KEY,JSON.stringify(store));}catch(e){}
+}
+function gradeStoredSnapshotForGame(g,score){
+  if(!g||!score||typeof gradePredictionSnapshot!=="function")return null;
+  var store=loadPredictionSnapshotStore();if(!store)return null;
+  var key=String(g.id),snapshot=store.snapshots&&store.snapshots[key];
+  if(!snapshot)return null;
+  if(!snapshot.result){
+    store=gradePredictionSnapshot(store,key,{homeScore:score.h,awayScore:score.a,gradedAt:Date.now()});
+    savePredictionSnapshotStore(store);
+    snapshot=store.snapshots&&store.snapshots[key];
+  }
+  return snapshot||null;
+}
+function historyRecordForFinalGame(g,score,automatic){
+  var logOdds=ODDS[g.id]||{},spText=(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:"");
+  var dateText=(new Date(g.startMs||Date.now())).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  var snapshot=gradeStoredSnapshotForGame(g,score);
+  if(snapshot&&snapshot.result&&typeof historyRecordFromSnapshot==="function"){
+    return historyRecordFromSnapshot(snapshot,{date:dateText,auto:automatic!==false,betPick:g.betPick||"",betEdge:g.betEdge||0,homeML:logOdds.homeML,awayML:logOdds.awayML,sp:spText});
+  }
+  var homeWon=score.h>score.a,pick=g.homeP>=g.awayP?g.home:g.away,actualTeam=homeWon?g.home:g.away;
+  return {gid:String(g.id),date:dateText,home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,
+    pick:pick,actual:actualTeam,correct:pick===actualTeam,hs:score.h,as:score.a,real:true,auto:automatic!==false,
+    frozen:false,recordSource:"unfrozen_legacy",betPick:g.betPick||"",betEdge:g.betEdge||0,
+    homeML:logOdds.homeML,awayML:logOdds.awayML,sp:spText,ts:g.startMs||Date.now()};
+}
+function reconcileFrozenSnapshotHistory(){
+  if(typeof historyRecordFromSnapshot!=="function"||typeof upsertPredictionHistory!=="function")return {added:0,updated:0};
+  var store=loadPredictionSnapshotStore();if(!store)return {added:0,updated:0};
+  var history=loadHistory(),added=0,updated=0;
+  Object.keys(store.snapshots||{}).forEach(function(key){
+    var snapshot=store.snapshots[key];if(!snapshot||!snapshot.result)return;
+    var existing=null;for(var i=0;i<history.length;i++){if(String(history[i].gid||"")===String(snapshot.gameId||key)){existing=history[i];break;}}
+    var dateText=(existing&&existing.date)||(new Date(snapshot.firstPitch||Date.now())).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+    var record=historyRecordFromSnapshot(snapshot,{date:dateText,auto:existing?existing.auto!==false:true,
+      betPick:existing&&existing.betPick||"",betEdge:existing&&existing.betEdge,homeML:existing&&existing.homeML,
+      awayML:existing&&existing.awayML,sp:existing&&existing.sp||""});
+    if(!record)return;
+    var write=upsertPredictionHistory(history,record);history=write.history;
+    if(write.action==="added")added++;else if(write.action==="updated")updated++;
+  });
+  if(added||updated){saveHistory(history);if(typeof bumpRecForm==="function")bumpRecForm();if(typeof buildElo==="function")buildElo();}
+  return {added:added,updated:updated};
+}
 function autoResolveGames(){
-  var now=Date.now();
-  var hist=loadHistory();
-  var resolvedKeys={};
-  hist.forEach(function(r){resolvedKeys[r.gid]=true;});
-  var newlyLogged=0;
+  var newlyLogged=0,corrected=0;
   GAMES30.forEach(function(g){
-    if(resolvedKeys[g.id])return;     // already in log
     if(g.voided||g.status==="void")return; // postponed/cancelled — never grade or train on it
     // REAL final scores ONLY — no simulated outcomes, ever. If ESPN hasn't posted
     // a final, the game simply waits; fabricated results would poison the log AND training.
@@ -2444,24 +2493,17 @@ function autoResolveGames(){
       if(lv&&lv.status==="closed"&&lv.home!==lv.away){homeWon=lv.home>lv.away;realScore={h:lv.home,a:lv.away};}
       else return; // no real score yet — wait, don't fabricate
     }
-    var actualTeam=homeWon?g.home:g.away;
-    var pick=g.homeP>=g.awayP?g.home:g.away;
-    var correct=(pick===actualTeam);
-    var logOdds=ODDS[g.id]||{};
-    learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id);
-    bumpTrainedCount();
-    addToHistory({
-      gid:g.id,date:(new Date(g.startMs)).toLocaleDateString("en-US",{month:"short",day:"numeric"}),
-      home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,pick:pick,actual:actualTeam,
-      correct:correct,hs:realScore?realScore.h:null,as:realScore?realScore.a:null,auto:true,real:!!realScore,
-      betPick:g.betPick||"",betEdge:g.betEdge||0,homeML:logOdds.homeML,awayML:logOdds.awayML,
-      sp:(SP[g.id]?SP[g.id].h.name+" v "+SP[g.id].a.name:""),ts:g.startMs+1000
-    });
-    g.result=g.homeP>=g.awayP?"home":"away";
+    var record=historyRecordForFinalGame(g,realScore,true);
+    var write=addToHistory(record)||{action:"rejected"};
+    if(write.action==="added"){
+      learnFromGame(g.home,g.away,SP[g.id],homeWon,g.id);
+      bumpTrainedCount();
+      newlyLogged++;
+    }else if(write.action==="updated")corrected++;
+    g.result=record&&record.pick===g.home?"home":"away";
     g.actual=homeWon?"home":"away";
     g.finalScore=realScore;
     g.autoLogged=true;
-    newlyLogged++;
   });
   if(newlyLogged>0){
     // recompute predictions with freshly trained weights
@@ -2470,10 +2512,10 @@ function autoResolveGames(){
       gg.homeP=parseFloat(f.prob.toFixed(3));gg.awayP=parseFloat((1-f.prob).toFixed(3));gg.conf=Math.max(gg.homeP,gg.awayP);
     });
   }
-  return newlyLogged;
+  return {added:newlyLogged,updated:corrected};
 }
 
-// Run auto-resolve on load + every 60s so games log themselves as they finish
+// Run auto-resolve on load + every 15s so games log themselves as they finish.
 function refreshStatuses(){
   var now=Date.now();
   GAMES30.forEach(function(g){
@@ -2575,7 +2617,7 @@ function loadToday(){
       console.log("[MLB] ESPN returned no games for today.");
       showOfflineWarning();
     }
-    renderToday();setLiveBadge();
+    autoResolveGames();renderToday();setLiveBadge();
     // Auto-apply real starter data to EVERY game — the whole slate gets the same
     // information, not just cards the user happens to expand.
     setTimeout(loadAllSP,500);
@@ -3949,11 +3991,11 @@ buildElo();
 </script>
 <script src="js/model/pipeline.js"></script>
 <script src="js/model/walk-forward.js"></script>
-<script src="js/data/snapshots.js?v=20260809.4"></script>
+<script src="js/data/snapshots.js?v=20260809.5"></script>
 <script src="js/data/baseball-intel.js?v=20260808.4"></script>
 <script src="js/data/mlb-intel-client.js?v=20260808.4"></script>
 <script src="js/three/stadium-configs.js?v=20260808.5"></script>
 <script src="js/three/ballpark.js?v=20260808.6"></script>
-<script src="js/ui/quant-lab.js?v=20260809.4"></script>
+<script src="js/ui/quant-lab.js?v=20260809.5"></script>
 </body>
 </html>
