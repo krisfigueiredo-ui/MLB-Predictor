@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/quant-lab.css?v=20260808.2">
+<link rel="stylesheet" href="css/quant-lab.css?v=20260808.8">
 </head>
 <body>
 <a class="ds-skip" href="#workspace">Skip to workspace</a>
@@ -37,11 +37,13 @@
   </div>
   <nav class="ds-nav ql-nav" aria-label="Primary navigation">
     <button class="tab active" data-view="slate" onclick="setTab('slate')">Slate</button>
-    <button class="tab" data-view="game" onclick="setTab('game')">Game</button>
-    <button class="tab" data-view="ballpark" onclick="setTab('ballpark')">Ballpark Live</button>
+    <button class="tab" data-view="live" onclick="setTab('live')">Live</button>
+    <button class="tab" data-view="picks" onclick="setTab('picks')">Picks</button>
+    <button class="tab" data-view="standings" onclick="setTab('standings')">Standings</button>
+    <button class="tab" data-view="players" onclick="setTab('players')">Players</button>
+    <button class="tab" data-view="teams" onclick="setTab('teams')">Teams</button>
     <button class="tab" data-view="model" onclick="setTab('model')">Model</button>
     <button class="tab" data-view="performance" onclick="setTab('performance')">Performance</button>
-    <button class="tab" data-view="market" onclick="setTab('market')">Market</button>
     <button class="tab" data-view="data" onclick="setTab('data')">Data</button>
   </nav>
 </header>
@@ -52,6 +54,11 @@
 </div>
 <main id="workspace" class="ds-workspace">
   <section id="pnl-today" class="pnl active"><div id="ql-slate-root" class="ql-root"></div></section>
+  <section id="pnl-live" class="pnl"><div id="ql-live-root" class="ql-root"></div></section>
+  <section id="pnl-picks" class="pnl"><div id="ql-picks-root" class="ql-root"></div></section>
+  <section id="pnl-standings" class="pnl"><div id="ql-standings-root" class="ql-root"></div></section>
+  <section id="pnl-players" class="pnl"><div id="ql-players-root" class="ql-root"></div></section>
+  <section id="pnl-teams" class="pnl"><div id="ql-teams-root" class="ql-root"></div></section>
   <section id="pnl-game" class="pnl"><div id="ql-game-root" class="ql-root"></div></section>
   <section id="pnl-ballpark" class="pnl ql-ballpark-panel"><div id="ql-ballpark-root" class="ql-root"></div></section>
   <section id="pnl-model" class="pnl"><div id="ql-model-root" class="ql-root"></div></section>
@@ -76,6 +83,8 @@
   </div>
 </aside>
 <div id="ds-drawer-scrim" class="ds-drawer-scrim" onclick="DiamondSignalUI.toggleSettings(false)"></div>
+<aside id="ql-player-drawer" class="ql-player-drawer" aria-hidden="true"><div id="ql-player-drawer-body"></div></aside>
+<div id="ql-player-scrim" class="ql-player-scrim" onclick="QuantLabUI.closePlayer()"></div>
 <button id="chat-fab" type="button" onclick="toggleChat()" title="Search the current slate"><span aria-hidden="true">⌕</span> Search slate</button>
 <div id="chat-panel" aria-label="Search the current slate">
   <div class="chat-hdr">Search slate <small>Verified inputs</small></div>
@@ -3944,8 +3953,10 @@ buildElo();
 <script src="js/model/pipeline.js"></script>
 <script src="js/model/walk-forward.js"></script>
 <script src="js/data/snapshots.js"></script>
-<script src="js/three/stadium-configs.js?v=20260808.2"></script>
-<script src="js/three/ballpark.js?v=20260808.2"></script>
-<script src="js/ui/quant-lab.js?v=20260808.2"></script>
+<script src="js/data/baseball-intel.js?v=20260808.4"></script>
+<script src="js/data/mlb-intel-client.js?v=20260808.4"></script>
+<script src="js/three/stadium-configs.js?v=20260808.4"></script>
+<script src="js/three/ballpark.js?v=20260808.5"></script>
+<script src="js/ui/quant-lab.js?v=20260808.8"></script>
 </body>
 </html>

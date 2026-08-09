@@ -1,0 +1,191 @@
+.ql-game-modes { display: flex; min-height: 48px; overflow-x: auto; border-bottom: 1px solid var(--divider-strong); scrollbar-width: none; }
+.ql-game-modes::-webkit-scrollbar { display: none; }
+.ql-game-modes button, .ql-board-tabs button { flex: 0 0 auto; border: 0; border-bottom: 2px solid transparent; background: transparent; padding: 0 16px; color: var(--text-tertiary); font-size: 12px; cursor: pointer; }
+.ql-game-modes button:first-child { padding-left: 0; }
+.ql-game-modes button.active, .ql-board-tabs button.active { color: var(--accent-strong); border-bottom-color: var(--clay); }
+.ds-hero-team { border: 0; background: transparent; color: inherit; padding: 0; text-align: left; cursor: pointer; }
+.ds-hero-team.home { text-align: right; }
+.ql-intel-state { min-height: 230px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 7px; border-top: 1px solid var(--divider-strong); padding: 32px 0; }
+.ql-intel-state strong { font-size: 18px; }
+.ql-intel-state span { max-width: 620px; color: var(--text-tertiary); }
+.ql-intel-state button { margin-top: 10px; }
+
+.ql-lineup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 26px 0 30px; }
+.ql-lineup-sheet { border-top: 3px solid var(--clay); }
+.ql-lineup-sheet > header { display: flex; align-items: center; justify-content: space-between; min-height: 70px; border-bottom: 1px solid var(--divider-strong); }
+.ql-lineup-sheet > header > div { display: flex; align-items: center; gap: 12px; }
+.ql-lineup-sheet > header .ql-team-logo { width: 38px; height: 38px; }
+.ql-lineup-sheet h2 { margin: 0; font-size: 17px; }
+.ql-lineup-sheet header small { color: var(--text-tertiary); }
+.ql-lineup-status { display: inline-flex; align-items: center; gap: 6px; margin-top: 3px; color: var(--text-tertiary); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+.ql-lineup-status i { width: 6px; height: 6px; border-radius: 50%; background: var(--warning); }
+.ql-lineup-status.confirmed { color: var(--positive); }
+.ql-lineup-status.confirmed i { background: var(--positive); }
+.ql-lineup-sheet table { width: 100%; border-collapse: collapse; }
+.ql-lineup-sheet th, .ql-lineup-sheet td { height: 43px; padding: 7px 8px; border-bottom: 1px solid var(--divider); color: var(--text-secondary); font-size: 12px; text-align: right; }
+.ql-lineup-sheet th { color: var(--text-tertiary); font-size: 10px; font-weight: 500; text-transform: uppercase; }
+.ql-lineup-sheet th:nth-child(2), .ql-lineup-sheet td:nth-child(2) { text-align: left; }
+.ql-lineup-sheet > footer { display: grid; grid-template-columns: 34px 1fr; align-items: center; min-height: 46px; border-bottom: 1px solid var(--divider-strong); }
+.ql-lineup-sheet > footer span { color: var(--text-tertiary); font: 10px var(--mono); }
+.ql-player-link { border: 0; border-bottom: 1px solid transparent; background: transparent; padding: 0; color: var(--text); text-align: left; cursor: pointer; }
+.ql-player-link:hover { color: var(--accent-strong); border-bottom-color: var(--accent); }
+.ql-lineup-await { min-height: 170px; display: flex; flex-direction: column; justify-content: center; gap: 4px; color: var(--text-tertiary); }
+.ql-lineup-await strong { color: var(--text); }
+.ql-roster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 10px 0 34px; }
+.ql-roster-grid section { border-top: 1px solid var(--divider-strong); }
+.ql-roster-grid h3 { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--divider); font-size: 13px; }
+.ql-roster-row { display: flex; justify-content: space-between; gap: 8px; min-height: 34px; align-items: center; border-bottom: 1px solid var(--divider); }
+.ql-roster-row span { color: var(--text-tertiary); font-size: 10px; }
+.ql-availability { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 14px 0; }
+.ql-availability > div > strong { display: block; margin-bottom: 8px; color: var(--accent-strong); }
+.ql-availability span { display: block; min-height: 28px; color: var(--text-secondary); font-size: 12px; }
+.ql-situation-board { display: grid; grid-template-columns: 1.4fr repeat(3, .7fr) .9fr; align-items: center; border-bottom: 1px solid var(--divider-strong); }
+.ql-situation-board > div { min-height: 76px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--divider); }
+.ql-situation-board > div + div { padding-left: 18px; }
+.ql-situation-board span { color: var(--text-tertiary); font-size: 11px; }
+.ql-situation-board strong { margin-top: 5px; font: 500 13px var(--mono); }
+.ql-bases { position: relative; display: grid !important; grid-template-columns: 20px 20px; grid-template-rows: 20px 20px; justify-content: center !important; transform: rotate(45deg); }
+.ql-bases i { width: 14px; height: 14px; border: 1px solid var(--divider-strong); background: var(--surface-raised); }
+.ql-bases i:first-child { grid-column: 1; grid-row: 1; }
+.ql-bases i:nth-child(2) { grid-column: 2; grid-row: 1; }
+.ql-bases i:nth-child(3) { grid-column: 2; grid-row: 2; }
+.ql-bases i.on { background: var(--accent); border-color: var(--accent-strong); }
+.ql-text-action { margin-top: 12px; border: 0; background: transparent; padding: 0; color: var(--accent-strong); cursor: pointer; }
+
+.ql-play-feed article { display: grid; grid-template-columns: 70px 1fr 54px; gap: 16px; min-height: 62px; align-items: center; border-bottom: 1px solid var(--divider); }
+.ql-play-feed time { color: var(--accent-strong); font-size: 11px; }
+.ql-play-feed strong, .ql-play-feed span { display: block; }
+.ql-play-feed strong { font-size: 12px; }
+.ql-play-feed span { margin-top: 2px; color: var(--text-secondary); font-size: 12px; }
+.ql-play-feed b { font: 500 12px var(--mono); text-align: right; }
+.ql-moments-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(360px, .65fr); gap: 36px; padding-top: 24px; }
+.ql-wp-chart svg { width: 100%; height: auto; }
+.ql-wp-chart circle { fill: var(--clay); stroke: var(--chalk); cursor: pointer; transition: r 120ms ease, fill 120ms ease; }
+.ql-wp-chart circle.selected { fill: var(--positive); stroke-width: 2px; }
+.ql-wp-chart text { fill: var(--text-tertiary); font: 10px var(--mono); }
+.ql-wp-chart p, .ql-method-note { color: var(--text-tertiary); font-size: 12px; line-height: 1.65; }
+.ql-moment-feed .ql-moment { width: 100%; display: grid; grid-template-columns: 54px 1fr; gap: 14px; padding: 14px 8px; border: 0; border-bottom: 1px solid var(--divider); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.ql-moment-feed .ql-moment:hover, .ql-moment-feed .ql-moment.selected { background: rgba(210,169,101,.055); box-shadow: inset 2px 0 var(--accent); }
+.ql-moment-feed time { color: var(--accent-strong); font: 10px var(--mono); }
+.ql-moment-feed .ql-moment span { color: var(--text-tertiary); font-size: 9px; letter-spacing: .06em; }
+.ql-moment-feed .ql-moment strong { display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; }
+.ql-moment-feed dl { display: grid; grid-template-columns: repeat(6, auto); gap: 5px 9px; margin: 8px 0 0; color: var(--text-tertiary); font-size: 10px; }
+.ql-moment-feed dd { margin: 0; color: var(--text); font-family: var(--mono); }
+
+.ql-pick-board { border-top: 3px solid var(--accent); margin-bottom: 34px; }
+.ql-pick-board > header, .ql-pick-row { display: grid; grid-template-columns: 48px minmax(150px,1.1fr) 72px minmax(150px,1fr) 92px 110px minmax(190px,1.35fr); gap: 14px; align-items: center; }
+.ql-pick-board > header { min-height: 38px; border-bottom: 1px solid var(--divider-strong); color: var(--text-tertiary); font-size: 10px; text-transform: uppercase; }
+.ql-pick-row { width: 100%; min-height: 72px; border: 0; border-bottom: 1px solid var(--divider); background: transparent; padding: 8px 0; color: var(--text-secondary); text-align: left; cursor: pointer; }
+.ql-pick-row:hover { background: rgba(210,169,101,.035); }
+.ql-pick-row > b { color: var(--text-tertiary); font: 500 12px var(--mono); }
+.ql-pick-row > em { color: var(--accent-strong); font: 650 23px var(--mono); font-style: normal; }
+.ql-pick-row strong, .ql-pick-row small { display: block; }
+.ql-pick-row strong { color: var(--text); font-size: 12px; }
+.ql-pick-row small { margin-top: 3px; color: var(--text-tertiary); font-size: 10px; }
+.ql-pick-reasons i { display: block; font-size: 10px; font-style: normal; line-height: 1.45; }
+
+.ql-live-board { border-top: 3px solid var(--live); margin-bottom: 34px; }
+.ql-live-game { width: 100%; display: grid; grid-template-columns: 90px 210px 1fr 130px; gap: 24px; align-items: center; min-height: 88px; border: 0; border-bottom: 1px solid var(--divider); background: transparent; padding: 10px 0; color: var(--text); text-align: left; cursor: pointer; }
+.ql-live-game > div:nth-child(2) { display: grid; grid-template-columns: 1fr 34px; row-gap: 3px; }
+.ql-live-game > div:nth-child(2) strong { font-size: 15px; }
+.ql-live-game > div:nth-child(2) b { font: 600 16px var(--mono); text-align: right; }
+.ql-live-context span, .ql-live-context small { display: block; }
+.ql-live-context span { color: var(--text-secondary); font-size: 11px; }
+.ql-live-context small { margin-top: 4px; color: var(--text-tertiary); }
+.ql-live-game > em { color: var(--accent-strong); font: 500 12px var(--mono); font-style: normal; text-align: right; }
+
+.ql-board-tabs { display: flex; min-height: 44px; border-top: 1px solid var(--divider-strong); border-bottom: 1px solid var(--divider-strong); }
+.ql-standings-board { width: 100%; border-collapse: collapse; }
+.ql-standings-board th, .ql-standings-board td { height: 45px; padding: 7px 11px; border-bottom: 1px solid var(--divider); color: var(--text-secondary); font: 11px var(--mono); text-align: right; }
+.ql-standings-board th { color: var(--text-tertiary); font: 10px var(--sans); text-transform: uppercase; }
+.ql-standings-board th:first-child, .ql-standings-board td:first-child { text-align: left; }
+.ql-standings-board tbody tr { cursor: pointer; }
+.ql-standings-board tbody tr:hover { background: rgba(210,169,101,.035); }
+.ql-standings-board tr.leader { box-shadow: inset 3px 0 var(--accent); }
+.ql-standings-board td:first-child > span { display: grid; grid-template-columns: 30px 42px 1fr; align-items: center; gap: 8px; }
+.ql-standings-board td:first-child small { color: var(--text-tertiary); font-family: var(--sans); }
+
+.ql-search { display: grid; gap: 4px; min-width: 260px; color: var(--text-tertiary); font-size: 10px; }
+.ql-search input { height: 36px; border: 1px solid var(--divider-strong); background: var(--surface-soft); padding: 0 10px; }
+.ql-player-index { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--divider-strong); }
+.ql-player-index > button { display: flex; align-items: center; justify-content: space-between; min-height: 68px; border: 0; border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); background: transparent; padding: 9px 13px; color: var(--text); text-align: left; cursor: pointer; }
+.ql-player-index > button > span { display: grid; grid-template-columns: 32px 1fr; align-items: center; gap: 9px; }
+.ql-player-index strong, .ql-player-index small { display: block; grid-column: 2; }
+.ql-player-index small { color: var(--text-tertiary); }
+.ql-player-index em { color: var(--accent-strong); font: 11px var(--mono); font-style: normal; }
+.ql-player-drawer { position: fixed; z-index: 340; top: 0; right: 0; bottom: 0; width: min(680px, 96vw); transform: translateX(102%); overflow-y: auto; background: var(--workspace); border-left: 1px solid var(--divider-strong); transition: transform 180ms ease; }
+.ql-player-drawer.open { transform: translateX(0); }
+.ql-player-scrim { position: fixed; z-index: 339; inset: 0; visibility: hidden; opacity: 0; background: rgba(0,0,0,.66); transition: opacity 180ms ease; }
+.ql-player-scrim.open { visibility: visible; opacity: 1; }
+.ql-player-drawer-body > header { position: sticky; top: 0; z-index: 2; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(13,17,15,.96); border-bottom: 1px solid var(--divider); }
+.ql-player-drawer-body > header button { border: 0; background: transparent; color: var(--text-secondary); }
+.ql-player-drawer-body > header span { color: var(--text-tertiary); font-size: 10px; letter-spacing: .08em; }
+.ql-player-identity { display: grid; grid-template-columns: 70px 1fr; gap: 18px; align-items: center; padding: 26px 22px; border-bottom: 3px solid var(--clay); }
+.ql-player-identity .ql-team-logo { width: 64px; height: 64px; }
+.ql-player-identity h2 { margin: 2px 0; font-size: 28px; }
+.ql-player-identity p, .ql-player-identity small { margin: 0; color: var(--text-tertiary); }
+.ql-player-drawer .ql-section, .ql-player-drawer .ql-intel-state { margin-left: 22px; margin-right: 22px; }
+.ql-stat-strip { display: grid; grid-template-columns: repeat(5, 1fr); }
+.ql-stat-strip > div { min-height: 70px; padding: 13px 10px 10px 0; border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); }
+.ql-stat-strip span { display: block; color: var(--text-tertiary); font-size: 10px; }
+.ql-stat-strip strong { display: block; margin-top: 6px; font: 550 15px var(--mono); }
+.ql-form-bars { display: grid; gap: 9px; padding: 14px 0; border-bottom: 1px solid var(--divider-strong); }
+.ql-form-bars > div { display: grid; grid-template-columns: 34px 1fr 50px; gap: 10px; align-items: center; }
+.ql-form-bars span, .ql-form-bars strong { font: 10px var(--mono); }
+.ql-form-bars span { color: var(--text-tertiary); }
+.ql-form-bars strong { text-align: right; }
+.ql-form-bars i { height: 5px; overflow: hidden; background: var(--surface-raised); }
+.ql-form-bars b { display: block; height: 100%; background: var(--accent); }
+
+.ql-team-workspace { display: grid; grid-template-columns: 250px 1fr; border-top: 1px solid var(--divider-strong); }
+.ql-team-workspace > aside { max-height: calc(100vh - 190px); overflow-y: auto; border-right: 1px solid var(--divider-strong); }
+.ql-team-workspace > aside button { width: 100%; display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; min-height: 54px; border: 0; border-bottom: 1px solid var(--divider); background: transparent; padding: 7px 10px; color: var(--text); text-align: left; }
+.ql-team-workspace > aside button.active { background: var(--surface-selected); box-shadow: inset 3px 0 var(--accent); }
+.ql-team-workspace > aside strong, .ql-team-workspace > aside small { display: block; }
+.ql-team-workspace > aside small { color: var(--text-tertiary); font-size: 9px; }
+.ql-team-workspace > main { min-width: 0; padding: 22px 28px; }
+.ql-team-header { display: flex; align-items: center; gap: 18px; padding-bottom: 22px; border-bottom: 3px solid var(--clay); }
+.ql-team-header .ql-team-logo { width: 60px; height: 60px; }
+.ql-team-header span { color: var(--text-tertiary); }
+.ql-team-header h2 { margin: 2px 0; font-size: 27px; }
+.ql-team-record { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--divider-strong); }
+.ql-team-record > div { min-height: 70px; padding: 14px; border-right: 1px solid var(--divider); }
+.ql-team-record span { display: block; color: var(--text-tertiary); font-size: 10px; }
+.ql-team-record strong { display: block; margin-top: 6px; font: 500 14px var(--mono); }
+.ql-roster-list > div { display: flex; justify-content: space-between; min-height: 38px; align-items: center; border-bottom: 1px solid var(--divider); }
+.ql-roster-list span { color: var(--text-tertiary); font-size: 11px; }
+.ql-team-lineup { display: grid; grid-template-columns: 1fr 1fr; }
+.ql-team-lineup > div { display: grid; grid-template-columns: 24px 1fr 38px 72px; gap: 8px; align-items: center; min-height: 38px; border-bottom: 1px solid var(--divider); }
+.ql-team-lineup b, .ql-team-lineup span, .ql-team-lineup em { color: var(--text-tertiary); font: 10px var(--mono); font-style: normal; }
+.ql-team-lineup em { text-align: right; }
+
+@media (max-width: 1024px) {
+  .ql-lineup-grid, .ql-moments-layout { grid-template-columns: 1fr; }
+  .ql-roster-grid { grid-template-columns: 1fr 1fr; }
+  .ql-pick-board > header, .ql-pick-row { grid-template-columns: 36px 1.1fr 58px 1fr 90px; }
+  .ql-pick-board > header span:nth-child(6), .ql-pick-board > header span:nth-child(7), .ql-pick-row > span:nth-child(6), .ql-pick-reasons { display: none; }
+  .ql-player-index { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 767px) {
+  .ql-game-modes { margin: 0 -12px; padding-left: 12px; }
+  .ql-lineup-grid { gap: 20px; }
+  .ql-roster-grid { grid-template-columns: 1fr; }
+  .ql-situation-board { grid-template-columns: 1fr 1fr; }
+  .ql-situation-board > div { border-bottom: 1px solid var(--divider); }
+  .ql-live-game { grid-template-columns: 60px 1fr 90px; gap: 12px; }
+  .ql-live-context { grid-column: 2 / -1; }
+  .ql-pick-board > header { display: none; }
+  .ql-pick-row { grid-template-columns: 30px 1fr 52px; min-height: 78px; }
+  .ql-pick-row > span:nth-child(n+4) { display: none; }
+  .ql-standings-board { min-width: 760px; }
+  #pnl-standings { overflow-x: auto; }
+  .ql-player-index { grid-template-columns: 1fr; }
+  .ql-team-workspace { grid-template-columns: 1fr; }
+  .ql-team-workspace > aside { display: flex; max-height: none; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--divider-strong); }
+  .ql-team-workspace > aside button { min-width: 140px; }
+  .ql-team-workspace > main { padding: 18px 0; }
+  .ql-team-record, .ql-stat-strip { grid-template-columns: 1fr 1fr; }
+  .ql-team-lineup { grid-template-columns: 1fr; }
+  .ql-search { width: 100%; margin-top: 14px; }
+}

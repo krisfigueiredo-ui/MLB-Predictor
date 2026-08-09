@@ -9,7 +9,12 @@ Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It
 ## Product structure
 
 - **Slate** — a dense, sortable baseball board with compact mobile rows, model probability, market state, projected runs, source coverage, and a persistent desktop matchup inspector.
-- **Game** — a full research workspace with a matchup hero, Diamond Signal probability axis, feature contributions, base-model disagreement, a non-destructive Model Lab, and measured pitch locations when available.
+- **Live** — active and completed games with score, inning, count, outs, base occupancy, live win-probability context, and the latest verified moment once a game feed is loaded.
+- **Picks** — every matchup ranked by the documented 0–10 Diamond Signal Score, with model side, projected score, market state, and the strongest positive and negative signals.
+- **Standings** — MLB, league, and wild-card boards with division position, home/road records, last 10, streak, games back, and run differential.
+- **Players** — an on-demand directory populated from verified game rosters. Player drawers show bio, core season batting or pitching, recent hitting windows, and explicit unavailable states for unsupported advanced fields.
+- **Teams** — a club workspace for standings context, season offense, season pitching, current provider-returned availability, and today’s matchup.
+- **Game** — a full research workspace with Overview, Lineups, Matchup, Ballpark, Play-by-play, Moments, Model, and Market modes. Confirmed orders, bench/bullpen roles, verified events, and derived win-probability swings stay attached to the selected matchup.
 - **Ballpark Live** — a canvas-first, park-specific Three.js broadcast view with occupied stands, stylized baseball players, six camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
 - **Model** — a research-led pipeline view with prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
 - **Performance** — a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
@@ -29,6 +34,15 @@ The primary validation utilities use rolling-origin splits:
 5. Report accuracy, Brier score, log loss, ROC-AUC, and ECE.
 
 Randomized cross-validation remains visible only as a legacy educational comparison. Existing history without complete pregame features is labeled `LEGACY` and is not mixed into prospective claims.
+
+### Diamond Signal Score
+
+The Picks page uses a deterministic 0–10 ranking score. It does not change the underlying game probability.
+
+- With a verified market: 32% market edge, 20% model confidence, 20% base-model agreement, 18% data quality, and 10% starting-pitching contribution.
+- Without a market: 36% model confidence, 28% agreement, 24% data quality, and 12% starting pitching.
+
+Each input is normalized and capped to 0–1 before weighting. A missing moneyline cannot create an edge or qualify a wager.
 
 ### Point-in-time snapshots
 
@@ -62,7 +76,9 @@ Quality modes are High, Medium, and Low, with Low selected automatically on mobi
 
 ## Data policy
 
-Live schedules, scores, posted starters, standings, injuries, weather, odds, and pitch locations are displayed only when a source returns them. Unavailable model inputs stay neutral and render as `—`. The application does not manufacture betting lines, injuries, bullpen fatigue, umpire assignments, weather, pitch movement, hit trajectories, or historical snapshots.
+Live schedules, scores, posted starters, standings, lineups, player/team season statistics, play-by-play, injuries, weather, odds, and pitch locations are displayed only when a source returns them. Unavailable model inputs stay neutral and render as `—`. The application does not manufacture betting lines, players, lineups, injuries, bullpen fatigue, umpire assignments, weather, pitch movement, hit trajectories, advanced metrics, or historical snapshots.
+
+MLB game feeds are normalized into stable game, lineup, player, play, moment, and win-probability records in `js/data/baseball-intel.js`. The client in `js/data/mlb-intel-client.js` caches verified standings, game feeds, player stats, and team stats for the current browser session. Win-probability points are clearly labeled as local derivatives of the frozen pregame model plus verified inning and score state; they are not represented as an MLB-provided metric.
 
 The app first requests official ESPN and MLB endpoints directly or through the included same-origin development server. Some browser-only paths retain third-party CORS relay fallbacks for availability; source status and provenance remain visible, and relay responses are still parsed as the original provider's payload. No API key is required.
 
@@ -83,16 +99,16 @@ npm install
 npm test
 ```
 
-The test suite currently contains **212 tests across 15 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, all-club stadium resolution, responsive application shell, deployment packaging, and 2D fallback.
+The test suite currently contains **217 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, all-club stadium resolution, responsive application shell, deployment packaging, and 2D fallback.
 
 Key directories:
 
 ```text
 css/             Diamond Signal tokens, shell, page layouts, motion, and responsive modes
-js/data/         Point-in-time snapshot schema and migration helpers
+js/data/         Snapshot schema plus MLB standings/game/player/team adapters
 js/model/        Ensemble, calibration, walk-forward validation, ablation
 js/three/        Stadium configurations and lazy procedural renderer
-js/ui/           Slate, Game, Model, Performance, Data, and Ballpark views
+js/ui/           Slate, Live, Picks, Standings, Players, Teams, Game, Model, Performance, Data, and Ballpark views
 tests/           Vitest coverage for original and rebuilt modules
 ```
 
