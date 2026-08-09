@@ -195,6 +195,7 @@
 .ql-results-toolbar .ql-result-filters { margin: 0; }
 .ql-pick-metrics-wide { grid-template-columns: repeat(4, 1fr); margin-top: 18px; background: var(--surface-soft); }
 .ql-pick-metrics-wide > div:nth-child(4n) { border-right: 0; }
+.ql-pick-metrics-wide strong { font-family: var(--sans); font-variant-numeric: tabular-nums; letter-spacing: -.015em; }
 .ql-pick-metrics-wide strong small { display: inline; margin-left: 4px; color: var(--text-tertiary); font: 500 10px var(--sans); }
 .ql-pick-metrics-wide .ql-metric-source { font: 600 12px var(--sans); line-height: 1.4; }
 .ql-results-analysis { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); gap: 16px; margin: 0 0 16px; }
@@ -204,15 +205,15 @@
 .ql-result-split > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline; }
 .ql-result-split span { grid-column: 1 / -1; color: var(--text-secondary); font-weight: 600; }
 .ql-result-split strong, .ql-result-split em, .ql-result-split small { font-variant-numeric: tabular-nums; }
-.ql-result-split strong { font: 600 13px var(--mono); }
-.ql-result-split em { color: var(--text); font: 600 13px var(--mono); font-style: normal; }
+.ql-result-split strong { font: 650 13px var(--sans); }
+.ql-result-split em { color: var(--text); font: 650 13px var(--sans); font-style: normal; }
 .ql-result-split > i { height: 6px; overflow: hidden; border-radius: 99px; background: var(--surface-raised); }
 .ql-result-split > i b { display: block; height: 100%; border-radius: inherit; background: var(--positive); }
 .ql-result-split > small { color: var(--text-tertiary); text-align: right; }
 .ql-confidence-list { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--divider); border-left: 1px solid var(--divider); }
 .ql-confidence-list > div { min-height: 82px; padding: 12px; border-right: 1px solid var(--divider); border-bottom: 1px solid var(--divider); }
 .ql-confidence-list span, .ql-confidence-list small { display: block; color: var(--text-tertiary); font-size: 10px; }
-.ql-confidence-list strong, .ql-confidence-list em { display: inline-block; margin-top: 8px; font: 600 13px var(--mono); font-style: normal; }
+.ql-confidence-list strong, .ql-confidence-list em { display: inline-block; margin-top: 8px; font: 650 13px var(--sans); font-style: normal; font-variant-numeric: tabular-nums; }
 .ql-confidence-list em { float: right; color: var(--text); }
 .ql-confidence-list small { clear: both; margin-top: 3px; }
 .ql-team-callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }

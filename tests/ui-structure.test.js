@@ -22,7 +22,7 @@ describe("Diamond Signal application shell", () => {
   });
 
   it("ships the Diamond Signal shell without the deprecated hidden interface", () => {
-    expect(html).toContain("DIAMOND SIGNAL");
+    expect(html).toContain("Diamond Signal");
     expect(html).toContain('id="ds-settings"');
     expect(html).not.toContain("legacy-slate");
     expect(html).not.toContain("bankroll-in-top");
