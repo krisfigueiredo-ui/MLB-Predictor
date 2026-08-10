@@ -1,0 +1,15 @@
+[
+  {
+    "url": "https://boards.greenhouse.io/example/jobs/1234567",
+    "company": "Example Corp",
+    "role": "Senior Backend Engineer"
+  },
+  {
+    "url": "https://jobs.lever.co/example-two/8f0c2a1b-1111-2222-3333-444455556666",
+    "company": "Example Two",
+    "role": "Platform Engineer"
+  },
+  {
+    "url": "https://jobs.ashbyhq.com/example-three/abcdef12-3456-7890-abcd-ef1234567890"
+  }
+]

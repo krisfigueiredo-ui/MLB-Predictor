@@ -1,1 +1,7 @@
 node_modules/
+
+# job-agent runtime artifacts
+job-agent/profile.json
+job-agent/runs/
+job-agent/applications.jsonl
+job-agent/node_modules/

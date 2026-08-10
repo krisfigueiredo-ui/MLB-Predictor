@@ -1,0 +1,20 @@
+{
+  "name": "job-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent that opens a job posting, fills the application form from your profile, and submits it.",
+  "bin": {
+    "job-agent": "./src/cli.js"
+  },
+  "scripts": {
+    "apply": "node src/cli.js apply",
+    "queue": "node src/cli.js queue"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.68.0"
+  }
+}

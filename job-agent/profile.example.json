@@ -1,0 +1,103 @@
+{
+  "personal": {
+    "firstName": "Jordan",
+    "lastName": "Rivera",
+    "preferredName": "",
+    "pronouns": "",
+    "email": "jordan.rivera@example.com",
+    "phone": "+1 555 0134",
+    "location": {
+      "addressLine1": "42 Larkspur Ave",
+      "city": "Austin",
+      "state": "Texas",
+      "postalCode": "78702",
+      "country": "United States"
+    }
+  },
+
+  "links": {
+    "linkedin": "https://www.linkedin.com/in/jordanrivera",
+    "github": "https://github.com/jordanrivera",
+    "portfolio": "https://jordanrivera.dev",
+    "website": ""
+  },
+
+  "documents": {
+    "resume": "./resume.pdf",
+    "coverLetter": null
+  },
+
+  "work": {
+    "currentTitle": "Senior Backend Engineer",
+    "currentCompany": "Northwind Data",
+    "yearsExperience": 7,
+    "salaryExpectation": "$185,000",
+    "startDate": "Four weeks from offer",
+    "noticePeriod": "4 weeks"
+  },
+
+  "education": {
+    "school": "University of Texas at Austin",
+    "degree": "B.S. Computer Science",
+    "major": "Computer Science",
+    "graduationYear": 2019
+  },
+
+  "eligibility": {
+    "workAuthorized": true,
+    "requiresSponsorship": false,
+    "willingToRelocate": false,
+    "remotePreference": "Remote"
+  },
+
+  "demographics": {
+    "gender": "Prefer not to say",
+    "race": "Prefer not to say",
+    "hispanicLatino": "Prefer not to say",
+    "veteranStatus": "I don't wish to answer",
+    "disabilityStatus": "I don't wish to answer"
+  },
+
+  "answers": {
+    "howDidYouHear": "Company website",
+    "referral": "",
+    "whyCompany": "",
+    "whyRole": "",
+    "custom": [
+      {
+        "match": "willing to work in office",
+        "answer": "I'm open to occasional on-site collaboration and prefer a remote-first arrangement."
+      },
+      {
+        "match": "on-call",
+        "answer": "Yes — I've carried a production pager for the last four years."
+      }
+    ]
+  },
+
+  "highlights": [
+    {
+      "text": "Rebuilt Northwind's ingestion pipeline in Go, cutting p99 latency from 1.8s to 240ms while tripling throughput.",
+      "keywords": ["go", "golang", "pipeline", "latency", "performance", "distributed"]
+    },
+    {
+      "text": "Led the migration of 60+ services from a monolith to Kubernetes with zero customer-visible downtime.",
+      "keywords": ["kubernetes", "migration", "infrastructure", "microservices", "platform"]
+    },
+    {
+      "text": "Designed the event schema and Postgres partitioning strategy behind an audit log serving 400M rows.",
+      "keywords": ["postgres", "sql", "database", "schema", "scale", "data"]
+    },
+    {
+      "text": "Mentored four engineers to promotion and ran the team's design review process.",
+      "keywords": ["mentorship", "leadership", "senior", "staff", "review"]
+    }
+  ],
+
+  "coverLetter": {
+    "opening": "I've spent the last seven years building high-throughput backend systems, most recently at Northwind Data.",
+    "closing": "I'd welcome the chance to talk about how that experience maps onto what your team is building.",
+    "signoff": "Best regards,",
+    "template": null
+  }
+}
