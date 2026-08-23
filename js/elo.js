@@ -22,12 +22,22 @@ function eloProbFromRatings(homeRating, awayRating, hfa) {
   return 1 / (1 + Math.pow(10, -d / 400));
 }
 
-// Rating change for one decisive game (538-style margin-of-victory adjustment):
-// bigger margins move ratings more, with diminishing returns, damped when a
-// strong favorite wins so blowouts by good teams don't over-inflate.
+// Rating change for one game (538-style margin-of-victory adjustment): bigger
+// margins move ratings more, with diminishing returns, damped when a strong
+// favorite wins so blowouts by good teams don't over-inflate.
 // homeWon: 1 (home win), 0 (away win), or 0.5 (tie).
+//
+// The damping term needs the *winner's* rating advantage, so the sign of
+// ratingDiff flips when the away side wins. `homeWon ? 1 : -1` got that right
+// for 1 and 0 and wrong for 0.5: a tie is truthy in JavaScript, so it took the
+// home-win branch. Harmless today, because a tie carries margin 0 and the
+// multiplier is overridden below before the direction can matter -- but it is
+// wrong on its face, and the next caller to pass a half-credit result with a
+// non-zero margin would inherit a silent error. Comparing against 0.5 says what
+// is meant.
 function eloRatingChange(k, margin, ratingDiff, homeWon, expectedHomeProb) {
-  var mov = Math.log(margin + 1) * (2.2 / (((homeWon ? 1 : -1) * ratingDiff) * 0.001 + 2.2));
+  var winnerDiff = homeWon > 0.5 ? ratingDiff : homeWon < 0.5 ? -ratingDiff : 0;
+  var mov = Math.log(margin + 1) * (2.2 / (winnerDiff * 0.001 + 2.2));
   if (!isFinite(mov) || mov <= 0) mov = 1;
   return k * mov * (homeWon - expectedHomeProb);
 }

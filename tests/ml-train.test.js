@@ -189,3 +189,40 @@ describe("confusionMatrixStats", () => {
     expect(s.f1).toBe(1);
   });
 });
+
+describe("seededShuffle — 32-bit arithmetic", () => {
+  it("is reproducible for a given seed", () => {
+    const input = Array.from({ length: 40 }, (_, i) => i);
+    expect(seededShuffle(input, 7)).toEqual(seededShuffle(input, 7));
+  });
+
+  it("gives different orders for different seeds", () => {
+    const input = Array.from({ length: 40 }, (_, i) => i);
+    expect(seededShuffle(input, 7)).not.toEqual(seededShuffle(input, 8));
+  });
+
+  it("does not mutate its input", () => {
+    const input = [1, 2, 3, 4, 5];
+    seededShuffle(input, 1);
+    expect(input).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it("is a permutation, never a resample", () => {
+    const input = Array.from({ length: 50 }, (_, i) => i);
+    const out = seededShuffle(input, 99);
+    expect(out.slice().sort((a, b) => a - b)).toEqual(input);
+  });
+
+  it("stays roughly uniform across the range", () => {
+    // The multiply used to overflow 2^53, so the low bits kept by the mask were
+    // rounding noise rather than the generator's output. Math.imul does the
+    // multiply with real 32-bit semantics; this guards the distribution.
+    const buckets = new Array(10).fill(0);
+    const input = Array.from({ length: 10 }, (_, i) => i);
+    for (let seed = 0; seed < 2000; seed++) buckets[seededShuffle(input, seed)[0]]++;
+    for (const count of buckets) {
+      expect(count).toBeGreaterThan(100);
+      expect(count).toBeLessThan(340);
+    }
+  });
+});

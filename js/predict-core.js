@@ -32,11 +32,24 @@ function recordWinPct(summary, fallback) {
   return (w + l) > 0 ? w / (w + l) : fallback;
 }
 
-// Last-10-games win fraction from a split's l10 summary (e.g. "7-3" -> 0.7).
+// Recent-form win fraction from a split's l10 summary (e.g. "7-3" -> 0.7).
+//
+// Divides by the games actually played rather than a hardcoded 10. A team seven
+// games into a season reads "5-2", which is a .714 club; dividing by 10 called
+// it .500 and erased the signal. Worse, a team with no games yet reads "0-0",
+// which divided by 10 came out as 0.0 -- a team that had lost all ten it never
+// played. That is fed straight into the model as a form differential, so an
+// unplayed team looked like the worst team in baseball.
+//
+// Unparseable input returns the neutral 0.5 rather than NaN. `combineLogitTerms`
+// does drop NaN terms downstream, but only after the value has already been
+// displayed and differenced.
 function l10Pct(l10Summary) {
   if (!l10Summary) return 0.5;
   var p = ("" + l10Summary).split("-");
-  return parseInt(p[0]) / 10;
+  var w = parseInt(p[0], 10), l = parseInt(p[1], 10);
+  if (isNaN(w) || isNaN(l) || (w + l) <= 0) return 0.5;
+  return w / (w + l);
 }
 
 // Overall team win% from a season record, falling back to a PWR-derived

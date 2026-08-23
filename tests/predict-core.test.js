@@ -192,3 +192,45 @@ describe("applyShrinkAndClamp", () => {
     expect(applyShrinkAndClamp(NaN, 1)).toBe(0.5);
   });
 });
+
+describe("l10Pct — partial and empty records", () => {
+  it("divides by games actually played, not a hardcoded 10", () => {
+    // A team seven games into a season is a .714 club. Dividing by 10 called it
+    // .500 and erased the signal entirely for the first ~two weeks of a season.
+    expect(l10Pct("5-2")).toBeCloseTo(5 / 7, 10);
+    expect(l10Pct("3-1")).toBeCloseTo(0.75, 10);
+    expect(l10Pct("7-3")).toBeCloseTo(0.7, 10);
+  });
+
+  it("treats a team with no games as neutral, not as having lost ten", () => {
+    // "0-0" divided by 10 was 0.0 — the worst possible form rating, handed to
+    // every team that had not played yet and fed straight into the model.
+    expect(l10Pct("0-0")).toBe(0.5);
+  });
+
+  it("returns neutral rather than NaN on malformed input", () => {
+    for (const bad of ["bad", "-", "x-y", "", "  "]) {
+      expect(Number.isNaN(l10Pct(bad))).toBe(false);
+      expect(l10Pct(bad)).toBe(0.5);
+    }
+  });
+
+  it("is neutral when the summary is missing", () => {
+    expect(l10Pct(null)).toBe(0.5);
+    expect(l10Pct(undefined)).toBe(0.5);
+  });
+
+  it("still handles a full ten-game record", () => {
+    expect(l10Pct("10-0")).toBe(1);
+    expect(l10Pct("0-10")).toBe(0);
+    expect(l10Pct("5-5")).toBe(0.5);
+  });
+
+  it("never leaves the unit interval", () => {
+    for (const s of ["5-2", "0-0", "10-0", "0-10", "bad", null, "7-3"]) {
+      const v = l10Pct(s);
+      expect(v).toBeGreaterThanOrEqual(0);
+      expect(v).toBeLessThanOrEqual(1);
+    }
+  });
+});

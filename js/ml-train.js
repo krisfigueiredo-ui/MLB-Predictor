@@ -14,11 +14,23 @@
 
 function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
 
-// Deterministic LCG (glibc-constants) PRNG + in-place Fisher-Yates shuffle.
-// Same seed always produces the same shuffle -- reproducible CV folds/splits.
+// Deterministic PRNG + Fisher-Yates shuffle. Same seed always produces the same
+// shuffle, which is what makes CV folds and train/test splits reproducible.
+//
+// Uses Math.imul rather than a plain multiply. The glibc constants this was
+// written around need 32-bit wraparound arithmetic, and `s * 1103515245` reaches
+// 2.4e18 -- about 260x past the 2^53 where a JS number stops representing
+// integers exactly. The low bits, which are the only ones `& 0x7fffffff` keeps,
+// were therefore rounding noise rather than the LCG's actual output. It still
+// produced a deterministic, roughly uniform stream, so nothing visibly broke;
+// it simply was not the generator named here. Math.imul does the multiply with
+// real 32-bit semantics.
 function seededShuffle(arr, seed) {
-  var s = seed == null ? 12345 : seed;
-  function rnd() { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+  var s = (seed == null ? 12345 : seed) | 0;
+  function rnd() {
+    s = (Math.imul(s, 1103515245) + 12345) & 0x7fffffff;
+    return s / 0x7fffffff;
+  }
   var out = arr.slice();
   for (var i = out.length - 1; i > 0; i--) {
     var q = Math.floor(rnd() * (i + 1));

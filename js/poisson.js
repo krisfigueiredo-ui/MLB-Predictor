@@ -18,16 +18,33 @@ function poisPMF(k, lam) {
   return Math.exp(lp);
 }
 
-// How much a pitcher (starter ~65% of innings + bullpen ~35%) suppresses the
-// opponent's scoring. 1.0 = league average; <1 = run-suppressing. Only a real,
-// non-synthesized pitcher line counts -- a synthesized one is PWR-derived noise
-// and would make the Poisson model circular with itself.
+// Share of a game's innings the listed starter is responsible for. The rest is
+// bullpen, which this model treats as league average -- an assumption, but a far
+// better one than crediting the starter for all nine innings.
+var STARTER_INNINGS_SHARE = 0.65;
+
+// How much a pitching staff suppresses the opponent's scoring, blending the
+// listed starter with a league-average bullpen. 1.0 = league average;
+// <1 = run-suppressing. Only a real, non-synthesized pitcher line counts -- a
+// synthesized one is PWR-derived noise and would make the Poisson model
+// circular with itself.
+//
+// The blend is the fix for a real discrepancy: this function documented a
+// 65/35 starter/bullpen split and then applied the raw starter ratio to the
+// whole game. An ace at 3.00 xFIP came out at 0.73 -- as though he threw all
+// nine innings -- when 0.83 is what a staff fronting him actually allows. The
+// starter's effect was overstated by roughly half again, in the input the
+// Poisson model is most sensitive to.
+//
+// The clamp stays on the starter component, before blending, so a wild or
+// tiny-sample xFIP is still bounded where it enters.
 function pitchSuppress(pitcher, lgXfip) {
   if (lgXfip == null) lgXfip = 4.10;
   if (!pitcher) return 1;
   if (!pitcher.realQ || pitcher.synth) return 1;
-  var xf = parseFloat(pitcher.xfip) || lgXfip, starter = xf / lgXfip;
-  return Math.max(0.62, Math.min(1.45, starter));
+  var xf = parseFloat(pitcher.xfip) || lgXfip;
+  var starter = Math.max(0.62, Math.min(1.45, xf / lgXfip));
+  return starter * STARTER_INNINGS_SHARE + (1 - STARTER_INNINGS_SHARE);
 }
 
 // Pure win-probability core: given each side's scoring rate inputs, computes the
@@ -54,6 +71,7 @@ function poissonModelCore(params) {
 
 return {
   poisPMF: poisPMF,
+  STARTER_INNINGS_SHARE: STARTER_INNINGS_SHARE,
   pitchSuppress: pitchSuppress,
   poissonModelCore: poissonModelCore
 };

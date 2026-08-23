@@ -60,3 +60,38 @@ describe("eloRatingChange", () => {
     expect(delta).toBeCloseTo(6 * 1 * (1 - 0.01), 10);
   });
 });
+
+describe("eloRatingChange — half-credit results", () => {
+  it("does not treat a tie as a home win when choosing the damping direction", () => {
+    // 0.5 is truthy in JavaScript, so `homeWon ? 1 : -1` silently took the
+    // home-win branch. A tie has no winner, so the damping term is neutral.
+    const home = eloRatingChange(4, 2, 300, 1, 0.6);
+    const away = eloRatingChange(4, 2, 300, 0, 0.6);
+    const tie = eloRatingChange(4, 2, 300, 0.5, 0.6);
+
+    expect(Math.sign(home)).toBe(1);
+    expect(Math.sign(away)).toBe(-1);
+    // A tie against a 0.6 expectation is a small negative for the home side,
+    // and must sit strictly between the two decisive outcomes.
+    expect(tie).toBeLessThan(home);
+    expect(tie).toBeGreaterThan(away);
+  });
+
+  it("damps a favourite's win more than an underdog's", () => {
+    // Same margin, same K: the heavy favourite gains less for the expected result.
+    const favourite = eloRatingChange(4, 5, 300, 1, 0.5);
+    const underdog = eloRatingChange(4, 5, -300, 1, 0.5);
+    expect(favourite).toBeLessThan(underdog);
+  });
+
+  it("is symmetric between the two decisive outcomes at an even expectation", () => {
+    const home = eloRatingChange(4, 3, 0, 1, 0.5);
+    const away = eloRatingChange(4, 3, 0, 0, 0.5);
+    expect(home).toBeCloseTo(-away, 10);
+  });
+
+  it("falls back to a neutral multiplier for a zero margin", () => {
+    // log(0+1) is 0, which would zero out every rating change.
+    expect(eloRatingChange(4, 0, 100, 1, 0.5)).toBeCloseTo(4 * 0.5, 10);
+  });
+});
