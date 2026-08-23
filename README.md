@@ -1,5 +1,11 @@
 # Diamond Signal
 
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![Vitest](https://img.shields.io/badge/tested%20with-vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![tests](https://img.shields.io/badge/tests-242%20passing-3fb950)](tests/)
+[![no build step](https://img.shields.io/badge/build-none%20required-blue)](index.html)
+
+
 Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It combines a feature-weighted logistic model, a Poisson run model, and Elo ratings; compares forecasts with verified market prices; freezes point-in-time predictions; and provides an immersive, park-specific view of the selected home venue.
 
 **Live application:** https://krisfigueiredo-ui.github.io/MLB-Predictor/
