@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, applyRealRecordCore, teamMoneyLine, parseAmericanML } from "../js/espn-parse.js";
+import { ourAbbrFromEspn, weatherFromESPN, realOddsFromESPN, applyRealPitcher, applyRealRecordCore, teamMoneyLine, marketMoneyLine, parseAmericanML } from "../js/espn-parse.js";
 
 describe("ourAbbrFromEspn", () => {
   it("maps the 3 teams where ESPN's abbreviation differs from ours", () => {
@@ -99,6 +99,36 @@ describe("realOddsFromESPN", () => {
     expect(r.homeML).toBe(100);
     expect(r.awayML).toBe(-120);
   });
+  it("reads the current ESPN scoreboard moneyline market shape", () => {
+    // Real scoreboard shape observed 2026-08-01: team odds only describe the
+    // favorite; prices are strings under moneyline.{home,away}.close.odds.
+    const comp = { odds: [{
+      provider: { name: "DraftKings" },
+      overUnder: 8.5,
+      homeTeamOdds: { favorite: true, underdog: false },
+      awayTeamOdds: { favorite: false, underdog: true },
+      moneyline: {
+        home: { close: { odds: "-185" }, open: { odds: "-157" } },
+        away: { close: { odds: "+152" }, open: { odds: "+130" } }
+      }
+    }] };
+    const r = realOddsFromESPN(comp, 0.5);
+    expect(r).not.toBeNull();
+    expect(r.homeML).toBe(-185);
+    expect(r.awayML).toBe(152);
+    expect(r.overUnder).toBe(8.5);
+    expect(r.provider).toBe("DraftKings");
+    expect(r.homeImpl + r.awayImpl).toBeCloseTo(1, 5);
+  });
+  it("falls back to the market open when a closing quote is unavailable", () => {
+    const comp = { odds: [{ moneyline: {
+      home: { open: { odds: "+105" } },
+      away: { open: { odds: "-125" } }
+    } }] };
+    const r = realOddsFromESPN(comp, 0.5);
+    expect(r.homeML).toBe(105);
+    expect(r.awayML).toBe(-125);
+  });
 });
 
 describe("teamMoneyLine / parseAmericanML", () => {
@@ -117,6 +147,21 @@ describe("teamMoneyLine / parseAmericanML", () => {
   it("returns null when a team has no usable price", () => {
     expect(teamMoneyLine(null)).toBeNull();
     expect(teamMoneyLine({ favorite: true })).toBeNull();
+  });
+});
+
+describe("marketMoneyLine", () => {
+  it("prefers close, then current, then open", () => {
+    const market = { home: {
+      close: { odds: "-155" },
+      current: { odds: "-145" },
+      open: { odds: "-135" }
+    } };
+    expect(marketMoneyLine(market, "home")).toBe(-155);
+  });
+  it("returns null for a missing side or unusable quote", () => {
+    expect(marketMoneyLine(null, "home")).toBeNull();
+    expect(marketMoneyLine({ home: { close: { odds: "n/a" } } }, "away")).toBeNull();
   });
 });
 

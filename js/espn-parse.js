@@ -67,13 +67,41 @@ function teamMoneyLine(to) {
   return parseAmericanML(to.moneyLine);
 }
 
+// ESPN's current scoreboard payload (observed August 2026) no longer puts a
+// price inside homeTeamOdds/awayTeamOdds at all. The team objects only carry
+// favorite/underdog metadata; the actual prices live in the sibling market:
+// `moneyline.home.close.odds` and `moneyline.away.close.odds`. Prefer the
+// latest/closing quote and fall back to current/open when a provider omits it.
+function marketMoneyLine(market, side) {
+  var team = market && market[side];
+  if (!team) return null;
+  var quotes = [team.close, team.current, team.open, team];
+  for (var i = 0; i < quotes.length; i++) {
+    var q = quotes[i];
+    if (q == null) continue;
+    var raw = q;
+    if (typeof q === "object") {
+      raw = (q.odds != null ? q.odds
+        : (q.american != null ? q.american
+        : (q.value != null ? q.value
+        : (q.moneyLine && (q.moneyLine.american != null ? q.moneyLine.american : q.moneyLine.value)))));
+    }
+    var n = parseAmericanML(raw);
+    if (n != null) return n;
+  }
+  return null;
+}
+
 // Parse ESPN's odds array into our {homeML,awayML,homeImpl,awayImpl,overUnder,provider} shape.
 // Returns null if there's no clean moneyline to convert (e.g. spread-only entries).
 function realOddsFromESPN(comp, homeP) {
   var arr = comp && comp.odds;
   if (!arr || !arr.length) return null;
   var o = arr[0];
-  var hML = teamMoneyLine(o.homeTeamOdds), aML = teamMoneyLine(o.awayTeamOdds);
+  var hML = marketMoneyLine(o.moneyline || o.moneyLine, "home");
+  var aML = marketMoneyLine(o.moneyline || o.moneyLine, "away");
+  if (hML == null) hML = teamMoneyLine(o.homeTeamOdds);
+  if (aML == null) aML = teamMoneyLine(o.awayTeamOdds);
   if (hML == null || aML == null) return null;
   var overUnder = (o.overUnder != null ? o.overUnder
     : (o.current && o.current.total ? parseAmericanML(o.current.total.american != null ? o.current.total.american : o.current.total.value) : null));
@@ -133,6 +161,7 @@ return {
   weatherFromESPN: weatherFromESPN,
   realOddsFromESPN: realOddsFromESPN,
   teamMoneyLine: teamMoneyLine,
+  marketMoneyLine: marketMoneyLine,
   parseAmericanML: parseAmericanML,
   applyRealPitcher: applyRealPitcher,
   applyRealRecordCore: applyRealRecordCore
