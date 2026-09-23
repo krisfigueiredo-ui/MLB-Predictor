@@ -1,0 +1,40 @@
+name: Pipeline backfill + optimization
+
+# Full-season backfill from ESPN, walk-forward optimization loop, one locked
+# holdout evaluation, and initialization of the live model/calibrator state.
+on:
+  workflow_dispatch:
+    inputs:
+      max_configs:
+        description: "Maximum configs for the optimization loop"
+        default: "200"
+  push:
+    branches: ["claude/mlb-predictor-calibration-na91g8"]
+    paths: ["pipeline/**", "js/engine/**", ".github/workflows/pipeline-backfill.yml", ".github/scripts/data-branch.sh"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-data
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Prepare data branch
+        run: .github/scripts/data-branch.sh prepare
+      - name: Backfill, optimize, evaluate holdout
+        run: node pipeline/cli.js backfill --data pipeline-data/data --max-configs "${{ github.event.inputs.max_configs || '200' }}"
+      - name: Report
+        if: always()
+        run: |
+          if [ -f pipeline-data/data/REPORT.md ]; then cat pipeline-data/data/REPORT.md >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Publish data branch
+        run: .github/scripts/data-branch.sh publish "backfill $(date -u +%Y-%m-%dT%H:%MZ) from ${GITHUB_SHA::7}"

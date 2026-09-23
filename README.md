@@ -2,7 +2,7 @@
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
 [![Vitest](https://img.shields.io/badge/tested%20with-vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
-[![tests](https://img.shields.io/badge/tests-242%20passing-3fb950)](tests/)
+[![tests](https://img.shields.io/badge/tests-275%20passing-3fb950)](tests/)
 [![no build step](https://img.shields.io/badge/build-none%20required-blue)](index.html)
 
 
@@ -26,6 +26,21 @@ Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It
 - **Performance** — a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
 - **Market** — verified moneyline coverage, edge comparison, Kelly sizing, paper P/L, CLV readiness, and downloadable records. Risk controls live in one settings drawer.
 - **Data** — feed coverage, provenance, immutable prediction snapshots, legacy-history labeling, and snapshot export.
+
+## Prediction pipeline (scheduled, leak-proof)
+
+Published probabilities come from `pipeline/`, run by GitHub Actions and written to the `pipeline-data` branch, which the dashboard reads:
+
+- **Pipeline backfill + optimization** (`.github/workflows/pipeline-backfill.yml`, manual): pulls the full season from ESPN (schedule, finals, box scores, opening/closing moneylines where ESPN has them), rebuilds every game's features as of first pitch, runs the walk-forward optimization loop with the last 21 days locked as a holdout, evaluates the chosen config once on that holdout, and initializes the live state. The report lands in the run summary and `data/REPORT.md`.
+- **Pipeline live runner** (`.github/workflows/pipeline-live.yml`, every 10 minutes): freezes a `frozen_pregame` pick for each game in the 90 minutes before first pitch (raw_p, calibrated_p, market_p, final_p, odds, config/calibrator versions, w), grades picks (closing line, CLV, P&L), refits the calibrator daily after the previous day is graded, runs a weekly light search, and alerts when a game has no pick 15 minutes before first pitch.
+
+Probability layer (`js/engine/`, shared by Node and the browser): raw ensemble → auto-calibrator (fixed shrink below 100 games, Platt to 300, then the method the search picked; promotion gate on the last 14 days; drift monitor that can pause the model) → `final_p = w·market + (1−w)·calibrated`, with w re-optimized each refit within [0.5, 1]. The +EV engine uses only final_p: edge ≥ 3 points, 0.25 Kelly, 2% cap, nothing flagged while paused. Backfilled rows (`backfill_walkforward`) are never mixed into the live `frozen_pregame` track record.
+
+```bash
+npm run pipeline:backfill   # needs network access to ESPN
+npm run pipeline:live
+node pipeline/cli.js reconcile --data pipeline-data/data --log mlb-pick-results.csv   # missing games vs an exported pick log
+```
 
 ## Modeling and validation
 
@@ -97,7 +112,7 @@ npm install
 npm test
 ```
 
-The test suite currently contains **225 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, exactly-once result logging, frozen-history reconciliation, verified legacy-result normalization, team and home/away performance summaries, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
+The test suite currently contains **275 tests across 19 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, exactly-once result logging, frozen-history reconciliation, verified legacy-result normalization, team and home/away performance summaries, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
 
 Key directories:
 

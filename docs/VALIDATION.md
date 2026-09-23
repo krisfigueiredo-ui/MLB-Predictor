@@ -1,5 +1,17 @@
 # Validation and methodology audit
 
+## September 2026 audit: why the probabilities were broken
+
+An audit of 246 graded picks (Brier 0.255, calibration slope ≈ −0.06) traced to:
+
+1. **Leakage.** The backtest scored past games with *current* standings, run differential, head-to-head and injuries, and with Elo ratings rebuilt from every stored final (including the graded game). Batch training learned from those vectors.
+2. **Post-game "verified" rows.** Without a frozen snapshot, the auto-logger wrote the game's *current* probability, recomputed every few minutes during and after the game, and re-upserted it every 15 seconds after online learning had absorbed the result. These are the `verified_legacy` rows; treat them as leaked.
+3. **Calibration never touched the published number.** The only calibration was a hand-set shrink inside the logistic model, followed by a Poisson blend and up to ±20 points of unfitted injury/starter/streak nudges. The shadow calibrator never reached its 30-game minimum, and nothing refit automatically.
+4. **No scheduler.** Picks were frozen and graded only while a browser tab was open, and only for today's slate, hence the Aug 17–Sep 21 gap.
+
+The replacement pipeline (`pipeline/`, `js/engine/`) is walk-forward end to end. Its checks: every feature carries an `asOf` timestamp that must precede first pitch; rewriting all results after a date cannot change any earlier prediction; probable starters and lineups that cannot be shown to have been captured pregame stay null in backfilled rows. Deliberate choices beyond the spec: the drift monitor's slope action also requires the slope to differ from 1 at 95% (a 14-day window has a slope SE of about ±0.4); Platt/beta calibrators carry a 10-pseudo-game prior centered on the ladder's 0.5 shrink; fitted calibrators get only a [0.25, 0.75] sanity cap (the spec's hard caps apply to the shrink regime and the drift-tightened state).
+
+
 ## Problems found in the inherited application
 
 1. Historical backtests could reconstruct older games with current team context, creating point-in-time leakage.

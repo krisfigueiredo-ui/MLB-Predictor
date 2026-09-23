@@ -81,3 +81,43 @@
 .ds-market-empty-actions { display: flex; gap: 8px; margin-top: 15px; }
 .ds-log-actions { display: flex; gap: 8px; }
 .ds-text-action { border: 0; border-bottom: 1px solid var(--divider-strong); padding: 4px 0; background: transparent; color: var(--text-secondary); cursor: pointer; }
+
+/* Calibration & edge audit (pipeline metrics) */
+.ds-pipeline-banner { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin: 0 0 14px; padding: 10px 14px; border: 1px solid var(--divider-strong); border-left-width: 3px; border-radius: var(--radius-sm); background: var(--surface-soft); color: var(--text-secondary); font-size: 13px; }
+.ds-pipeline-banner strong { color: var(--text); letter-spacing: .02em; }
+.ds-pipeline-banner.is-paused { border-left-color: var(--negative); }
+.ds-pipeline-banner.is-paused strong { color: var(--negative); }
+.ds-pipeline-banner.is-alert { border-left-color: var(--warning); }
+.ds-audit-status { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0; margin-bottom: 18px; border-top: 1px solid var(--divider-strong); border-bottom: 1px solid var(--divider-strong); }
+.ds-audit-status > div { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px 12px 0; min-width: 0; }
+.ds-audit-status > div + div { padding-left: 14px; border-left: 1px solid var(--divider); }
+.ds-audit-status span, .ds-audit-charts span { color: var(--text-tertiary); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.ds-audit-status strong { font-family: var(--mono); font-size: 14px; display: flex; align-items: center; gap: 6px; overflow-wrap: anywhere; }
+.ds-audit-status small { color: var(--text-tertiary); font-size: 11px; overflow-wrap: anywhere; }
+.ds-drift { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--positive); }
+.ds-drift.amber { background: var(--warning); }
+.ds-drift.red { background: var(--negative); }
+.ds-audit-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.ds-audit-col { min-width: 0; }
+.ds-audit-col h3 { margin: 0 0 8px; font-size: 14px; }
+.ds-audit-col h3 small { color: var(--text-tertiary); font-weight: 400; margin-left: 6px; }
+.ds-audit-col .ql-health-table td, .ds-audit-col .ql-health-table th { font-family: var(--mono); font-size: 12px; height: 34px; padding: 6px 8px; }
+.ds-audit-col .ql-health-table td:first-child { font-family: var(--sans); color: var(--text-secondary); }
+.ds-audit-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 12px; }
+.ds-audit-charts > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ds-audit-charts .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin: 0 3px 0 6px; vertical-align: middle; }
+.ds-audit-charts .dot.model, .ds-reliability circle.model { background: var(--accent); fill: var(--accent); }
+.ds-audit-charts .dot.market { background: var(--text-tertiary); }
+.ds-reliability { width: 100%; max-width: 260px; height: auto; }
+.ds-reliability .diag { stroke: var(--divider-strong); stroke-dasharray: 4 4; }
+.ds-reliability text { fill: var(--text-tertiary); font-size: 9px; font-family: var(--mono); }
+.ds-reliability circle.market { fill: none; stroke: var(--text-tertiary); stroke-width: 1.5; }
+.ds-spark { width: 100%; max-width: 260px; height: 48px; }
+.ds-spark path { fill: none; stroke-width: 1.8; }
+.ds-spark path.model { stroke: var(--accent); }
+.ds-spark path.market { stroke: var(--text-tertiary); stroke-dasharray: 3 3; }
+.ds-muted { color: var(--text-tertiary); font-size: 12px; }
+@media (max-width: 860px) {
+  .ds-audit-grid, .ds-audit-charts { grid-template-columns: minmax(0, 1fr); }
+  .ds-audit-status > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--divider); }
+}

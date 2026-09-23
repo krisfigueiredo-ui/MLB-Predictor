@@ -1,0 +1,46 @@
+name: Pipeline live runner
+
+# Every 10 minutes: refresh ESPN, grade frozen picks, daily refit (promotion
+# gate + drift monitor), weekly light search, freeze pregame picks inside the
+# window, and run the coverage check. Scheduled workflows run from the default
+# branch only.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      force_refit:
+        description: "Force the daily refit now"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-data
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Prepare data branch
+        run: .github/scripts/data-branch.sh prepare
+      - name: Live run
+        run: |
+          if [ ! -f pipeline-data/data/state/model_state.json ]; then
+            echo "No model state yet: run the 'Pipeline backfill + optimization' workflow first." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node pipeline/cli.js live --data pipeline-data/data ${{ github.event.inputs.force_refit == 'true' && '--force-refit' || '' }}
+      - name: Publish data branch
+        run: |
+          if [ -f pipeline-data/data/state/model_state.json ]; then
+            .github/scripts/data-branch.sh publish "live $(date -u +%Y-%m-%dT%H:%MZ)"
+          fi

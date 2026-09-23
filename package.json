@@ -4,7 +4,9 @@
   "type": "commonjs",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "pipeline:backfill": "node pipeline/cli.js backfill --data pipeline-data/data",
+    "pipeline:live": "node pipeline/cli.js live --data pipeline-data/data"
   },
   "devDependencies": {
     "vitest": "^2.1.9"

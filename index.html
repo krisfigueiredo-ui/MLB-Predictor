@@ -98,6 +98,11 @@
 <script src="js/injuries.js"></script>
 <script src="js/persistence.js"></script>
 <script src="js/espn-parse.js"></script>
+<script src="js/engine/probability.js"></script>
+<script src="js/engine/autocal.js"></script>
+<script src="js/engine/ev.js"></script>
+<script src="js/engine/coverage.js"></script>
+<script src="js/data/pipeline-client.js"></script>
 <script src="js/predict-core.js"></script>
 <script src="js/ml-train.js"></script>
 <script>var LS=(function(){try{var t=window["local"+"Storage"];var k="__lst"+Math.random();t.setItem(k,"1");t.removeItem(k);return t;}catch(e){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null;},setItem:function(k,v){m[k]=String(v);},removeItem:function(k){delete m[k];},clear:function(){m={};},key:function(i){return Object.keys(m)[i]||null;}};}})();
@@ -588,10 +593,8 @@ function buildGamesFromESPN(data){
     var betPick="",betEdge=0;
     // +EV only against a REAL line. No real odds -> no bet (never manufacture edge vs a fake market).
     if(odds&&odds.real&&status!=="final")trackLine(ev.id,odds,startMs);
-    if(odds&&odds.real){
-      var he=hp-odds.homeImpl,ae=ap-odds.awayImpl;
-      var edgeSel=pickBetSide(he,ae);betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?home:away);betEdge=edgeSel.edge;
-    }
+    // Edges come only from the pipeline's calibrated, market-anchored final_p
+    // (pipelineApply below), never from this raw in-browser probability.
     // local time label
     var d=new Date(startMs);
     var tlabel=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})+" "+(Intl.DateTimeFormat().resolvedOptions().timeZone?"":"");
@@ -602,6 +605,7 @@ function buildGamesFromESPN(data){
   });
   if(built.length){
     built.sort(function(a,b){return a.startMs-b.startMs;});
+    built.forEach(pipelineApply);
     GAMES30=built;
     ESPN_OK=true;ESPN_LAST=Date.now();
     return true;
@@ -702,8 +706,7 @@ function pollESPN_overlay(data){
       if(freshOdds){
         ODDS[g.id]=freshOdds;
         trackLine(g.id,freshOdds,g.startMs);
-        var he=g.homeP-freshOdds.homeImpl,ae=g.awayP-freshOdds.awayImpl;
-        var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;
+        pipelineApply(g);
       }
     }
   });
@@ -2454,11 +2457,11 @@ function historyRecordForFinalGame(g,score,automatic){
   if(snapshot&&snapshot.result&&typeof historyRecordFromSnapshot==="function"){
     return historyRecordFromSnapshot(snapshot,{date:dateText,auto:automatic!==false,betPick:g.betPick||"",betEdge:g.betEdge||0,homeML:logOdds.homeML,awayML:logOdds.awayML,sp:spText});
   }
-  var homeWon=score.h>score.a,pick=g.homeP>=g.awayP?g.home:g.away,actualTeam=homeWon?g.home:g.away;
-  return {gid:String(g.id),date:dateText,home:g.home,away:g.away,homeP:g.homeP,awayP:g.awayP,conf:g.conf,
-    pick:pick,actual:actualTeam,correct:pick===actualTeam,hs:score.h,as:score.a,real:true,auto:automatic!==false,
-    frozen:false,recordSource:"unfrozen_legacy",betPick:g.betPick||"",betEdge:g.betEdge||0,
-    homeML:logOdds.homeML,awayML:logOdds.awayML,sp:spText,ts:g.startMs||Date.now()};
+  // No frozen pregame record -> no pick-log row. The old fallback wrote the
+  // game's CURRENT probability (recomputed during and after the game, with the
+  // result already in Elo/standings) as a "verified" pick; that leaked the
+  // outcome, so it is gone. Coverage is tracked by the pipeline instead.
+  return null;
 }
 function reconcileFrozenSnapshotHistory(){
   if(typeof historyRecordFromSnapshot!=="function"||typeof upsertPredictionHistory!=="function")return {added:0,updated:0};
@@ -2510,6 +2513,7 @@ function autoResolveGames(){
     GAMES30.forEach(function(gg){
       var f=predictFull(gg.home,gg.away,SP[gg.id],gg.id);
       gg.homeP=parseFloat(f.prob.toFixed(3));gg.awayP=parseFloat((1-f.prob).toFixed(3));gg.conf=Math.max(gg.homeP,gg.awayP);
+      pipelineApply(gg);
     });
   }
   return {added:newlyLogged,updated:corrected};
@@ -2548,6 +2552,7 @@ function autoTick(){
     else{pollESPN_overlay(data);}
     hideOfflineWarning();autoResolveGames();sweepBetLog();setLiveBadge();scanAlerts();renderMap();
   _spRetryTick=(_spRetryTick||0)+1;
+  if(_spRetryTick%40===0&&typeof DSPipeline!=="undefined")DSPipeline.load(); // pick up the pipeline's latest run
   if(_spRetryTick%40===0){ // ~every 10 min: pick up newly posted probables, no taps needed
     var missing=(GAMES30||[]).some(function(g){if(g.status==="final"||g.status==="void")return false;var sp=SP[g.id];return !(sp&&sp.h&&sp.a&&sp.h.realQ&&sp.a.realQ);});
     if(missing&&!_loadingAllSP)loadAllSP();
@@ -2598,6 +2603,7 @@ function fetchESPN(){
   return tryAt(0);
 }
 function loadToday(){
+  if(typeof DSPipeline!=="undefined")DSPipeline.load();
   // pull real injuries in parallel; fold into predictions when they arrive
   fetchInjuries().then(function(){if(GAMES30&&GAMES30.length)recomputeAll();}).catch(function(){});
   // pull REAL standings (record/L10/streak/run-diff) — overlays the snapshot when it lands
@@ -2701,6 +2707,24 @@ function gameSituational(home,away,startMs){
 var SIT_ON_KEY="mlb_sit_on_v1";
 function sitOn(){return LS.getItem(SIT_ON_KEY)!=="0";}
 function withSit(hp,home,away,startMs){var s=gameSituational(home,away,startMs);var adj=sitOn()?s.adj:0;s.applied=sitOn();return {hp:Math.max(0.05,Math.min(0.95,hp+adj)),sit:s};}
+// Publish the pipeline's final_p (calibrated + market-anchored) for games it
+// covers and derive +EV flags from it with the shared engine: edge = final_p −
+// fair market p, flag at >= 3 points unless the model is paused, 0.25 Kelly
+// capped at 2%. Games the pipeline has not published get no bet flag.
+function pipelineApply(g){
+  g.betPick="";g.betEdge=0;g.bet=null;g.betStake=null;
+  if(typeof DSPipeline==="undefined"||!g)return false;
+  var o=ODDS[g.id],r=DSPipeline.finalFor(g.id,o&&o.real?o:null);
+  g.pipeline=r;
+  if(!r||r.finalP==null)return false;
+  g.homeP=parseFloat(r.finalP.toFixed(3));g.awayP=parseFloat((1-r.finalP).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);
+  var b=null;
+  if(r.frozen&&r.bet)b=r.bet; // the frozen pregame decision is the official one
+  else if(g.status==="pre"&&o&&o.real&&typeof DSEv!=="undefined")b=DSEv.evaluateBet({finalP:r.finalP,homeML:o.homeML,awayML:o.awayML,paused:r.paused,bankroll:1});
+  g.bet=b;
+  if(b&&b.flag){g.betPick=b.side==="home"?g.home:g.away;g.betEdge=b.edge;g.betStake=b.stakeFraction;}
+  return true;
+}
 function recomputeAll(){
   bumpRecForm(); // invalidate recency-form cache so it reflects the latest game-log data
   buildElo(); // refresh dynamic power ratings from the latest real results before predicting
@@ -2708,7 +2732,8 @@ function recomputeAll(){
     var pm=poissonModel(g.home,g.away,SP[g.id],g.id);g.pois=pm; // Poisson run-model (second opinion + expected total)
     var coreP=pm?(POIS_W*pm.pHome+(1-POIS_W)*f.prob):f.prob; // ensemble: logistic+Elo blended with Poisson
     var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,coreP+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real)trackLine(g.id,o,g.startMs);}
+    pipelineApply(g);
   });
   renderToday();
 }
@@ -3233,7 +3258,7 @@ function sweepBetLog(){
     var won=pickHome?(g.finalScore.h>g.finalScore.a):(g.finalScore.a>g.finalScore.h);
     var flat=won?(ml>0?ml:10000/(-ml)):-100;
     var dec=mlToDecimal(ml);
-    var kStake=kellyStake(p,dec,1000,0.25);
+    var kStake=g.betStake!=null?g.betStake*1000:Math.min(20,kellyStake(p,dec,1000,0.25)); // 0.25 Kelly, max 2%
     var kelly=won?kStake*(dec-1):-kStake;
     log[g.id]={d:(new Date()).toISOString().slice(0,10),pick:g.betPick,opp:pickHome?g.away:g.home,ml:Math.round(ml),edge:g.betEdge,won:won,flat:parseFloat(flat.toFixed(2)),kStake:parseFloat(kStake.toFixed(2)),kelly:parseFloat(kelly.toFixed(2)),real:!!o.real,hs:g.finalScore.h,as:g.finalScore.a};
     changed=true;
@@ -3609,7 +3634,8 @@ function applyTrained(){
   LS.setItem(TRAINED_KEY,"1");
   // re-predict today's slate with trained weights
   GAMES30.forEach(function(g){var f=predictFull(g.home,g.away,SP[g.id],g.id,g.ump);var ia=injAdj(g.home,g.away);var base=Math.max(0.05,Math.min(0.95,f.prob+ia.adj+((g.spform&&g.spform.adj)||0)+((g.hitform&&g.hitform.adj)||0)));var sr=withSit(base,g.home,g.away,g.startMs);g.homeP=parseFloat(sr.hp.toFixed(3));g.awayP=parseFloat((1-sr.hp).toFixed(3));g.conf=Math.max(g.homeP,g.awayP);g.sit=sr.sit;g.inj=ia;
-    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real){trackLine(g.id,o,g.startMs);var he=g.homeP-o.homeImpl,ae=g.awayP-o.awayImpl;var edgeSel=pickBetSide(he,ae);g.betPick=edgeSel.pick===""?"":(edgeSel.pick==="home"?g.home:g.away);g.betEdge=edgeSel.edge;}else{g.betPick="";g.betEdge=0;}}
+    if(g.status==="pre"){var o=ODDS[g.id];if(o&&o.real)trackLine(g.id,o,g.startMs);}
+    pipelineApply(g);
   });
   renderTrainResult(res);
   showToast("\u2713 Model trained on "+res.nGames+" real games \u2014 weights updated");
