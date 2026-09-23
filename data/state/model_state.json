@@ -1,0 +1,6827 @@
+{
+ "schema": 1,
+ "config": {
+  "featureSet": "elo",
+  "hl": 30,
+  "members": "elo",
+  "lambda": 10,
+  "trainHl": 60,
+  "calMethod": "platt",
+  "calWindow": 60,
+  "w0": 0.7
+ },
+ "configVersion": "cfg-1cf05144",
+ "autocal": {
+  "schema": 1,
+  "current": {
+   "version": 60,
+   "calibrator": {
+    "method": "platt",
+    "params": {
+     "a": 0.10332152597896556,
+     "b": 0.7245233877025994
+    },
+    "n": 786,
+    "fitDate": "2026-09-13T16:09:00.000Z",
+    "window": 60,
+    "halfLife": 21,
+    "gate": {
+     "heldOut": "last 14 days",
+     "nHeldOut": 170,
+     "candidateLogLoss": 0.66524,
+     "incumbentLogLoss": 0.66308,
+     "candidateMethod": "platt",
+     "incumbentMethod": "platt"
+    }
+   },
+   "w": 1,
+   "wOpt": 1,
+   "capTightened": true,
+   "cap": [
+    0.42,
+    0.6
+   ],
+   "paused": true,
+   "pausedSince": "20260629",
+   "stepdown": false,
+   "lastStepDate": null,
+   "badDays": 33,
+   "goodDays": 0,
+   "inRangeDays": 0,
+   "modelConfig": {
+    "version": "cfg-1cf05144",
+    "featureSet": "elo",
+    "hl": 30,
+    "members": "elo",
+    "lambda": 10,
+    "trainHl": 60,
+    "calMethod": "platt",
+    "calWindow": 60,
+    "w0": 0.7
+   },
+   "driftStatus": "red",
+   "driftReasons": [
+    "slope 2.424 outside 0.7–1.3",
+    "paused: no edge vs market",
+    "14-day model Brier 0.2325 > market 0.231",
+    "bucket error 0.0539 > 0.05"
+   ],
+   "lastRefit": "2026-09-23T17:09:00.000Z",
+   "lastRefitDate": "20260923",
+   "metrics": {
+    "n": 170,
+    "brier": 0.231,
+    "logLoss": 0.6539,
+    "modelBrier14": 0.2325,
+    "slope": 2.424,
+    "slopeSE": 0.696,
+    "maxBucketError": 0.0539,
+    "oddsN": 170,
+    "modelBrierOdds": 0.2325,
+    "marketBrierOdds": 0.231
+   },
+   "wFloor": 1
+  },
+  "versions": [
+   {
+    "version": 31,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 188,
+      "candidateLogLoss": 0.6928,
+      "incumbentLogLoss": 0.68671,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.5,
+    "wOpt": 0.5,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 1,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "slope 1.807 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-05-29T22:39:00.000Z",
+    "lastRefitDate": "20260529",
+    "metrics": {
+     "n": 188,
+     "brier": 0.2479,
+     "logLoss": 0.6887,
+     "modelBrier14": 0.2475,
+     "slope": 1.807,
+     "slopeSE": 0.868,
+     "maxBucketError": 0.0342,
+     "oddsN": 188,
+     "modelBrierOdds": 0.2475,
+     "marketBrierOdds": 0.249
+    },
+    "wFloor": null
+   },
+   {
+    "version": 32,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 188,
+      "candidateLogLoss": 0.68409,
+      "incumbentLogLoss": 0.68326,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.6,
+    "wOpt": 0.65,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2456 > market 0.2452",
+     "slope 1.664 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-01T22:39:00.000Z",
+    "lastRefitDate": "20260601",
+    "metrics": {
+     "n": 188,
+     "brier": 0.245,
+     "logLoss": 0.6829,
+     "modelBrier14": 0.2456,
+     "slope": 1.664,
+     "slopeSE": 0.855,
+     "maxBucketError": 0.0385,
+     "oddsN": 188,
+     "modelBrierOdds": 0.2456,
+     "marketBrierOdds": 0.2452
+    },
+    "wFloor": null
+   },
+   {
+    "version": 33,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.68728,
+      "incumbentLogLoss": 0.68531,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.5,
+    "wOpt": 0.5,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 1,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "slope 1.504 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-02T22:39:00.000Z",
+    "lastRefitDate": "20260602",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2466,
+     "logLoss": 0.6861,
+     "modelBrier14": 0.2468,
+     "slope": 1.504,
+     "slopeSE": 0.855,
+     "maxBucketError": 0.0336,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2468,
+     "marketBrierOdds": 0.2471
+    },
+    "wFloor": null
+   },
+   {
+    "version": 34,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 178,
+      "candidateLogLoss": 0.68381,
+      "incumbentLogLoss": 0.68321,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.55,
+    "wOpt": 0.55,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2451 > market 0.2429",
+     "slope 1.566 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-08T22:34:00.000Z",
+    "lastRefitDate": "20260608",
+    "metrics": {
+     "n": 178,
+     "brier": 0.2437,
+     "logLoss": 0.6803,
+     "modelBrier14": 0.2451,
+     "slope": 1.566,
+     "slopeSE": 0.838,
+     "maxBucketError": 0.0219,
+     "oddsN": 178,
+     "modelBrierOdds": 0.2451,
+     "marketBrierOdds": 0.2429
+    },
+    "wFloor": null
+   },
+   {
+    "version": 35,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 180,
+      "candidateLogLoss": 0.6875,
+      "incumbentLogLoss": 0.68618,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.6,
+    "wOpt": 0.6,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 3,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2466 > market 0.2458"
+    ],
+    "lastRefit": "2026-06-10T17:09:00.000Z",
+    "lastRefitDate": "20260610",
+    "metrics": {
+     "n": 180,
+     "brier": 0.2459,
+     "logLoss": 0.6847,
+     "modelBrier14": 0.2466,
+     "slope": 1.174,
+     "slopeSE": 0.836,
+     "maxBucketError": 0.0358,
+     "oddsN": 180,
+     "modelBrierOdds": 0.2466,
+     "marketBrierOdds": 0.2458
+    },
+    "wFloor": null
+   },
+   {
+    "version": 36,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 181,
+      "candidateLogLoss": 0.69338,
+      "incumbentLogLoss": 0.69181,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.5,
+    "wOpt": 0.5,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 1,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "bucket error 0.111 > 0.05",
+     "slope 0.459 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-11T17:09:00.000Z",
+    "lastRefitDate": "20260611",
+    "metrics": {
+     "n": 181,
+     "brier": 0.2496,
+     "logLoss": 0.6922,
+     "modelBrier14": 0.2493,
+     "slope": 0.459,
+     "slopeSE": 0.834,
+     "maxBucketError": 0.111,
+     "oddsN": 181,
+     "modelBrierOdds": 0.2493,
+     "marketBrierOdds": 0.2502
+    },
+    "wFloor": null
+   },
+   {
+    "version": 37,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.69335,
+      "incumbentLogLoss": 0.68996,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.55,
+    "wOpt": 0.55,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2484 > market 0.2479",
+     "bucket error 0.0849 > 0.05",
+     "slope 0.636 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-12T22:39:00.000Z",
+    "lastRefitDate": "20260612",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2479,
+     "logLoss": 0.6888,
+     "modelBrier14": 0.2484,
+     "slope": 0.636,
+     "slopeSE": 0.827,
+     "maxBucketError": 0.0849,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2484,
+     "marketBrierOdds": 0.2479
+    },
+    "wFloor": null
+   },
+   {
+    "version": 38,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.69681,
+      "incumbentLogLoss": 0.6943,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.65,
+    "wOpt": 0.7,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 2,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2506 > market 0.248",
+     "bucket error 0.1116 > 0.05",
+     "slope 0.099 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-13T18:09:00.000Z",
+    "lastRefitDate": "20260613",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2489,
+     "logLoss": 0.6909,
+     "modelBrier14": 0.2506,
+     "slope": 0.099,
+     "slopeSE": 0.826,
+     "maxBucketError": 0.1116,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2506,
+     "marketBrierOdds": 0.248
+    },
+    "wFloor": null
+   },
+   {
+    "version": 39,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.69051,
+      "incumbentLogLoss": 0.69016,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.7,
+    "wOpt": 0.7,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 3,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2485 > market 0.2465",
+     "bucket error 0.0619 > 0.05",
+     "slope 0.703 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-14T16:14:00.000Z",
+    "lastRefitDate": "20260614",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2472,
+     "logLoss": 0.6873,
+     "modelBrier14": 0.2485,
+     "slope": 0.703,
+     "slopeSE": 0.835,
+     "maxBucketError": 0.0619,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2485,
+     "marketBrierOdds": 0.2465
+    },
+    "wFloor": null
+   },
+   {
+    "version": 40,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.010448427190462128,
+      "b": 0.5942643417101982
+     },
+     "n": 778,
+     "fitDate": "2026-05-24T16:14:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 181,
+      "candidateLogLoss": 0.6957,
+      "incumbentLogLoss": 0.6956,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.6,
+    "wOpt": 0.6,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 1,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "bucket error 0.115 > 0.05",
+     "slope 0.122 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-15T22:39:00.000Z",
+    "lastRefitDate": "20260615",
+    "metrics": {
+     "n": 181,
+     "brier": 0.2516,
+     "logLoss": 0.6962,
+     "modelBrier14": 0.2512,
+     "slope": 0.122,
+     "slopeSE": 0.829,
+     "maxBucketError": 0.115,
+     "oddsN": 181,
+     "modelBrierOdds": 0.2512,
+     "marketBrierOdds": 0.2523
+    },
+    "wFloor": null
+   },
+   {
+    "version": 41,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.69199,
+      "incumbentLogLoss": 0.6923,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.7,
+    "wOpt": 0.75,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2496 > market 0.2481",
+     "bucket error 0.1173 > 0.05",
+     "slope 0.434 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-16T22:39:00.000Z",
+    "lastRefitDate": "20260616",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2484,
+     "logLoss": 0.6899,
+     "modelBrier14": 0.2496,
+     "slope": 0.434,
+     "slopeSE": 0.833,
+     "maxBucketError": 0.1173,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2496,
+     "marketBrierOdds": 0.2481
+    },
+    "wFloor": null
+   },
+   {
+    "version": 42,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.69229,
+      "incumbentLogLoss": 0.6893,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.75,
+    "wOpt": 0.75,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 2,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2493 > market 0.2469",
+     "bucket error 0.0653 > 0.05",
+     "slope 0.378 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-17T16:39:00.000Z",
+    "lastRefitDate": "20260617",
+    "metrics": {
+     "n": 182,
+     "brier": 0.2476,
+     "logLoss": 0.6882,
+     "modelBrier14": 0.2493,
+     "slope": 0.378,
+     "slopeSE": 0.809,
+     "maxBucketError": 0.0653,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2493,
+     "marketBrierOdds": 0.2469
+    },
+    "wFloor": null
+   },
+   {
+    "version": 43,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 180,
+      "candidateLogLoss": 0.68989,
+      "incumbentLogLoss": 0.68673,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.85,
+    "wOpt": 0.9,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 3,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2483 > market 0.2452",
+     "slope 0.581 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-18T17:34:00.000Z",
+    "lastRefitDate": "20260618",
+    "metrics": {
+     "n": 180,
+     "brier": 0.246,
+     "logLoss": 0.6849,
+     "modelBrier14": 0.2483,
+     "slope": 0.581,
+     "slopeSE": 0.791,
+     "maxBucketError": 0.044,
+     "oddsN": 180,
+     "modelBrierOdds": 0.2483,
+     "marketBrierOdds": 0.2452
+    },
+    "wFloor": null
+   },
+   {
+    "version": 44,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 180,
+      "candidateLogLoss": 0.6908,
+      "incumbentLogLoss": 0.68706,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.95,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 4,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2486 > market 0.2444",
+     "bucket error 0.0802 > 0.05",
+     "slope 0.49 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-19T18:19:00.000Z",
+    "lastRefitDate": "20260619",
+    "metrics": {
+     "n": 180,
+     "brier": 0.2454,
+     "logLoss": 0.6837,
+     "modelBrier14": 0.2486,
+     "slope": 0.49,
+     "slopeSE": 0.788,
+     "maxBucketError": 0.0802,
+     "oddsN": 180,
+     "modelBrierOdds": 0.2486,
+     "marketBrierOdds": 0.2444
+    },
+    "wFloor": null
+   },
+   {
+    "version": 45,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 179,
+      "candidateLogLoss": 0.68926,
+      "incumbentLogLoss": 0.68326,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 5,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2467 > market 0.2414",
+     "slope 0.674 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-20T17:09:00.000Z",
+    "lastRefitDate": "20260620",
+    "metrics": {
+     "n": 179,
+     "brier": 0.2427,
+     "logLoss": 0.6782,
+     "modelBrier14": 0.2467,
+     "slope": 0.674,
+     "slopeSE": 0.814,
+     "maxBucketError": 0.0345,
+     "oddsN": 179,
+     "modelBrierOdds": 0.2467,
+     "marketBrierOdds": 0.2414
+    },
+    "wFloor": null
+   },
+   {
+    "version": 46,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 179,
+      "candidateLogLoss": 0.69639,
+      "incumbentLogLoss": 0.69193,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.95,
+    "wOpt": 0.95,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 6,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.251 > market 0.246",
+     "bucket error 0.0686 > 0.05",
+     "slope -0.29 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-21T17:34:00.000Z",
+    "lastRefitDate": "20260621",
+    "metrics": {
+     "n": 179,
+     "brier": 0.2478,
+     "logLoss": 0.6888,
+     "modelBrier14": 0.251,
+     "slope": -0.29,
+     "slopeSE": 0.819,
+     "maxBucketError": 0.0686,
+     "oddsN": 179,
+     "modelBrierOdds": 0.251,
+     "marketBrierOdds": 0.246
+    },
+    "wFloor": null
+   },
+   {
+    "version": 47,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 178,
+      "candidateLogLoss": 0.69704,
+      "incumbentLogLoss": 0.69382,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 0.9,
+    "wOpt": 0.9,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 7,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2517 > market 0.2478",
+     "bucket error 0.0576 > 0.05",
+     "slope -0.474 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-22T22:09:00.000Z",
+    "lastRefitDate": "20260622",
+    "metrics": {
+     "n": 178,
+     "brier": 0.2489,
+     "logLoss": 0.691,
+     "modelBrier14": 0.2517,
+     "slope": -0.474,
+     "slopeSE": 0.841,
+     "maxBucketError": 0.0576,
+     "oddsN": 178,
+     "modelBrierOdds": 0.2517,
+     "marketBrierOdds": 0.2478
+    },
+    "wFloor": null
+   },
+   {
+    "version": 48,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.061169040919687244,
+      "b": 0.5390040028481594
+     },
+     "n": 793,
+     "fitDate": "2026-06-16T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 182,
+      "candidateLogLoss": 0.70093,
+      "incumbentLogLoss": 0.69449,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 8,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "slope -0.851 outside 0.7–1.3",
+     "14-day model Brier 0.2525 > market 0.2478",
+     "bucket error 0.0678 > 0.05"
+    ],
+    "lastRefit": "2026-06-23T20:06:00.000Z",
+    "lastRefitDate": "20260623",
+    "metrics": {
+     "n": 182,
+     "brier": 0.249,
+     "logLoss": 0.6912,
+     "modelBrier14": 0.2525,
+     "slope": -0.851,
+     "slopeSE": 0.843,
+     "maxBucketError": 0.0678,
+     "oddsN": 182,
+     "modelBrierOdds": 0.2525,
+     "marketBrierOdds": 0.2478
+    },
+    "wFloor": 1
+   },
+   {
+    "version": 49,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.030954633190296874,
+      "b": 0.5008293344241335
+     },
+     "n": 794,
+     "fitDate": "2026-06-27T16:59:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 184,
+      "candidateLogLoss": 0.69182,
+      "incumbentLogLoss": 0.69185,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 0.8,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": false,
+    "pausedSince": null,
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 12,
+    "goodDays": 0,
+    "inRangeDays": 4,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "amber",
+    "driftReasons": [
+     "14-day model Brier 0.2498 > market 0.2475",
+     "bucket error 0.0557 > 0.05",
+     "slope 0.524 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-27T16:59:00.000Z",
+    "lastRefitDate": "20260627",
+    "metrics": {
+     "n": 184,
+     "brier": 0.2482,
+     "logLoss": 0.6895,
+     "modelBrier14": 0.2498,
+     "slope": 0.524,
+     "slopeSE": 0.928,
+     "maxBucketError": 0.0557,
+     "oddsN": 184,
+     "modelBrierOdds": 0.2498,
+     "marketBrierOdds": 0.2475
+    },
+    "wFloor": 1
+   },
+   {
+    "version": 50,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.030954633190296874,
+      "b": 0.5008293344241335
+     },
+     "n": 794,
+     "fitDate": "2026-06-27T16:59:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 185,
+      "candidateLogLoss": 0.69374,
+      "incumbentLogLoss": 0.69355,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 0.85,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 14,
+    "goodDays": 0,
+    "inRangeDays": 6,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2507 > market 0.2473",
+     "bucket error 0.0667 > 0.05",
+     "slope 0.134 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-06-29T22:34:00.000Z",
+    "lastRefitDate": "20260629",
+    "metrics": {
+     "n": 185,
+     "brier": 0.2484,
+     "logLoss": 0.69,
+     "modelBrier14": 0.2507,
+     "slope": 0.134,
+     "slopeSE": 1.003,
+     "maxBucketError": 0.0667,
+     "oddsN": 185,
+     "modelBrierOdds": 0.2507,
+     "marketBrierOdds": 0.2473
+    },
+    "wFloor": 1
+   },
+   {
+    "version": 51,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.030954633190296874,
+      "b": 0.5008293344241335
+     },
+     "n": 794,
+     "fitDate": "2026-06-27T16:59:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 186,
+      "candidateLogLoss": 0.69534,
+      "incumbentLogLoss": 0.69142,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 22,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2494 > market 0.2473",
+     "bucket error 0.1136 > 0.05",
+     "slope 1.571 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-07-07T18:14:00.000Z",
+    "lastRefitDate": "20260707",
+    "metrics": {
+     "n": 186,
+     "brier": 0.2473,
+     "logLoss": 0.6876,
+     "modelBrier14": 0.2494,
+     "slope": 1.571,
+     "slopeSE": 1.027,
+     "maxBucketError": 0.1136,
+     "oddsN": 186,
+     "modelBrierOdds": 0.2494,
+     "marketBrierOdds": 0.2473
+    },
+    "wFloor": null
+   },
+   {
+    "version": 52,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.03431853922171802,
+      "b": 0.5341875579230285
+     },
+     "n": 790,
+     "fitDate": "2026-07-10T22:39:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 191,
+      "candidateLogLoss": 0.68918,
+      "incumbentLogLoss": 0.68951,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 25,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2483 > market 0.2417",
+     "slope 1.502 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-07-10T22:39:00.000Z",
+    "lastRefitDate": "20260710",
+    "metrics": {
+     "n": 191,
+     "brier": 0.2417,
+     "logLoss": 0.6764,
+     "modelBrier14": 0.2483,
+     "slope": 1.502,
+     "slopeSE": 0.987,
+     "maxBucketError": 0.043,
+     "oddsN": 191,
+     "modelBrierOdds": 0.2483,
+     "marketBrierOdds": 0.2417
+    },
+    "wFloor": null
+   },
+   {
+    "version": 53,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.003747296117285864,
+      "b": 0.5764524808940485
+     },
+     "n": 743,
+     "fitDate": "2026-07-24T20:09:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 142,
+      "candidateLogLoss": 0.6868,
+      "incumbentLogLoss": 0.68685,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 2,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "bucket error 0.0895 > 0.05",
+     "slope 1.771 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-07-24T20:09:00.000Z",
+    "lastRefitDate": "20260724",
+    "metrics": {
+     "n": 142,
+     "brier": 0.2478,
+     "logLoss": 0.689,
+     "modelBrier14": 0.2468,
+     "slope": 1.771,
+     "slopeSE": 1.275,
+     "maxBucketError": 0.0895,
+     "oddsN": 142,
+     "modelBrierOdds": 0.2468,
+     "marketBrierOdds": 0.2478
+    },
+    "wFloor": null
+   },
+   {
+    "version": 54,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": -0.003747296117285864,
+      "b": 0.5764524808940485
+     },
+     "n": 743,
+     "fitDate": "2026-07-24T20:09:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 190,
+      "candidateLogLoss": 0.67737,
+      "incumbentLogLoss": 0.6759,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 0.9,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "slope 2.912 outside 0.7–1.3",
+     "paused: no edge vs market",
+     "14-day model Brier 0.2415 > market 0.2412",
+     "bucket error 0.1587 > 0.05"
+    ],
+    "lastRefit": "2026-08-07T22:39:00.000Z",
+    "lastRefitDate": "20260807",
+    "metrics": {
+     "n": 190,
+     "brier": 0.2412,
+     "logLoss": 0.6752,
+     "modelBrier14": 0.2415,
+     "slope": 2.912,
+     "slopeSE": 0.947,
+     "maxBucketError": 0.1587,
+     "oddsN": 190,
+     "modelBrierOdds": 0.2415,
+     "marketBrierOdds": 0.2412
+    },
+    "wFloor": 1
+   },
+   {
+    "version": 55,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.02120995159290362,
+      "b": 0.6402829486809013
+     },
+     "n": 767,
+     "fitDate": "2026-08-19T16:34:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 190,
+      "candidateLogLoss": 0.68629,
+      "incumbentLogLoss": 0.6865,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 0.7,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 1,
+    "goodDays": 0,
+    "inRangeDays": 12,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2467 > market 0.2459",
+     "bucket error 0.0678 > 0.05"
+    ],
+    "lastRefit": "2026-08-19T16:34:00.000Z",
+    "lastRefitDate": "20260819",
+    "metrics": {
+     "n": 190,
+     "brier": 0.2459,
+     "logLoss": 0.6847,
+     "modelBrier14": 0.2467,
+     "slope": 1.142,
+     "slopeSE": 0.847,
+     "maxBucketError": 0.0678,
+     "oddsN": 190,
+     "modelBrierOdds": 0.2467,
+     "marketBrierOdds": 0.2459
+    },
+    "wFloor": 1
+   },
+   {
+    "version": 56,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.02120995159290362,
+      "b": 0.6402829486809013
+     },
+     "n": 767,
+     "fitDate": "2026-08-19T16:34:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 188,
+      "candidateLogLoss": 0.6909,
+      "incumbentLogLoss": 0.69034,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 0.75,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 0,
+    "goodDays": 1,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "slope 0.716 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-08-21T20:09:00.000Z",
+    "lastRefitDate": "20260821",
+    "metrics": {
+     "n": 188,
+     "brier": 0.249,
+     "logLoss": 0.691,
+     "modelBrier14": 0.2487,
+     "slope": 0.716,
+     "slopeSE": 0.826,
+     "maxBucketError": 0.0294,
+     "oddsN": 188,
+     "modelBrierOdds": 0.2487,
+     "marketBrierOdds": 0.249
+    },
+    "wFloor": null
+   },
+   {
+    "version": 57,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.08607466741279089,
+      "b": 0.67740541554205
+     },
+     "n": 764,
+     "fitDate": "2026-08-23T17:34:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 187,
+      "candidateLogLoss": 0.6823,
+      "incumbentLogLoss": 0.6827,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 2,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2449 > market 0.2391",
+     "bucket error 0.0983 > 0.05",
+     "slope 1.329 outside 0.8–1.2"
+    ],
+    "lastRefit": "2026-08-23T17:34:00.000Z",
+    "lastRefitDate": "20260823",
+    "metrics": {
+     "n": 187,
+     "brier": 0.2391,
+     "logLoss": 0.6708,
+     "modelBrier14": 0.2449,
+     "slope": 1.329,
+     "slopeSE": 0.815,
+     "maxBucketError": 0.0983,
+     "oddsN": 187,
+     "modelBrierOdds": 0.2449,
+     "marketBrierOdds": 0.2391
+    },
+    "wFloor": null
+   },
+   {
+    "version": 58,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.08432290189360175,
+      "b": 0.6710922479634801
+     },
+     "n": 767,
+     "fitDate": "2026-08-27T17:04:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 188,
+      "candidateLogLoss": 0.6866,
+      "incumbentLogLoss": 0.68663,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 6,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.2467 > market 0.2381"
+    ],
+    "lastRefit": "2026-08-27T17:04:00.000Z",
+    "lastRefitDate": "20260827",
+    "metrics": {
+     "n": 188,
+     "brier": 0.2381,
+     "logLoss": 0.6688,
+     "modelBrier14": 0.2467,
+     "slope": 1.014,
+     "slopeSE": 0.821,
+     "maxBucketError": 0.0474,
+     "oddsN": 188,
+     "modelBrierOdds": 0.2467,
+     "marketBrierOdds": 0.2381
+    },
+    "wFloor": null
+   },
+   {
+    "version": 59,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.10332152597896556,
+      "b": 0.7245233877025994
+     },
+     "n": 786,
+     "fitDate": "2026-09-13T16:09:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 187,
+      "candidateLogLoss": 0.68084,
+      "incumbentLogLoss": 0.68088,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": false,
+    "cap": [
+     0.25,
+     0.75
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 23,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "paused: no edge vs market",
+     "14-day model Brier 0.244 > market 0.2366",
+     "bucket error 0.0594 > 0.05"
+    ],
+    "lastRefit": "2026-09-13T16:09:00.000Z",
+    "lastRefitDate": "20260913",
+    "metrics": {
+     "n": 187,
+     "brier": 0.2366,
+     "logLoss": 0.6655,
+     "modelBrier14": 0.244,
+     "slope": 1.154,
+     "slopeSE": 0.663,
+     "maxBucketError": 0.0594,
+     "oddsN": 187,
+     "modelBrierOdds": 0.244,
+     "marketBrierOdds": 0.2366
+    },
+    "wFloor": null
+   },
+   {
+    "version": 60,
+    "calibrator": {
+     "method": "platt",
+     "params": {
+      "a": 0.10332152597896556,
+      "b": 0.7245233877025994
+     },
+     "n": 786,
+     "fitDate": "2026-09-13T16:09:00.000Z",
+     "window": 60,
+     "halfLife": 21,
+     "gate": {
+      "heldOut": "last 14 days",
+      "nHeldOut": 177,
+      "candidateLogLoss": 0.66144,
+      "incumbentLogLoss": 0.65727,
+      "candidateMethod": "platt",
+      "incumbentMethod": "platt"
+     }
+    },
+    "w": 1,
+    "wOpt": 1,
+    "capTightened": true,
+    "cap": [
+     0.42,
+     0.6
+    ],
+    "paused": true,
+    "pausedSince": "20260629",
+    "stepdown": false,
+    "lastStepDate": null,
+    "badDays": 31,
+    "goodDays": 0,
+    "inRangeDays": 0,
+    "modelConfig": {
+     "version": "cfg-1cf05144",
+     "featureSet": "elo",
+     "hl": 30,
+     "members": "elo",
+     "lambda": 10,
+     "trainHl": 60,
+     "calMethod": "platt",
+     "calWindow": 60,
+     "w0": 0.7
+    },
+    "driftStatus": "red",
+    "driftReasons": [
+     "slope 2.414 outside 0.7–1.3",
+     "paused: no edge vs market",
+     "14-day model Brier 0.2329 > market 0.2301"
+    ],
+    "lastRefit": "2026-09-21T22:34:00.000Z",
+    "lastRefitDate": "20260921",
+    "metrics": {
+     "n": 177,
+     "brier": 0.2301,
+     "logLoss": 0.6518,
+     "modelBrier14": 0.2329,
+     "slope": 2.414,
+     "slopeSE": 0.669,
+     "maxBucketError": 0.0389,
+     "oddsN": 177,
+     "modelBrierOdds": 0.2329,
+     "marketBrierOdds": 0.2301
+    },
+    "wFloor": 1
+   }
+  ],
+  "log": [
+   {
+    "at": "2026-04-04T17:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=108"
+   },
+   {
+    "at": "2026-04-05T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68252 > incumbent 0.681 on last 37 games (too few rows before the 14-day window) (n=37)"
+   },
+   {
+    "at": "2026-04-06T20:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=139 (held-out LL 0.70514 vs 0.70534)"
+   },
+   {
+    "at": "2026-04-07T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.71757 > incumbent 0.71093 on last 46 games (too few rows before the 14-day window) (n=46)"
+   },
+   {
+    "at": "2026-04-08T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70854 > incumbent 0.70617 on last 50 games (too few rows before the 14-day window) (n=50)"
+   },
+   {
+    "at": "2026-04-09T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70901 > incumbent 0.7073 on last 55 games (too few rows before the 14-day window) (n=55)"
+   },
+   {
+    "at": "2026-04-10T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70693 > incumbent 0.70427 on last 56 games (too few rows before the 14-day window) (n=56)"
+   },
+   {
+    "at": "2026-04-11T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6998 > incumbent 0.69969 on last 61 games (too few rows before the 14-day window) (n=61)"
+   },
+   {
+    "at": "2026-04-12T17:34:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=218 (held-out LL 0.69516 vs 0.6955)"
+   },
+   {
+    "at": "2026-04-13T20:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70337 > incumbent 0.69896 on last 70 games (too few rows before the 14-day window) (n=70)"
+   },
+   {
+    "at": "2026-04-13T20:09:00.000Z",
+    "event": "drift-slope",
+    "detail": "14-day slope -1.292 outside 0.7–1.3: cap tightened to [0.42, 0.60], w 0.5 → 0.6"
+   },
+   {
+    "at": "2026-04-14T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69063 > incumbent 0.68957 on last 14 days (n=181)"
+   },
+   {
+    "at": "2026-04-15T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69206 > incumbent 0.69083 on last 14 days (n=181)"
+   },
+   {
+    "at": "2026-04-16T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68933 > incumbent 0.68835 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-04-17T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69318 > incumbent 0.6918 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-04-18T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69531 > incumbent 0.69346 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-04-19T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69368 > incumbent 0.6925 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-04-20T15:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69144 > incumbent 0.69075 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-04-21T22:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=338 (held-out LL 0.69076 vs 0.69086)"
+   },
+   {
+    "at": "2026-04-22T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69217 > incumbent 0.69142 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-04-23T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69066 > incumbent 0.69018 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-04-24T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68745 > incumbent 0.68723 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-04-25T16:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6897 > incumbent 0.68841 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-04-26T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69043 > incumbent 0.6884 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-04-27T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68897 > incumbent 0.68756 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-04-27T22:09:00.000Z",
+    "event": "drift-cap-relaxed",
+    "detail": "slope in 0.8–1.2 (or not significantly off 1) for 14 days"
+   },
+   {
+    "at": "2026-04-28T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69143 > incumbent 0.68937 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-04-29T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69065 > incumbent 0.68813 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-04-30T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70214 > incumbent 0.69549 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-01T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69635 > incumbent 0.69271 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-02T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69371 > incumbent 0.69183 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-03T16:44:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69177 > incumbent 0.6908 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-04T21:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68991 > incumbent 0.68868 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-05T22:39:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=525 (held-out LL 0.68727 vs 0.68729)"
+   },
+   {
+    "at": "2026-05-06T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68562 > incumbent 0.68498 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-07T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68533 > incumbent 0.68392 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-08T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68669 > incumbent 0.68608 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-09T19:06:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68643 > incumbent 0.68588 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-10T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68593 > incumbent 0.68537 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-05-11T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68539 > incumbent 0.68474 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-12T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68669 > incumbent 0.6862 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-13T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68651 > incumbent 0.68609 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-14T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68514 > incumbent 0.68348 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-15T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68379 > incumbent 0.68313 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-05-16T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68269 > incumbent 0.6808 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-17T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68563 > incumbent 0.68447 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-18T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68701 > incumbent 0.68632 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-05-19T20:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68695 > incumbent 0.68694 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-05-20T17:04:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=728 (held-out LL 0.68655 vs 0.6866)"
+   },
+   {
+    "at": "2026-05-21T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68615 > incumbent 0.68607 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-05-22T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68423 > incumbent 0.68415 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-05-23T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68534 > incumbent 0.6852 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-24T16:14:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=778 (held-out LL 0.6885 vs 0.68856)"
+   },
+   {
+    "at": "2026-05-25T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69169 > incumbent 0.69024 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-05-26T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69028 > incumbent 0.68884 on last 14 days (n=193)"
+   },
+   {
+    "at": "2026-05-27T17:06:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69012 > incumbent 0.68778 on last 14 days (n=192)"
+   },
+   {
+    "at": "2026-05-28T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69091 > incumbent 0.68571 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-05-29T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6928 > incumbent 0.68671 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-05-30T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68905 > incumbent 0.68575 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-05-31T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68878 > incumbent 0.68614 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-06-01T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68409 > incumbent 0.68326 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-06-02T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68728 > incumbent 0.68531 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-03T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.688 > incumbent 0.68712 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-06-04T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69153 > incumbent 0.69143 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-06-05T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6947 > incumbent 0.69442 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-06-06T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69197 > incumbent 0.69194 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-06-07T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68642 > incumbent 0.68633 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-06-08T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68381 > incumbent 0.68321 on last 14 days (n=178)"
+   },
+   {
+    "at": "2026-06-09T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68231 > incumbent 0.6812 on last 14 days (n=180)"
+   },
+   {
+    "at": "2026-06-10T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6875 > incumbent 0.68618 on last 14 days (n=180)"
+   },
+   {
+    "at": "2026-06-11T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69338 > incumbent 0.69181 on last 14 days (n=181)"
+   },
+   {
+    "at": "2026-06-12T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69335 > incumbent 0.68996 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-13T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69681 > incumbent 0.6943 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-14T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69051 > incumbent 0.69016 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-15T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6957 > incumbent 0.6956 on last 14 days (n=181)"
+   },
+   {
+    "at": "2026-06-16T22:39:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=793 (held-out LL 0.69199 vs 0.6923)"
+   },
+   {
+    "at": "2026-06-17T16:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69229 > incumbent 0.6893 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-18T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68989 > incumbent 0.68673 on last 14 days (n=180)"
+   },
+   {
+    "at": "2026-06-19T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6908 > incumbent 0.68706 on last 14 days (n=180)"
+   },
+   {
+    "at": "2026-06-20T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68926 > incumbent 0.68326 on last 14 days (n=179)"
+   },
+   {
+    "at": "2026-06-21T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69639 > incumbent 0.69193 on last 14 days (n=179)"
+   },
+   {
+    "at": "2026-06-22T22:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69704 > incumbent 0.69382 on last 14 days (n=178)"
+   },
+   {
+    "at": "2026-06-23T20:06:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.70093 > incumbent 0.69449 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-23T20:06:00.000Z",
+    "event": "drift-slope",
+    "detail": "14-day slope -0.851 outside 0.7–1.3: cap tightened to [0.42, 0.60], w 0.9 → 1"
+   },
+   {
+    "at": "2026-06-24T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69517 > incumbent 0.69253 on last 14 days (n=182)"
+   },
+   {
+    "at": "2026-06-25T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69066 > incumbent 0.69019 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-06-26T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69261 > incumbent 0.69244 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-06-27T16:59:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=794 (held-out LL 0.69182 vs 0.69185)"
+   },
+   {
+    "at": "2026-06-28T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69554 > incumbent 0.69515 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-06-29T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69374 > incumbent 0.69355 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-06-29T22:34:00.000Z",
+    "event": "model-paused",
+    "detail": "model Brier worse than market for 14 straight days: w=1.0, +EV flags off"
+   },
+   {
+    "at": "2026-06-30T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69523 > incumbent 0.69417 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-07-01T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69536 > incumbent 0.69306 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-07-02T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69445 > incumbent 0.69366 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-07-03T20:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69279 > incumbent 0.6925 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-07-04T15:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69722 > incumbent 0.69372 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-07-05T16:29:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69283 > incumbent 0.6902 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-07-06T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6943 > incumbent 0.69166 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-07-07T18:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69534 > incumbent 0.69142 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-07-07T18:14:00.000Z",
+    "event": "drift-cap-relaxed",
+    "detail": "slope in 0.8–1.2 (or not significantly off 1) for 14 days"
+   },
+   {
+    "at": "2026-07-08T19:44:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69284 > incumbent 0.6913 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-07-09T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69234 > incumbent 0.69196 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-07-10T22:39:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=790 (held-out LL 0.68918 vs 0.68951)"
+   },
+   {
+    "at": "2026-07-11T16:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69152 > incumbent 0.6899 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-07-12T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68892 > incumbent 0.68762 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-07-14T23:59:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68724 > incumbent 0.68684 on last 14 days (n=169)"
+   },
+   {
+    "at": "2026-07-16T21:59:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68683 > incumbent 0.68527 on last 14 days (n=147)"
+   },
+   {
+    "at": "2026-07-17T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68937 > incumbent 0.68755 on last 14 days (n=142)"
+   },
+   {
+    "at": "2026-07-18T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68989 > incumbent 0.68895 on last 14 days (n=142)"
+   },
+   {
+    "at": "2026-07-19T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68848 > incumbent 0.68834 on last 14 days (n=143)"
+   },
+   {
+    "at": "2026-07-20T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68431 > incumbent 0.68323 on last 14 days (n=143)"
+   },
+   {
+    "at": "2026-07-21T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68526 > incumbent 0.68436 on last 14 days (n=149)"
+   },
+   {
+    "at": "2026-07-22T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68701 > incumbent 0.68615 on last 14 days (n=148)"
+   },
+   {
+    "at": "2026-07-23T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68515 > incumbent 0.68477 on last 14 days (n=150)"
+   },
+   {
+    "at": "2026-07-24T20:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=743 (held-out LL 0.6868 vs 0.68685)"
+   },
+   {
+    "at": "2026-07-25T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.685 > incumbent 0.68418 on last 14 days (n=142)"
+   },
+   {
+    "at": "2026-07-26T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68429 > incumbent 0.68336 on last 14 days (n=142)"
+   },
+   {
+    "at": "2026-07-27T18:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68551 > incumbent 0.68488 on last 14 days (n=142)"
+   },
+   {
+    "at": "2026-07-28T17:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68621 > incumbent 0.6857 on last 14 days (n=153)"
+   },
+   {
+    "at": "2026-07-29T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68605 > incumbent 0.68535 on last 14 days (n=167)"
+   },
+   {
+    "at": "2026-07-30T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68636 > incumbent 0.68575 on last 14 days (n=183)"
+   },
+   {
+    "at": "2026-07-31T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68497 > incumbent 0.68348 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-08-01T19:06:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68633 > incumbent 0.68419 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-08-02T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68309 > incumbent 0.68195 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-08-03T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68453 > incumbent 0.6841 on last 14 days (n=192)"
+   },
+   {
+    "at": "2026-08-04T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68634 > incumbent 0.68618 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-08-05T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68099 > incumbent 0.68031 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-08-06T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68024 > incumbent 0.67995 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-08-07T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67737 > incumbent 0.6759 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-08-07T22:39:00.000Z",
+    "event": "drift-slope",
+    "detail": "14-day slope 2.912 outside 0.7–1.3: cap tightened to [0.42, 0.60], w 1 → 1"
+   },
+   {
+    "at": "2026-08-08T19:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67996 > incumbent 0.67826 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-08-09T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68161 > incumbent 0.68029 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-08-10T23:06:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67845 > incumbent 0.67742 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-08-11T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67794 > incumbent 0.6762 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-08-12T17:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67792 > incumbent 0.67474 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-08-13T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6774 > incumbent 0.67534 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-14T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67911 > incumbent 0.67874 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-15T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68258 > incumbent 0.68136 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-08-16T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.686 > incumbent 0.68549 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-08-17T17:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68759 > incumbent 0.68757 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-08-18T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68546 > incumbent 0.68473 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-08-19T16:34:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=767 (held-out LL 0.68629 vs 0.6865)"
+   },
+   {
+    "at": "2026-08-20T16:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6881 > incumbent 0.68794 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-08-21T20:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6909 > incumbent 0.69034 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-21T20:09:00.000Z",
+    "event": "drift-cap-relaxed",
+    "detail": "slope in 0.8–1.2 (or not significantly off 1) for 14 days"
+   },
+   {
+    "at": "2026-08-22T17:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68368 > incumbent 0.68336 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-23T17:34:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=764 (held-out LL 0.6823 vs 0.6827)"
+   },
+   {
+    "at": "2026-08-24T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.6794 > incumbent 0.6772 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-25T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68094 > incumbent 0.67951 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-26T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68527 > incumbent 0.68487 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-08-27T17:04:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=767 (held-out LL 0.6866 vs 0.68663)"
+   },
+   {
+    "at": "2026-08-28T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68428 > incumbent 0.68393 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-08-29T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67993 > incumbent 0.6792 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-08-30T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67414 > incumbent 0.67131 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-08-31T22:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67321 > incumbent 0.66647 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-09-01T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67443 > incumbent 0.67061 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-02T16:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67713 > incumbent 0.67537 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-03T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68179 > incumbent 0.68108 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-04T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68256 > incumbent 0.6815 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-05T20:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68625 > incumbent 0.68589 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-06T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69211 > incumbent 0.69094 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-09-07T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69472 > incumbent 0.69326 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-09-08T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68863 > incumbent 0.68851 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-09T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68679 > incumbent 0.68631 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-10T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68447 > incumbent 0.68415 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-11T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68358 > incumbent 0.68303 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-12T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68018 > incumbent 0.68003 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-13T16:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=786 (held-out LL 0.68084 vs 0.68088)"
+   },
+   {
+    "at": "2026-09-14T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67881 > incumbent 0.67813 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-09-15T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67764 > incumbent 0.67723 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-09-16T16:59:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67752 > incumbent 0.67677 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-09-17T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67309 > incumbent 0.66982 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-09-18T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67063 > incumbent 0.66728 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-09-19T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67072 > incumbent 0.668 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-09-20T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66515 > incumbent 0.65643 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-09-21T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66144 > incumbent 0.65727 on last 14 days (n=177)"
+   },
+   {
+    "at": "2026-09-21T22:34:00.000Z",
+    "event": "drift-slope",
+    "detail": "14-day slope 2.414 outside 0.7–1.3: cap tightened to [0.42, 0.60], w 1 → 1"
+   },
+   {
+    "at": "2026-09-22T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66458 > incumbent 0.66331 on last 14 days (n=177)"
+   },
+   {
+    "at": "2026-09-23T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66524 > incumbent 0.66308 on last 14 days (n=170)"
+   }
+  ],
+  "metricsHistory": [
+   {
+    "date": "20260325",
+    "w": 0.7,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 0,
+    "brier": null,
+    "logLoss": null,
+    "modelBrier14": null,
+    "slope": null,
+    "slopeSE": null,
+    "maxBucketError": null,
+    "oddsN": 0,
+    "modelBrierOdds": null,
+    "marketBrierOdds": null
+   },
+   {
+    "date": "20260326",
+    "w": 0.7,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 1,
+    "brier": 0.2378,
+    "logLoss": 0.6687,
+    "modelBrier14": 0.2416,
+    "slope": null,
+    "slopeSE": null,
+    "maxBucketError": null,
+    "oddsN": 1,
+    "modelBrierOdds": 0.2416,
+    "marketBrierOdds": 0.2362
+   },
+   {
+    "date": "20260327",
+    "w": 0.7,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 12,
+    "brier": 0.2394,
+    "logLoss": 0.672,
+    "modelBrier14": 0.2486,
+    "slope": 2.777,
+    "slopeSE": 6.294,
+    "maxBucketError": null,
+    "oddsN": 12,
+    "modelBrierOdds": 0.2486,
+    "marketBrierOdds": 0.2367
+   },
+   {
+    "date": "20260328",
+    "w": 0.7,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 20,
+    "brier": 0.227,
+    "logLoss": 0.6467,
+    "modelBrier14": 0.2422,
+    "slope": 5.515,
+    "slopeSE": 5.012,
+    "maxBucketError": null,
+    "oddsN": 20,
+    "modelBrierOdds": 0.2422,
+    "marketBrierOdds": 0.2216
+   },
+   {
+    "date": "20260329",
+    "w": 0.8,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 35,
+    "brier": 0.2242,
+    "logLoss": 0.6409,
+    "modelBrier14": 0.2358,
+    "slope": 6.721,
+    "slopeSE": 3.96,
+    "maxBucketError": null,
+    "oddsN": 35,
+    "modelBrierOdds": 0.2358,
+    "marketBrierOdds": 0.2205
+   },
+   {
+    "date": "20260330",
+    "w": 0.9,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 47,
+    "brier": 0.2303,
+    "logLoss": 0.6534,
+    "modelBrier14": 0.2372,
+    "slope": 5.261,
+    "slopeSE": 3.217,
+    "maxBucketError": 0.1101,
+    "oddsN": 47,
+    "modelBrierOdds": 0.2372,
+    "marketBrierOdds": 0.2281
+   },
+   {
+    "date": "20260331",
+    "w": 1,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 62,
+    "brier": 0.2393,
+    "logLoss": 0.6718,
+    "modelBrier14": 0.2439,
+    "slope": 1.486,
+    "slopeSE": 2.421,
+    "maxBucketError": 0.0881,
+    "oddsN": 62,
+    "modelBrierOdds": 0.2439,
+    "marketBrierOdds": 0.2377
+   },
+   {
+    "date": "20260401",
+    "w": 1,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 76,
+    "brier": 0.2353,
+    "logLoss": 0.6635,
+    "modelBrier14": 0.2434,
+    "slope": 1.918,
+    "slopeSE": 2.171,
+    "maxBucketError": 0.0858,
+    "oddsN": 76,
+    "modelBrierOdds": 0.2434,
+    "marketBrierOdds": 0.2341
+   },
+   {
+    "date": "20260402",
+    "w": 0.9,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 91,
+    "brier": 0.2396,
+    "logLoss": 0.6726,
+    "modelBrier14": 0.2425,
+    "slope": 1.071,
+    "slopeSE": 1.962,
+    "maxBucketError": 0.084,
+    "oddsN": 91,
+    "modelBrierOdds": 0.2425,
+    "marketBrierOdds": 0.2386
+   },
+   {
+    "date": "20260403",
+    "w": 0.8,
+    "method": "shrink-fixed",
+    "paused": false,
+    "n": 94,
+    "brier": 0.241,
+    "logLoss": 0.6753,
+    "modelBrier14": 0.2435,
+    "slope": 0.896,
+    "slopeSE": 1.939,
+    "maxBucketError": 0.0809,
+    "oddsN": 94,
+    "modelBrierOdds": 0.2435,
+    "marketBrierOdds": 0.24
+   },
+   {
+    "date": "20260404",
+    "w": 0.9,
+    "method": "platt",
+    "paused": false,
+    "n": 108,
+    "brier": 0.2392,
+    "logLoss": 0.6717,
+    "modelBrier14": 0.2425,
+    "slope": 1.871,
+    "slopeSE": 1.713,
+    "maxBucketError": 0.0899,
+    "oddsN": 108,
+    "modelBrierOdds": 0.2425,
+    "marketBrierOdds": 0.2383
+   },
+   {
+    "date": "20260405",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 123,
+    "brier": 0.2393,
+    "logLoss": 0.6715,
+    "modelBrier14": 0.2433,
+    "slope": 1.788,
+    "slopeSE": 1.514,
+    "maxBucketError": 0.1053,
+    "oddsN": 123,
+    "modelBrierOdds": 0.2433,
+    "marketBrierOdds": 0.2384
+   },
+   {
+    "date": "20260406",
+    "w": 0.9,
+    "method": "platt",
+    "paused": false,
+    "n": 139,
+    "brier": 0.2451,
+    "logLoss": 0.6835,
+    "modelBrier14": 0.2467,
+    "slope": 0.54,
+    "slopeSE": 1.345,
+    "maxBucketError": 0.0937,
+    "oddsN": 139,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2443
+   },
+   {
+    "date": "20260407",
+    "w": 0.8,
+    "method": "platt",
+    "paused": false,
+    "n": 152,
+    "brier": 0.2464,
+    "logLoss": 0.6861,
+    "modelBrier14": 0.2479,
+    "slope": 0.262,
+    "slopeSE": 1.3,
+    "maxBucketError": 0.0711,
+    "oddsN": 152,
+    "modelBrierOdds": 0.2479,
+    "marketBrierOdds": 0.2457
+   },
+   {
+    "date": "20260408",
+    "w": 0.7,
+    "method": "platt",
+    "paused": false,
+    "n": 167,
+    "brier": 0.246,
+    "logLoss": 0.6852,
+    "modelBrier14": 0.2475,
+    "slope": 0.357,
+    "slopeSE": 1.252,
+    "maxBucketError": 0.0565,
+    "oddsN": 167,
+    "modelBrierOdds": 0.2475,
+    "marketBrierOdds": 0.2454
+   },
+   {
+    "date": "20260409",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 181,
+    "brier": 0.2481,
+    "logLoss": 0.6894,
+    "modelBrier14": 0.2484,
+    "slope": -0.216,
+    "slopeSE": 1.216,
+    "maxBucketError": 0.0459,
+    "oddsN": 181,
+    "modelBrierOdds": 0.2484,
+    "marketBrierOdds": 0.2481
+   },
+   {
+    "date": "20260410",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 176,
+    "brier": 0.2497,
+    "logLoss": 0.6928,
+    "modelBrier14": 0.2489,
+    "slope": -0.365,
+    "slopeSE": 1.191,
+    "maxBucketError": 0.0541,
+    "oddsN": 176,
+    "modelBrierOdds": 0.2489,
+    "marketBrierOdds": 0.2503
+   },
+   {
+    "date": "20260411",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.252,
+    "logLoss": 0.6975,
+    "modelBrier14": 0.2498,
+    "slope": -0.8,
+    "slopeSE": 1.136,
+    "maxBucketError": 0.0475,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2498,
+    "marketBrierOdds": 0.2535
+   },
+   {
+    "date": "20260412",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.2539,
+    "logLoss": 0.7012,
+    "modelBrier14": 0.2511,
+    "slope": -0.958,
+    "slopeSE": 1.102,
+    "maxBucketError": 0.0329,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2511,
+    "marketBrierOdds": 0.2555
+   },
+   {
+    "date": "20260413",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2545,
+    "logLoss": 0.7025,
+    "modelBrier14": 0.2527,
+    "slope": -1.292,
+    "slopeSE": 1.086,
+    "maxBucketError": 0.0679,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2527,
+    "marketBrierOdds": 0.2557
+   },
+   {
+    "date": "20260414",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 181,
+    "brier": 0.2511,
+    "logLoss": 0.6954,
+    "modelBrier14": 0.2501,
+    "slope": -0.727,
+    "slopeSE": 1.096,
+    "maxBucketError": 0.0361,
+    "oddsN": 181,
+    "modelBrierOdds": 0.2501,
+    "marketBrierOdds": 0.2518
+   },
+   {
+    "date": "20260415",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 181,
+    "brier": 0.2545,
+    "logLoss": 0.7024,
+    "modelBrier14": 0.2507,
+    "slope": -0.994,
+    "slopeSE": 1.103,
+    "maxBucketError": 0.0468,
+    "oddsN": 181,
+    "modelBrierOdds": 0.2507,
+    "marketBrierOdds": 0.2556
+   },
+   {
+    "date": "20260416",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2501,
+    "logLoss": 0.6934,
+    "modelBrier14": 0.2487,
+    "slope": -0.237,
+    "slopeSE": 1.102,
+    "maxBucketError": 0.0166,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2487,
+    "marketBrierOdds": 0.2514
+   },
+   {
+    "date": "20260417",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2523,
+    "logLoss": 0.6979,
+    "modelBrier14": 0.2502,
+    "slope": -0.47,
+    "slopeSE": 1.109,
+    "maxBucketError": 0.0192,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2502,
+    "marketBrierOdds": 0.254
+   },
+   {
+    "date": "20260418",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 189,
+    "brier": 0.2527,
+    "logLoss": 0.6987,
+    "modelBrier14": 0.2514,
+    "slope": -0.665,
+    "slopeSE": 1.134,
+    "maxBucketError": 0.0401,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2514,
+    "marketBrierOdds": 0.2539
+   },
+   {
+    "date": "20260419",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 189,
+    "brier": 0.2535,
+    "logLoss": 0.7004,
+    "modelBrier14": 0.2507,
+    "slope": -0.638,
+    "slopeSE": 1.159,
+    "maxBucketError": 0.0606,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2507,
+    "marketBrierOdds": 0.255
+   },
+   {
+    "date": "20260420",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 189,
+    "brier": 0.2513,
+    "logLoss": 0.6959,
+    "modelBrier14": 0.2494,
+    "slope": -0.253,
+    "slopeSE": 1.184,
+    "maxBucketError": 0.0656,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2536
+   },
+   {
+    "date": "20260421",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.2506,
+    "logLoss": 0.6945,
+    "modelBrier14": 0.2494,
+    "slope": 0.243,
+    "slopeSE": 1.197,
+    "maxBucketError": 0.07,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2524
+   },
+   {
+    "date": "20260422",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2521,
+    "logLoss": 0.6974,
+    "modelBrier14": 0.2499,
+    "slope": 0.7,
+    "slopeSE": 1.159,
+    "maxBucketError": 0.0978,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2499,
+    "marketBrierOdds": 0.2545
+   },
+   {
+    "date": "20260423",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2494,
+    "logLoss": 0.692,
+    "modelBrier14": 0.2493,
+    "slope": 0.582,
+    "slopeSE": 1.115,
+    "maxBucketError": 0.1105,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2508
+   },
+   {
+    "date": "20260424",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2462,
+    "logLoss": 0.6855,
+    "modelBrier14": 0.2476,
+    "slope": 1.203,
+    "slopeSE": 1.087,
+    "maxBucketError": 0.0785,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2476,
+    "marketBrierOdds": 0.2466
+   },
+   {
+    "date": "20260425",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2463,
+    "logLoss": 0.6857,
+    "modelBrier14": 0.2483,
+    "slope": 1.55,
+    "slopeSE": 1.12,
+    "maxBucketError": 0.0756,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2483,
+    "marketBrierOdds": 0.2462
+   },
+   {
+    "date": "20260426",
+    "w": 0.65,
+    "method": "platt",
+    "paused": false,
+    "n": 187,
+    "brier": 0.2457,
+    "logLoss": 0.6846,
+    "modelBrier14": 0.2484,
+    "slope": 1.808,
+    "slopeSE": 1.158,
+    "maxBucketError": 0.044,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2484,
+    "marketBrierOdds": 0.2451
+   },
+   {
+    "date": "20260427",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 187,
+    "brier": 0.2461,
+    "logLoss": 0.6854,
+    "modelBrier14": 0.2479,
+    "slope": 1.766,
+    "slopeSE": 1.17,
+    "maxBucketError": 0.0296,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2479,
+    "marketBrierOdds": 0.2461
+   },
+   {
+    "date": "20260428",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2475,
+    "logLoss": 0.6883,
+    "modelBrier14": 0.249,
+    "slope": 1.515,
+    "slopeSE": 1.168,
+    "maxBucketError": 0.0376,
+    "oddsN": 186,
+    "modelBrierOdds": 0.249,
+    "marketBrierOdds": 0.2478
+   },
+   {
+    "date": "20260429",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2465,
+    "logLoss": 0.6862,
+    "modelBrier14": 0.2484,
+    "slope": 1.852,
+    "slopeSE": 1.193,
+    "maxBucketError": 0.0283,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2484,
+    "marketBrierOdds": 0.2464
+   },
+   {
+    "date": "20260430",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2514,
+    "logLoss": 0.6963,
+    "modelBrier14": 0.2525,
+    "slope": 0.551,
+    "slopeSE": 1.187,
+    "maxBucketError": 0.0909,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2525,
+    "marketBrierOdds": 0.2521
+   },
+   {
+    "date": "20260501",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2499,
+    "logLoss": 0.6932,
+    "modelBrier14": 0.2509,
+    "slope": 0.851,
+    "slopeSE": 1.228,
+    "maxBucketError": 0.0737,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2509,
+    "marketBrierOdds": 0.2509
+   },
+   {
+    "date": "20260502",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2498,
+    "logLoss": 0.693,
+    "modelBrier14": 0.25,
+    "slope": 1.244,
+    "slopeSE": 1.216,
+    "maxBucketError": 0.0438,
+    "oddsN": 185,
+    "modelBrierOdds": 0.25,
+    "marketBrierOdds": 0.2511
+   },
+   {
+    "date": "20260503",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2491,
+    "logLoss": 0.6916,
+    "modelBrier14": 0.2493,
+    "slope": 1.382,
+    "slopeSE": 1.198,
+    "maxBucketError": 0.053,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2506
+   },
+   {
+    "date": "20260504",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2464,
+    "logLoss": 0.6861,
+    "modelBrier14": 0.2484,
+    "slope": 1.68,
+    "slopeSE": 1.187,
+    "maxBucketError": 0.018,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2484,
+    "marketBrierOdds": 0.2464
+   },
+   {
+    "date": "20260505",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2461,
+    "logLoss": 0.6855,
+    "modelBrier14": 0.2471,
+    "slope": 1.907,
+    "slopeSE": 1.188,
+    "maxBucketError": 0.021,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2471,
+    "marketBrierOdds": 0.2467
+   },
+   {
+    "date": "20260506",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2449,
+    "logLoss": 0.683,
+    "modelBrier14": 0.2462,
+    "slope": 1.958,
+    "slopeSE": 1.206,
+    "maxBucketError": 0.0444,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2462,
+    "marketBrierOdds": 0.2456
+   },
+   {
+    "date": "20260507",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2449,
+    "logLoss": 0.683,
+    "modelBrier14": 0.2458,
+    "slope": 2.695,
+    "slopeSE": 1.23,
+    "maxBucketError": 0.0669,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2458,
+    "marketBrierOdds": 0.2456
+   },
+   {
+    "date": "20260508",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2468,
+    "logLoss": 0.6868,
+    "modelBrier14": 0.2468,
+    "slope": 2.187,
+    "slopeSE": 1.229,
+    "maxBucketError": 0.0539,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2468,
+    "marketBrierOdds": 0.2482
+   },
+   {
+    "date": "20260509",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2469,
+    "logLoss": 0.6871,
+    "modelBrier14": 0.2466,
+    "slope": 1.99,
+    "slopeSE": 1.207,
+    "maxBucketError": 0.0799,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2466,
+    "marketBrierOdds": 0.2484
+   },
+   {
+    "date": "20260510",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 187,
+    "brier": 0.247,
+    "logLoss": 0.6871,
+    "modelBrier14": 0.2463,
+    "slope": 1.801,
+    "slopeSE": 1.175,
+    "maxBucketError": 0.1141,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2463,
+    "marketBrierOdds": 0.2486
+   },
+   {
+    "date": "20260511",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.246,
+    "logLoss": 0.6852,
+    "modelBrier14": 0.2461,
+    "slope": 1.659,
+    "slopeSE": 1.164,
+    "maxBucketError": 0.1143,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2461,
+    "marketBrierOdds": 0.2471
+   },
+   {
+    "date": "20260512",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2472,
+    "logLoss": 0.6876,
+    "modelBrier14": 0.2468,
+    "slope": 1.371,
+    "slopeSE": 1.131,
+    "maxBucketError": 0.0801,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2468,
+    "marketBrierOdds": 0.2486
+   },
+   {
+    "date": "20260513",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2466,
+    "logLoss": 0.6863,
+    "modelBrier14": 0.2467,
+    "slope": 1.389,
+    "slopeSE": 1.102,
+    "maxBucketError": 0.074,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2477
+   },
+   {
+    "date": "20260514",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2449,
+    "logLoss": 0.6828,
+    "modelBrier14": 0.2456,
+    "slope": 1.342,
+    "slopeSE": 1.082,
+    "maxBucketError": 0.1063,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2456,
+    "marketBrierOdds": 0.2455
+   },
+   {
+    "date": "20260515",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2435,
+    "logLoss": 0.68,
+    "modelBrier14": 0.2454,
+    "slope": 1.515,
+    "slopeSE": 1.073,
+    "maxBucketError": 0.1054,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2454,
+    "marketBrierOdds": 0.2429
+   },
+   {
+    "date": "20260516",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2428,
+    "logLoss": 0.6787,
+    "modelBrier14": 0.2441,
+    "slope": 1.922,
+    "slopeSE": 1.065,
+    "maxBucketError": 0.1292,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2441,
+    "marketBrierOdds": 0.2427
+   },
+   {
+    "date": "20260517",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2442,
+    "logLoss": 0.6814,
+    "modelBrier14": 0.2458,
+    "slope": 1.298,
+    "slopeSE": 1.029,
+    "maxBucketError": 0.114,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2458,
+    "marketBrierOdds": 0.2436
+   },
+   {
+    "date": "20260518",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.245,
+    "logLoss": 0.6831,
+    "modelBrier14": 0.2466,
+    "slope": 1.158,
+    "slopeSE": 1.014,
+    "maxBucketError": 0.1063,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2466,
+    "marketBrierOdds": 0.2445
+   },
+   {
+    "date": "20260519",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2462,
+    "logLoss": 0.6855,
+    "modelBrier14": 0.2469,
+    "slope": 0.978,
+    "slopeSE": 0.994,
+    "maxBucketError": 0.0989,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2469,
+    "marketBrierOdds": 0.2464
+   },
+   {
+    "date": "20260520",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 190,
+    "brier": 0.2457,
+    "logLoss": 0.6843,
+    "modelBrier14": 0.2467,
+    "slope": 1.356,
+    "slopeSE": 0.978,
+    "maxBucketError": 0.0774,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2454
+   },
+   {
+    "date": "20260521",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2459,
+    "logLoss": 0.6849,
+    "modelBrier14": 0.2466,
+    "slope": 1.519,
+    "slopeSE": 0.969,
+    "maxBucketError": 0.0793,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2466,
+    "marketBrierOdds": 0.246
+   },
+   {
+    "date": "20260522",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 187,
+    "brier": 0.2448,
+    "logLoss": 0.6825,
+    "modelBrier14": 0.2458,
+    "slope": 1.884,
+    "slopeSE": 0.96,
+    "maxBucketError": 0.0585,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2458,
+    "marketBrierOdds": 0.2445
+   },
+   {
+    "date": "20260523",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2461,
+    "logLoss": 0.6853,
+    "modelBrier14": 0.2464,
+    "slope": 1.586,
+    "slopeSE": 0.932,
+    "maxBucketError": 0.0295,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2464,
+    "marketBrierOdds": 0.2467
+   },
+   {
+    "date": "20260524",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2479,
+    "logLoss": 0.6888,
+    "modelBrier14": 0.2479,
+    "slope": 1.152,
+    "slopeSE": 0.906,
+    "maxBucketError": 0.0091,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2479,
+    "marketBrierOdds": 0.2487
+   },
+   {
+    "date": "20260525",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2494,
+    "logLoss": 0.692,
+    "modelBrier14": 0.249,
+    "slope": 1.007,
+    "slopeSE": 0.897,
+    "maxBucketError": 0.0169,
+    "oddsN": 186,
+    "modelBrierOdds": 0.249,
+    "marketBrierOdds": 0.2507
+   },
+   {
+    "date": "20260526",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 193,
+    "brier": 0.2487,
+    "logLoss": 0.6904,
+    "modelBrier14": 0.2483,
+    "slope": 1.25,
+    "slopeSE": 0.875,
+    "maxBucketError": 0.0294,
+    "oddsN": 193,
+    "modelBrierOdds": 0.2483,
+    "marketBrierOdds": 0.25
+   },
+   {
+    "date": "20260527",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 192,
+    "brier": 0.2478,
+    "logLoss": 0.6886,
+    "modelBrier14": 0.2478,
+    "slope": 1.533,
+    "slopeSE": 0.872,
+    "maxBucketError": 0.0376,
+    "oddsN": 192,
+    "modelBrierOdds": 0.2478,
+    "marketBrierOdds": 0.2487
+   },
+   {
+    "date": "20260528",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 191,
+    "brier": 0.2465,
+    "logLoss": 0.6858,
+    "modelBrier14": 0.247,
+    "slope": 1.833,
+    "slopeSE": 0.866,
+    "maxBucketError": 0.0532,
+    "oddsN": 191,
+    "modelBrierOdds": 0.247,
+    "marketBrierOdds": 0.2468
+   },
+   {
+    "date": "20260529",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2479,
+    "logLoss": 0.6887,
+    "modelBrier14": 0.2475,
+    "slope": 1.807,
+    "slopeSE": 0.868,
+    "maxBucketError": 0.0342,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2475,
+    "marketBrierOdds": 0.249
+   },
+   {
+    "date": "20260530",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 187,
+    "brier": 0.2472,
+    "logLoss": 0.6873,
+    "modelBrier14": 0.2469,
+    "slope": 1.723,
+    "slopeSE": 0.859,
+    "maxBucketError": 0.0298,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2469,
+    "marketBrierOdds": 0.2483
+   },
+   {
+    "date": "20260531",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.2473,
+    "logLoss": 0.6874,
+    "modelBrier14": 0.2471,
+    "slope": 1.515,
+    "slopeSE": 0.849,
+    "maxBucketError": 0.0095,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2471,
+    "marketBrierOdds": 0.2482
+   },
+   {
+    "date": "20260601",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 188,
+    "brier": 0.245,
+    "logLoss": 0.6829,
+    "modelBrier14": 0.2456,
+    "slope": 1.664,
+    "slopeSE": 0.855,
+    "maxBucketError": 0.0385,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2456,
+    "marketBrierOdds": 0.2452
+   },
+   {
+    "date": "20260602",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2466,
+    "logLoss": 0.6861,
+    "modelBrier14": 0.2468,
+    "slope": 1.504,
+    "slopeSE": 0.855,
+    "maxBucketError": 0.0336,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2468,
+    "marketBrierOdds": 0.2471
+   },
+   {
+    "date": "20260603",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.2471,
+    "logLoss": 0.6872,
+    "modelBrier14": 0.2475,
+    "slope": 1.289,
+    "slopeSE": 0.846,
+    "maxBucketError": 0.0653,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2475,
+    "marketBrierOdds": 0.2474
+   },
+   {
+    "date": "20260604",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.2492,
+    "logLoss": 0.6914,
+    "modelBrier14": 0.2494,
+    "slope": 0.76,
+    "slopeSE": 0.841,
+    "maxBucketError": 0.1012,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2498
+   },
+   {
+    "date": "20260605",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 185,
+    "brier": 0.2503,
+    "logLoss": 0.6937,
+    "modelBrier14": 0.2506,
+    "slope": 0.323,
+    "slopeSE": 0.84,
+    "maxBucketError": 0.0878,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2506,
+    "marketBrierOdds": 0.2508
+   },
+   {
+    "date": "20260606",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 186,
+    "brier": 0.2487,
+    "logLoss": 0.6904,
+    "modelBrier14": 0.2493,
+    "slope": 0.63,
+    "slopeSE": 0.828,
+    "maxBucketError": 0.0856,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2488
+   },
+   {
+    "date": "20260607",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2464,
+    "logLoss": 0.6856,
+    "modelBrier14": 0.2467,
+    "slope": 1.336,
+    "slopeSE": 0.834,
+    "maxBucketError": 0.0628,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2467
+   },
+   {
+    "date": "20260608",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 178,
+    "brier": 0.2437,
+    "logLoss": 0.6803,
+    "modelBrier14": 0.2451,
+    "slope": 1.566,
+    "slopeSE": 0.838,
+    "maxBucketError": 0.0219,
+    "oddsN": 178,
+    "modelBrierOdds": 0.2451,
+    "marketBrierOdds": 0.2429
+   },
+   {
+    "date": "20260609",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 180,
+    "brier": 0.2427,
+    "logLoss": 0.6783,
+    "modelBrier14": 0.2441,
+    "slope": 1.881,
+    "slopeSE": 0.862,
+    "maxBucketError": 0.0448,
+    "oddsN": 180,
+    "modelBrierOdds": 0.2441,
+    "marketBrierOdds": 0.2419
+   },
+   {
+    "date": "20260610",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 180,
+    "brier": 0.2459,
+    "logLoss": 0.6847,
+    "modelBrier14": 0.2466,
+    "slope": 1.174,
+    "slopeSE": 0.836,
+    "maxBucketError": 0.0358,
+    "oddsN": 180,
+    "modelBrierOdds": 0.2466,
+    "marketBrierOdds": 0.2458
+   },
+   {
+    "date": "20260611",
+    "w": 0.5,
+    "method": "platt",
+    "paused": false,
+    "n": 181,
+    "brier": 0.2496,
+    "logLoss": 0.6922,
+    "modelBrier14": 0.2493,
+    "slope": 0.459,
+    "slopeSE": 0.834,
+    "maxBucketError": 0.111,
+    "oddsN": 181,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2502
+   },
+   {
+    "date": "20260612",
+    "w": 0.55,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2479,
+    "logLoss": 0.6888,
+    "modelBrier14": 0.2484,
+    "slope": 0.636,
+    "slopeSE": 0.827,
+    "maxBucketError": 0.0849,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2484,
+    "marketBrierOdds": 0.2479
+   },
+   {
+    "date": "20260613",
+    "w": 0.65,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2489,
+    "logLoss": 0.6909,
+    "modelBrier14": 0.2506,
+    "slope": 0.099,
+    "slopeSE": 0.826,
+    "maxBucketError": 0.1116,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2506,
+    "marketBrierOdds": 0.248
+   },
+   {
+    "date": "20260614",
+    "w": 0.7,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2472,
+    "logLoss": 0.6873,
+    "modelBrier14": 0.2485,
+    "slope": 0.703,
+    "slopeSE": 0.835,
+    "maxBucketError": 0.0619,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2485,
+    "marketBrierOdds": 0.2465
+   },
+   {
+    "date": "20260615",
+    "w": 0.6,
+    "method": "platt",
+    "paused": false,
+    "n": 181,
+    "brier": 0.2516,
+    "logLoss": 0.6962,
+    "modelBrier14": 0.2512,
+    "slope": 0.122,
+    "slopeSE": 0.829,
+    "maxBucketError": 0.115,
+    "oddsN": 181,
+    "modelBrierOdds": 0.2512,
+    "marketBrierOdds": 0.2523
+   },
+   {
+    "date": "20260616",
+    "w": 0.7,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2484,
+    "logLoss": 0.6899,
+    "modelBrier14": 0.2496,
+    "slope": 0.434,
+    "slopeSE": 0.833,
+    "maxBucketError": 0.1173,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2496,
+    "marketBrierOdds": 0.2481
+   },
+   {
+    "date": "20260617",
+    "w": 0.75,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2476,
+    "logLoss": 0.6882,
+    "modelBrier14": 0.2493,
+    "slope": 0.378,
+    "slopeSE": 0.809,
+    "maxBucketError": 0.0653,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2469
+   },
+   {
+    "date": "20260618",
+    "w": 0.85,
+    "method": "platt",
+    "paused": false,
+    "n": 180,
+    "brier": 0.246,
+    "logLoss": 0.6849,
+    "modelBrier14": 0.2483,
+    "slope": 0.581,
+    "slopeSE": 0.791,
+    "maxBucketError": 0.044,
+    "oddsN": 180,
+    "modelBrierOdds": 0.2483,
+    "marketBrierOdds": 0.2452
+   },
+   {
+    "date": "20260619",
+    "w": 0.95,
+    "method": "platt",
+    "paused": false,
+    "n": 180,
+    "brier": 0.2454,
+    "logLoss": 0.6837,
+    "modelBrier14": 0.2486,
+    "slope": 0.49,
+    "slopeSE": 0.788,
+    "maxBucketError": 0.0802,
+    "oddsN": 180,
+    "modelBrierOdds": 0.2486,
+    "marketBrierOdds": 0.2444
+   },
+   {
+    "date": "20260620",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 179,
+    "brier": 0.2427,
+    "logLoss": 0.6782,
+    "modelBrier14": 0.2467,
+    "slope": 0.674,
+    "slopeSE": 0.814,
+    "maxBucketError": 0.0345,
+    "oddsN": 179,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2414
+   },
+   {
+    "date": "20260621",
+    "w": 0.95,
+    "method": "platt",
+    "paused": false,
+    "n": 179,
+    "brier": 0.2478,
+    "logLoss": 0.6888,
+    "modelBrier14": 0.251,
+    "slope": -0.29,
+    "slopeSE": 0.819,
+    "maxBucketError": 0.0686,
+    "oddsN": 179,
+    "modelBrierOdds": 0.251,
+    "marketBrierOdds": 0.246
+   },
+   {
+    "date": "20260622",
+    "w": 0.9,
+    "method": "platt",
+    "paused": false,
+    "n": 178,
+    "brier": 0.2489,
+    "logLoss": 0.691,
+    "modelBrier14": 0.2517,
+    "slope": -0.474,
+    "slopeSE": 0.841,
+    "maxBucketError": 0.0576,
+    "oddsN": 178,
+    "modelBrierOdds": 0.2517,
+    "marketBrierOdds": 0.2478
+   },
+   {
+    "date": "20260623",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.249,
+    "logLoss": 0.6912,
+    "modelBrier14": 0.2525,
+    "slope": -0.851,
+    "slopeSE": 0.843,
+    "maxBucketError": 0.0678,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2525,
+    "marketBrierOdds": 0.2478
+   },
+   {
+    "date": "20260624",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 182,
+    "brier": 0.2481,
+    "logLoss": 0.6895,
+    "modelBrier14": 0.2512,
+    "slope": -0.373,
+    "slopeSE": 0.859,
+    "maxBucketError": 0.0669,
+    "oddsN": 182,
+    "modelBrierOdds": 0.2512,
+    "marketBrierOdds": 0.247
+   },
+   {
+    "date": "20260625",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.2468,
+    "logLoss": 0.6867,
+    "modelBrier14": 0.2494,
+    "slope": 0.327,
+    "slopeSE": 0.877,
+    "maxBucketError": 0.0528,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2454
+   },
+   {
+    "date": "20260626",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2485,
+    "logLoss": 0.6903,
+    "modelBrier14": 0.2505,
+    "slope": 0.114,
+    "slopeSE": 0.897,
+    "maxBucketError": 0.0668,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2505,
+    "marketBrierOdds": 0.2473
+   },
+   {
+    "date": "20260627",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 184,
+    "brier": 0.2482,
+    "logLoss": 0.6895,
+    "modelBrier14": 0.2498,
+    "slope": 0.524,
+    "slopeSE": 0.928,
+    "maxBucketError": 0.0557,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2498,
+    "marketBrierOdds": 0.2475
+   },
+   {
+    "date": "20260628",
+    "w": 1,
+    "method": "platt",
+    "paused": false,
+    "n": 183,
+    "brier": 0.249,
+    "logLoss": 0.6913,
+    "modelBrier14": 0.2518,
+    "slope": -0.196,
+    "slopeSE": 0.959,
+    "maxBucketError": 0.0786,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2518,
+    "marketBrierOdds": 0.2481
+   },
+   {
+    "date": "20260629",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2484,
+    "logLoss": 0.69,
+    "modelBrier14": 0.2507,
+    "slope": 0.134,
+    "slopeSE": 1.003,
+    "maxBucketError": 0.0667,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2507,
+    "marketBrierOdds": 0.2473
+   },
+   {
+    "date": "20260630",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2482,
+    "logLoss": 0.6896,
+    "modelBrier14": 0.2509,
+    "slope": 0.493,
+    "slopeSE": 0.986,
+    "maxBucketError": 0.0442,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2509,
+    "marketBrierOdds": 0.2476
+   },
+   {
+    "date": "20260701",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2477,
+    "logLoss": 0.6886,
+    "modelBrier14": 0.2504,
+    "slope": 0.976,
+    "slopeSE": 0.997,
+    "maxBucketError": 0.0531,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2504,
+    "marketBrierOdds": 0.2472
+   },
+   {
+    "date": "20260702",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2494,
+    "logLoss": 0.6921,
+    "modelBrier14": 0.2505,
+    "slope": 0.527,
+    "slopeSE": 0.996,
+    "maxBucketError": 0.0749,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2505,
+    "marketBrierOdds": 0.2492
+   },
+   {
+    "date": "20260703",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2488,
+    "logLoss": 0.6909,
+    "modelBrier14": 0.2498,
+    "slope": 0.684,
+    "slopeSE": 0.987,
+    "maxBucketError": 0.062,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2498,
+    "marketBrierOdds": 0.2487
+   },
+   {
+    "date": "20260704",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2496,
+    "logLoss": 0.6924,
+    "modelBrier14": 0.2509,
+    "slope": 0.825,
+    "slopeSE": 0.997,
+    "maxBucketError": 0.063,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2509,
+    "marketBrierOdds": 0.2495
+   },
+   {
+    "date": "20260705",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2449,
+    "logLoss": 0.6827,
+    "modelBrier14": 0.2488,
+    "slope": 1.619,
+    "slopeSE": 1.02,
+    "maxBucketError": 0.0499,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2488,
+    "marketBrierOdds": 0.2448
+   },
+   {
+    "date": "20260706",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2466,
+    "logLoss": 0.6861,
+    "modelBrier14": 0.2494,
+    "slope": 1.418,
+    "slopeSE": 1.018,
+    "maxBucketError": 0.1004,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2465
+   },
+   {
+    "date": "20260707",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 186,
+    "brier": 0.2473,
+    "logLoss": 0.6876,
+    "modelBrier14": 0.2494,
+    "slope": 1.571,
+    "slopeSE": 1.027,
+    "maxBucketError": 0.1136,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2473
+   },
+   {
+    "date": "20260708",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 183,
+    "brier": 0.2447,
+    "logLoss": 0.6825,
+    "modelBrier14": 0.2493,
+    "slope": 1.49,
+    "slopeSE": 1.017,
+    "maxBucketError": 0.0785,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2493,
+    "marketBrierOdds": 0.2447
+   },
+   {
+    "date": "20260709",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.244,
+    "logLoss": 0.6809,
+    "modelBrier14": 0.2496,
+    "slope": 1.091,
+    "slopeSE": 0.991,
+    "maxBucketError": 0.0787,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2496,
+    "marketBrierOdds": 0.244
+   },
+   {
+    "date": "20260710",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2417,
+    "logLoss": 0.6764,
+    "modelBrier14": 0.2483,
+    "slope": 1.502,
+    "slopeSE": 0.987,
+    "maxBucketError": 0.043,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2483,
+    "marketBrierOdds": 0.2417
+   },
+   {
+    "date": "20260711",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2446,
+    "logLoss": 0.6823,
+    "modelBrier14": 0.2494,
+    "slope": 1.061,
+    "slopeSE": 0.972,
+    "maxBucketError": 0.0771,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2494,
+    "marketBrierOdds": 0.2446
+   },
+   {
+    "date": "20260712",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2444,
+    "logLoss": 0.6821,
+    "modelBrier14": 0.2483,
+    "slope": 1.297,
+    "slopeSE": 0.949,
+    "maxBucketError": 0.0878,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2483,
+    "marketBrierOdds": 0.2444
+   },
+   {
+    "date": "20260714",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 169,
+    "brier": 0.2448,
+    "logLoss": 0.683,
+    "modelBrier14": 0.2474,
+    "slope": 1.416,
+    "slopeSE": 1.001,
+    "maxBucketError": 0.1199,
+    "oddsN": 169,
+    "modelBrierOdds": 0.2474,
+    "marketBrierOdds": 0.2448
+   },
+   {
+    "date": "20260716",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 147,
+    "brier": 0.2438,
+    "logLoss": 0.6808,
+    "modelBrier14": 0.2472,
+    "slope": 1.759,
+    "slopeSE": 1.129,
+    "maxBucketError": 0.0751,
+    "oddsN": 147,
+    "modelBrierOdds": 0.2472,
+    "marketBrierOdds": 0.2438
+   },
+   {
+    "date": "20260717",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.246,
+    "logLoss": 0.6854,
+    "modelBrier14": 0.2485,
+    "slope": 1.367,
+    "slopeSE": 1.14,
+    "maxBucketError": 0.0648,
+    "oddsN": 142,
+    "modelBrierOdds": 0.2485,
+    "marketBrierOdds": 0.246
+   },
+   {
+    "date": "20260718",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.2489,
+    "logLoss": 0.6912,
+    "modelBrier14": 0.2488,
+    "slope": 1.272,
+    "slopeSE": 1.159,
+    "maxBucketError": 0.0666,
+    "oddsN": 142,
+    "modelBrierOdds": 0.2488,
+    "marketBrierOdds": 0.2489
+   },
+   {
+    "date": "20260719",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 143,
+    "brier": 0.2476,
+    "logLoss": 0.6887,
+    "modelBrier14": 0.248,
+    "slope": 1.279,
+    "slopeSE": 1.185,
+    "maxBucketError": 0.0769,
+    "oddsN": 143,
+    "modelBrierOdds": 0.248,
+    "marketBrierOdds": 0.2476
+   },
+   {
+    "date": "20260720",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 143,
+    "brier": 0.2427,
+    "logLoss": 0.6789,
+    "modelBrier14": 0.2454,
+    "slope": 2.439,
+    "slopeSE": 1.263,
+    "maxBucketError": 0.1129,
+    "oddsN": 143,
+    "modelBrierOdds": 0.2454,
+    "marketBrierOdds": 0.2427
+   },
+   {
+    "date": "20260721",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 149,
+    "brier": 0.2433,
+    "logLoss": 0.6801,
+    "modelBrier14": 0.2453,
+    "slope": 2.322,
+    "slopeSE": 1.254,
+    "maxBucketError": 0.1011,
+    "oddsN": 149,
+    "modelBrierOdds": 0.2453,
+    "marketBrierOdds": 0.2433
+   },
+   {
+    "date": "20260722",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 148,
+    "brier": 0.245,
+    "logLoss": 0.6834,
+    "modelBrier14": 0.2462,
+    "slope": 1.91,
+    "slopeSE": 1.247,
+    "maxBucketError": 0.0897,
+    "oddsN": 148,
+    "modelBrierOdds": 0.2462,
+    "marketBrierOdds": 0.245
+   },
+   {
+    "date": "20260723",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 150,
+    "brier": 0.2472,
+    "logLoss": 0.6879,
+    "modelBrier14": 0.246,
+    "slope": 2.225,
+    "slopeSE": 1.257,
+    "maxBucketError": 0.0821,
+    "oddsN": 150,
+    "modelBrierOdds": 0.246,
+    "marketBrierOdds": 0.2472
+   },
+   {
+    "date": "20260724",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.2478,
+    "logLoss": 0.689,
+    "modelBrier14": 0.2468,
+    "slope": 1.771,
+    "slopeSE": 1.275,
+    "maxBucketError": 0.0895,
+    "oddsN": 142,
+    "modelBrierOdds": 0.2468,
+    "marketBrierOdds": 0.2478
+   },
+   {
+    "date": "20260725",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.2473,
+    "logLoss": 0.6879,
+    "modelBrier14": 0.246,
+    "slope": 2.151,
+    "slopeSE": 1.24,
+    "maxBucketError": 0.0998,
+    "oddsN": 142,
+    "modelBrierOdds": 0.246,
+    "marketBrierOdds": 0.2473
+   },
+   {
+    "date": "20260726",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.2453,
+    "logLoss": 0.6836,
+    "modelBrier14": 0.2455,
+    "slope": 2.227,
+    "slopeSE": 1.206,
+    "maxBucketError": 0.0943,
+    "oddsN": 142,
+    "modelBrierOdds": 0.2455,
+    "marketBrierOdds": 0.2453
+   },
+   {
+    "date": "20260727",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 142,
+    "brier": 0.2447,
+    "logLoss": 0.6822,
+    "modelBrier14": 0.2463,
+    "slope": 1.697,
+    "slopeSE": 1.146,
+    "maxBucketError": 0.0472,
+    "oddsN": 142,
+    "modelBrierOdds": 0.2463,
+    "marketBrierOdds": 0.2447
+   },
+   {
+    "date": "20260728",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 153,
+    "brier": 0.2451,
+    "logLoss": 0.6831,
+    "modelBrier14": 0.2467,
+    "slope": 1.579,
+    "slopeSE": 1.084,
+    "maxBucketError": 0.0464,
+    "oddsN": 153,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2451
+   },
+   {
+    "date": "20260729",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 167,
+    "brier": 0.2453,
+    "logLoss": 0.6835,
+    "modelBrier14": 0.2465,
+    "slope": 1.603,
+    "slopeSE": 1.019,
+    "maxBucketError": 0.0558,
+    "oddsN": 167,
+    "modelBrierOdds": 0.2465,
+    "marketBrierOdds": 0.2453
+   },
+   {
+    "date": "20260730",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 183,
+    "brier": 0.2458,
+    "logLoss": 0.6847,
+    "modelBrier14": 0.2467,
+    "slope": 1.522,
+    "slopeSE": 0.954,
+    "maxBucketError": 0.0364,
+    "oddsN": 183,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2458
+   },
+   {
+    "date": "20260731",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2443,
+    "logLoss": 0.6816,
+    "modelBrier14": 0.2456,
+    "slope": 1.836,
+    "slopeSE": 0.942,
+    "maxBucketError": 0.0303,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2456,
+    "marketBrierOdds": 0.2443
+   },
+   {
+    "date": "20260801",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2447,
+    "logLoss": 0.6824,
+    "modelBrier14": 0.2461,
+    "slope": 1.609,
+    "slopeSE": 0.926,
+    "maxBucketError": 0.0644,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2461,
+    "marketBrierOdds": 0.2447
+   },
+   {
+    "date": "20260802",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2445,
+    "logLoss": 0.6819,
+    "modelBrier14": 0.2448,
+    "slope": 2.032,
+    "slopeSE": 0.929,
+    "maxBucketError": 0.0868,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2448,
+    "marketBrierOdds": 0.2445
+   },
+   {
+    "date": "20260803",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 192,
+    "brier": 0.2456,
+    "logLoss": 0.6843,
+    "modelBrier14": 0.2457,
+    "slope": 1.713,
+    "slopeSE": 0.903,
+    "maxBucketError": 0.096,
+    "oddsN": 192,
+    "modelBrierOdds": 0.2457,
+    "marketBrierOdds": 0.2456
+   },
+   {
+    "date": "20260804",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2474,
+    "logLoss": 0.6878,
+    "modelBrier14": 0.2465,
+    "slope": 1.516,
+    "slopeSE": 0.898,
+    "maxBucketError": 0.0585,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2465,
+    "marketBrierOdds": 0.2474
+   },
+   {
+    "date": "20260805",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2452,
+    "logLoss": 0.6834,
+    "modelBrier14": 0.2436,
+    "slope": 2.363,
+    "slopeSE": 0.932,
+    "maxBucketError": 0.1493,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2436,
+    "marketBrierOdds": 0.2452
+   },
+   {
+    "date": "20260806",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 184,
+    "brier": 0.244,
+    "logLoss": 0.6812,
+    "modelBrier14": 0.2434,
+    "slope": 2.228,
+    "slopeSE": 0.915,
+    "maxBucketError": 0.1438,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2434,
+    "marketBrierOdds": 0.244
+   },
+   {
+    "date": "20260807",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2412,
+    "logLoss": 0.6752,
+    "modelBrier14": 0.2415,
+    "slope": 2.912,
+    "slopeSE": 0.947,
+    "maxBucketError": 0.1587,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2415,
+    "marketBrierOdds": 0.2412
+   },
+   {
+    "date": "20260808",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.242,
+    "logLoss": 0.6769,
+    "modelBrier14": 0.2423,
+    "slope": 2.461,
+    "slopeSE": 0.904,
+    "maxBucketError": 0.138,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2423,
+    "marketBrierOdds": 0.242
+   },
+   {
+    "date": "20260809",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2453,
+    "logLoss": 0.6836,
+    "modelBrier14": 0.2434,
+    "slope": 2.076,
+    "slopeSE": 0.884,
+    "maxBucketError": 0.1299,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2434,
+    "marketBrierOdds": 0.2453
+   },
+   {
+    "date": "20260810",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 186,
+    "brier": 0.2441,
+    "logLoss": 0.6814,
+    "modelBrier14": 0.2422,
+    "slope": 2.449,
+    "slopeSE": 0.898,
+    "maxBucketError": 0.1718,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2422,
+    "marketBrierOdds": 0.2441
+   },
+   {
+    "date": "20260811",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2431,
+    "logLoss": 0.6792,
+    "modelBrier14": 0.2416,
+    "slope": 2.525,
+    "slopeSE": 0.89,
+    "maxBucketError": 0.1804,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2416,
+    "marketBrierOdds": 0.2431
+   },
+   {
+    "date": "20260812",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2428,
+    "logLoss": 0.6787,
+    "modelBrier14": 0.2408,
+    "slope": 2.496,
+    "slopeSE": 0.881,
+    "maxBucketError": 0.2164,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2408,
+    "marketBrierOdds": 0.2428
+   },
+   {
+    "date": "20260813",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2431,
+    "logLoss": 0.6792,
+    "modelBrier14": 0.2411,
+    "slope": 2.325,
+    "slopeSE": 0.868,
+    "maxBucketError": 0.2106,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2411,
+    "marketBrierOdds": 0.2431
+   },
+   {
+    "date": "20260814",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2459,
+    "logLoss": 0.6849,
+    "modelBrier14": 0.2428,
+    "slope": 1.987,
+    "slopeSE": 0.858,
+    "maxBucketError": 0.177,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2428,
+    "marketBrierOdds": 0.2459
+   },
+   {
+    "date": "20260815",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2476,
+    "logLoss": 0.6883,
+    "modelBrier14": 0.2442,
+    "slope": 1.531,
+    "slopeSE": 0.852,
+    "maxBucketError": 0.1483,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2442,
+    "marketBrierOdds": 0.2476
+   },
+   {
+    "date": "20260816",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2499,
+    "logLoss": 0.693,
+    "modelBrier14": 0.2463,
+    "slope": 1.092,
+    "slopeSE": 0.85,
+    "maxBucketError": 0.1154,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2463,
+    "marketBrierOdds": 0.2499
+   },
+   {
+    "date": "20260817",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2512,
+    "logLoss": 0.6956,
+    "modelBrier14": 0.2472,
+    "slope": 1.059,
+    "slopeSE": 0.859,
+    "maxBucketError": 0.0827,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2472,
+    "marketBrierOdds": 0.2512
+   },
+   {
+    "date": "20260818",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2471,
+    "logLoss": 0.6871,
+    "modelBrier14": 0.2458,
+    "slope": 1.293,
+    "slopeSE": 0.859,
+    "maxBucketError": 0.105,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2458,
+    "marketBrierOdds": 0.2471
+   },
+   {
+    "date": "20260819",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2459,
+    "logLoss": 0.6847,
+    "modelBrier14": 0.2467,
+    "slope": 1.142,
+    "slopeSE": 0.847,
+    "maxBucketError": 0.0678,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2459
+   },
+   {
+    "date": "20260820",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2467,
+    "logLoss": 0.6862,
+    "modelBrier14": 0.2477,
+    "slope": 0.916,
+    "slopeSE": 0.833,
+    "maxBucketError": 0.0652,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2477,
+    "marketBrierOdds": 0.2467
+   },
+   {
+    "date": "20260821",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.249,
+    "logLoss": 0.691,
+    "modelBrier14": 0.2487,
+    "slope": 0.716,
+    "slopeSE": 0.826,
+    "maxBucketError": 0.0294,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2487,
+    "marketBrierOdds": 0.249
+   },
+   {
+    "date": "20260822",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2416,
+    "logLoss": 0.676,
+    "modelBrier14": 0.2451,
+    "slope": 1.333,
+    "slopeSE": 0.83,
+    "maxBucketError": 0.1038,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2451,
+    "marketBrierOdds": 0.2416
+   },
+   {
+    "date": "20260823",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2391,
+    "logLoss": 0.6708,
+    "modelBrier14": 0.2449,
+    "slope": 1.329,
+    "slopeSE": 0.815,
+    "maxBucketError": 0.0983,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2449,
+    "marketBrierOdds": 0.2391
+   },
+   {
+    "date": "20260824",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2361,
+    "logLoss": 0.6645,
+    "modelBrier14": 0.2432,
+    "slope": 1.497,
+    "slopeSE": 0.79,
+    "maxBucketError": 0.1073,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2432,
+    "marketBrierOdds": 0.2361
+   },
+   {
+    "date": "20260825",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.236,
+    "logLoss": 0.6646,
+    "modelBrier14": 0.2443,
+    "slope": 1.358,
+    "slopeSE": 0.801,
+    "maxBucketError": 0.0818,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2443,
+    "marketBrierOdds": 0.236
+   },
+   {
+    "date": "20260826",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2376,
+    "logLoss": 0.6677,
+    "modelBrier14": 0.2464,
+    "slope": 0.95,
+    "slopeSE": 0.805,
+    "maxBucketError": 0.0339,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2464,
+    "marketBrierOdds": 0.2376
+   },
+   {
+    "date": "20260827",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2381,
+    "logLoss": 0.6688,
+    "modelBrier14": 0.2467,
+    "slope": 1.014,
+    "slopeSE": 0.821,
+    "maxBucketError": 0.0474,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2467,
+    "marketBrierOdds": 0.2381
+   },
+   {
+    "date": "20260828",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 186,
+    "brier": 0.2363,
+    "logLoss": 0.6651,
+    "modelBrier14": 0.2459,
+    "slope": 1.052,
+    "slopeSE": 0.822,
+    "maxBucketError": 0.0525,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2459,
+    "marketBrierOdds": 0.2363
+   },
+   {
+    "date": "20260829",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2321,
+    "logLoss": 0.6566,
+    "modelBrier14": 0.2436,
+    "slope": 1.643,
+    "slopeSE": 0.801,
+    "maxBucketError": 0.0564,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2436,
+    "marketBrierOdds": 0.2321
+   },
+   {
+    "date": "20260830",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2294,
+    "logLoss": 0.6511,
+    "modelBrier14": 0.2406,
+    "slope": 1.992,
+    "slopeSE": 0.786,
+    "maxBucketError": 0.0736,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2406,
+    "marketBrierOdds": 0.2294
+   },
+   {
+    "date": "20260831",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2262,
+    "logLoss": 0.6446,
+    "modelBrier14": 0.2394,
+    "slope": 1.875,
+    "slopeSE": 0.763,
+    "maxBucketError": 0.1247,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2394,
+    "marketBrierOdds": 0.2262
+   },
+   {
+    "date": "20260901",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2288,
+    "logLoss": 0.6498,
+    "modelBrier14": 0.2406,
+    "slope": 1.664,
+    "slopeSE": 0.741,
+    "maxBucketError": 0.102,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2406,
+    "marketBrierOdds": 0.2288
+   },
+   {
+    "date": "20260902",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.232,
+    "logLoss": 0.6562,
+    "modelBrier14": 0.2422,
+    "slope": 1.427,
+    "slopeSE": 0.719,
+    "maxBucketError": 0.1077,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2422,
+    "marketBrierOdds": 0.232
+   },
+   {
+    "date": "20260903",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2344,
+    "logLoss": 0.6612,
+    "modelBrier14": 0.2451,
+    "slope": 1.119,
+    "slopeSE": 0.701,
+    "maxBucketError": 0.0748,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2451,
+    "marketBrierOdds": 0.2344
+   },
+   {
+    "date": "20260904",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2342,
+    "logLoss": 0.6607,
+    "modelBrier14": 0.2454,
+    "slope": 0.916,
+    "slopeSE": 0.697,
+    "maxBucketError": 0.0854,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2454,
+    "marketBrierOdds": 0.2342
+   },
+   {
+    "date": "20260905",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2372,
+    "logLoss": 0.6669,
+    "modelBrier14": 0.2465,
+    "slope": 1.143,
+    "slopeSE": 0.694,
+    "maxBucketError": 0.0453,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2465,
+    "marketBrierOdds": 0.2372
+   },
+   {
+    "date": "20260906",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2403,
+    "logLoss": 0.6733,
+    "modelBrier14": 0.2489,
+    "slope": 1.035,
+    "slopeSE": 0.684,
+    "maxBucketError": 0.0499,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2489,
+    "marketBrierOdds": 0.2403
+   },
+   {
+    "date": "20260907",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 190,
+    "brier": 0.2413,
+    "logLoss": 0.6753,
+    "modelBrier14": 0.2501,
+    "slope": 0.726,
+    "slopeSE": 0.684,
+    "maxBucketError": 0.0424,
+    "oddsN": 190,
+    "modelBrierOdds": 0.2501,
+    "marketBrierOdds": 0.2413
+   },
+   {
+    "date": "20260908",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2407,
+    "logLoss": 0.6742,
+    "modelBrier14": 0.2477,
+    "slope": 0.818,
+    "slopeSE": 0.676,
+    "maxBucketError": 0.0429,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2477,
+    "marketBrierOdds": 0.2407
+   },
+   {
+    "date": "20260909",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2372,
+    "logLoss": 0.6668,
+    "modelBrier14": 0.2466,
+    "slope": 1.192,
+    "slopeSE": 0.667,
+    "maxBucketError": 0.0358,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2466,
+    "marketBrierOdds": 0.2372
+   },
+   {
+    "date": "20260910",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 191,
+    "brier": 0.2367,
+    "logLoss": 0.6657,
+    "modelBrier14": 0.2456,
+    "slope": 1.165,
+    "slopeSE": 0.654,
+    "maxBucketError": 0.0545,
+    "oddsN": 191,
+    "modelBrierOdds": 0.2456,
+    "marketBrierOdds": 0.2367
+   },
+   {
+    "date": "20260911",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 189,
+    "brier": 0.2361,
+    "logLoss": 0.6645,
+    "modelBrier14": 0.2451,
+    "slope": 1.244,
+    "slopeSE": 0.654,
+    "maxBucketError": 0.0503,
+    "oddsN": 189,
+    "modelBrierOdds": 0.2451,
+    "marketBrierOdds": 0.2361
+   },
+   {
+    "date": "20260912",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 188,
+    "brier": 0.2353,
+    "logLoss": 0.6628,
+    "modelBrier14": 0.2436,
+    "slope": 1.257,
+    "slopeSE": 0.661,
+    "maxBucketError": 0.0465,
+    "oddsN": 188,
+    "modelBrierOdds": 0.2436,
+    "marketBrierOdds": 0.2353
+   },
+   {
+    "date": "20260913",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2366,
+    "logLoss": 0.6655,
+    "modelBrier14": 0.244,
+    "slope": 1.154,
+    "slopeSE": 0.663,
+    "maxBucketError": 0.0594,
+    "oddsN": 187,
+    "modelBrierOdds": 0.244,
+    "marketBrierOdds": 0.2366
+   },
+   {
+    "date": "20260914",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 187,
+    "brier": 0.2388,
+    "logLoss": 0.67,
+    "modelBrier14": 0.2428,
+    "slope": 1.113,
+    "slopeSE": 0.664,
+    "maxBucketError": 0.0365,
+    "oddsN": 187,
+    "modelBrierOdds": 0.2428,
+    "marketBrierOdds": 0.2388
+   },
+   {
+    "date": "20260915",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 186,
+    "brier": 0.2385,
+    "logLoss": 0.6694,
+    "modelBrier14": 0.2423,
+    "slope": 1.385,
+    "slopeSE": 0.67,
+    "maxBucketError": 0.0619,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2423,
+    "marketBrierOdds": 0.2385
+   },
+   {
+    "date": "20260916",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2386,
+    "logLoss": 0.6696,
+    "modelBrier14": 0.2422,
+    "slope": 1.483,
+    "slopeSE": 0.662,
+    "maxBucketError": 0.0243,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2422,
+    "marketBrierOdds": 0.2386
+   },
+   {
+    "date": "20260917",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 186,
+    "brier": 0.236,
+    "logLoss": 0.6643,
+    "modelBrier14": 0.2392,
+    "slope": 1.682,
+    "slopeSE": 0.657,
+    "maxBucketError": 0.0357,
+    "oddsN": 186,
+    "modelBrierOdds": 0.2392,
+    "marketBrierOdds": 0.236
+   },
+   {
+    "date": "20260918",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 184,
+    "brier": 0.2351,
+    "logLoss": 0.6624,
+    "modelBrier14": 0.2379,
+    "slope": 1.884,
+    "slopeSE": 0.652,
+    "maxBucketError": 0.0367,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2379,
+    "marketBrierOdds": 0.2351
+   },
+   {
+    "date": "20260919",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 185,
+    "brier": 0.2344,
+    "logLoss": 0.6609,
+    "modelBrier14": 0.2382,
+    "slope": 1.839,
+    "slopeSE": 0.639,
+    "maxBucketError": 0.0016,
+    "oddsN": 185,
+    "modelBrierOdds": 0.2382,
+    "marketBrierOdds": 0.2344
+   },
+   {
+    "date": "20260920",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 184,
+    "brier": 0.2294,
+    "logLoss": 0.6505,
+    "modelBrier14": 0.2328,
+    "slope": 2.255,
+    "slopeSE": 0.668,
+    "maxBucketError": 0.047,
+    "oddsN": 184,
+    "modelBrierOdds": 0.2328,
+    "marketBrierOdds": 0.2294
+   },
+   {
+    "date": "20260921",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 177,
+    "brier": 0.2301,
+    "logLoss": 0.6518,
+    "modelBrier14": 0.2329,
+    "slope": 2.414,
+    "slopeSE": 0.669,
+    "maxBucketError": 0.0389,
+    "oddsN": 177,
+    "modelBrierOdds": 0.2329,
+    "marketBrierOdds": 0.2301
+   },
+   {
+    "date": "20260922",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 177,
+    "brier": 0.2296,
+    "logLoss": 0.6507,
+    "modelBrier14": 0.2324,
+    "slope": 2.529,
+    "slopeSE": 0.682,
+    "maxBucketError": 0.0448,
+    "oddsN": 177,
+    "modelBrierOdds": 0.2324,
+    "marketBrierOdds": 0.2296
+   },
+   {
+    "date": "20260923",
+    "w": 1,
+    "method": "platt",
+    "paused": true,
+    "n": 170,
+    "brier": 0.231,
+    "logLoss": 0.6539,
+    "modelBrier14": 0.2325,
+    "slope": 2.424,
+    "slopeSE": 0.696,
+    "maxBucketError": 0.0539,
+    "oddsN": 170,
+    "modelBrierOdds": 0.2325,
+    "marketBrierOdds": 0.231
+   }
+  ]
+ },
+ "holdout": {
+  "range": {
+   "lastCompleted": "20260922",
+   "holdoutStart": "20260902",
+   "tuningEnd": "20260901"
+  },
+  "metrics": {
+   "n": 266,
+   "final": {
+    "n": 266,
+    "logLoss": 0.661,
+    "brier": 0.2344,
+    "slope": 1.472,
+    "intercept": 0.013,
+    "accuracy": 0.5827,
+    "maxBucketError": 0.0477,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 92,
+      "predicted": 0.5238,
+      "actual": 0.4783,
+      "error": -0.0455
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 101,
+      "predicted": 0.57,
+      "actual": 0.5842,
+      "error": 0.0142
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 52,
+      "predicted": 0.6254,
+      "actual": 0.6731,
+      "error": 0.0477
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 12,
+      "predicted": 0.6751,
+      "actual": 0.6667,
+      "error": -0.0085
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 9,
+      "predicted": 0.724,
+      "actual": 1,
+      "error": 0.276
+     }
+    ]
+   },
+   "model": {
+    "n": 266,
+    "logLoss": 0.6705,
+    "brier": 0.2389,
+    "slope": 1.909,
+    "intercept": -0.118,
+    "accuracy": 0.5902,
+    "maxBucketError": 0.0262,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 134,
+      "predicted": 0.526,
+      "actual": 0.5522,
+      "error": 0.0262
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 95,
+      "predicted": 0.5722,
+      "actual": 0.5895,
+      "error": 0.0173
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 27,
+      "predicted": 0.6234,
+      "actual": 0.6667,
+      "error": 0.0433
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 10,
+      "predicted": 0.6656,
+      "actual": 0.9,
+      "error": 0.2344
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 266,
+    "logLoss": 0.6682,
+    "brier": 0.2379,
+    "slope": 1.285,
+    "intercept": 0.06,
+    "accuracy": 0.5977,
+    "maxBucketError": 0.063,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 111,
+      "predicted": 0.5248,
+      "actual": 0.5225,
+      "error": -0.0023
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 88,
+      "predicted": 0.5734,
+      "actual": 0.6364,
+      "error": 0.063
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 42,
+      "predicted": 0.6208,
+      "actual": 0.5714,
+      "error": -0.0493
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 21,
+      "predicted": 0.6728,
+      "actual": 0.8571,
+      "error": 0.1843
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 4,
+      "predicted": 0.7173,
+      "actual": 0.75,
+      "error": 0.0327
+     }
+    ]
+   },
+   "odds": {
+    "n": 266,
+    "final": {
+     "n": 266,
+     "logLoss": 0.661,
+     "brier": 0.2344,
+     "slope": 1.472,
+     "intercept": 0.013,
+     "accuracy": 0.5827,
+     "maxBucketError": 0.0477,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 92,
+       "predicted": 0.5238,
+       "actual": 0.4783,
+       "error": -0.0455
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 101,
+       "predicted": 0.57,
+       "actual": 0.5842,
+       "error": 0.0142
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 52,
+       "predicted": 0.6254,
+       "actual": 0.6731,
+       "error": 0.0477
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 12,
+       "predicted": 0.6751,
+       "actual": 0.6667,
+       "error": -0.0085
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 9,
+       "predicted": 0.724,
+       "actual": 1,
+       "error": 0.276
+      }
+     ]
+    },
+    "model": {
+     "n": 266,
+     "logLoss": 0.6705,
+     "brier": 0.2389,
+     "slope": 1.909,
+     "intercept": -0.118,
+     "accuracy": 0.5902,
+     "maxBucketError": 0.0262,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 134,
+       "predicted": 0.526,
+       "actual": 0.5522,
+       "error": 0.0262
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 95,
+       "predicted": 0.5722,
+       "actual": 0.5895,
+       "error": 0.0173
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 27,
+       "predicted": 0.6234,
+       "actual": 0.6667,
+       "error": 0.0433
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 10,
+       "predicted": 0.6656,
+       "actual": 0.9,
+       "error": 0.2344
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "raw": {
+     "n": 266,
+     "logLoss": 0.6682,
+     "brier": 0.2379,
+     "slope": 1.285,
+     "intercept": 0.06,
+     "accuracy": 0.5977,
+     "maxBucketError": 0.063,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 111,
+       "predicted": 0.5248,
+       "actual": 0.5225,
+       "error": -0.0023
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 88,
+       "predicted": 0.5734,
+       "actual": 0.6364,
+       "error": 0.063
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 42,
+       "predicted": 0.6208,
+       "actual": 0.5714,
+       "error": -0.0493
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 21,
+       "predicted": 0.6728,
+       "actual": 0.8571,
+       "error": 0.1843
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 4,
+       "predicted": 0.7173,
+       "actual": 0.75,
+       "error": 0.0327
+      }
+     ]
+    },
+    "market": {
+     "n": 266,
+     "logLoss": 0.661,
+     "brier": 0.2344,
+     "slope": 1.472,
+     "intercept": 0.013,
+     "accuracy": 0.5827,
+     "maxBucketError": 0.0477,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 92,
+       "predicted": 0.5238,
+       "actual": 0.4783,
+       "error": -0.0455
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 101,
+       "predicted": 0.57,
+       "actual": 0.5842,
+       "error": 0.0142
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 52,
+       "predicted": 0.6254,
+       "actual": 0.6731,
+       "error": 0.0477
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 12,
+       "predicted": 0.6751,
+       "actual": 0.6667,
+       "error": -0.0085
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 9,
+       "predicted": 0.724,
+       "actual": 1,
+       "error": 0.276
+      }
+     ]
+    }
+   },
+   "bets": {
+    "n": 0,
+    "units": 0,
+    "roiFlat": null,
+    "roiKelly": null,
+    "bankrollReturn": 0,
+    "avgClv": null,
+    "clvN": 0
+   },
+   "leans": {
+    "clvN": 266,
+    "avgClv": 0.00547
+   }
+  },
+  "worseThanMarket": false,
+  "noMarket": false,
+  "evaluatedAt": "2026-09-23T02:59:56.360Z"
+ },
+ "tuning": {
+  "n": 2085,
+  "final": {
+   "n": 2085,
+   "logLoss": 0.6837,
+   "brier": 0.2453,
+   "slope": 0.978,
+   "intercept": 0.007,
+   "accuracy": 0.5568,
+   "maxBucketError": 0.033,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 1074,
+     "predicted": 0.5244,
+     "actual": 0.5279,
+     "error": 0.0036
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 716,
+     "predicted": 0.5716,
+     "actual": 0.5726,
+     "error": 0.001
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 226,
+     "predicted": 0.6179,
+     "actual": 0.5973,
+     "error": -0.0206
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 61,
+     "predicted": 0.6719,
+     "actual": 0.7049,
+     "error": 0.033
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 8,
+     "predicted": 0.7131,
+     "actual": 0.75,
+     "error": 0.0369
+    }
+   ]
+  },
+  "model": {
+   "n": 2085,
+   "logLoss": 0.6874,
+   "brier": 0.2471,
+   "slope": 1.125,
+   "intercept": 0.003,
+   "accuracy": 0.5549,
+   "maxBucketError": 0.0854,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 1473,
+     "predicted": 0.5245,
+     "actual": 0.5438,
+     "error": 0.0192
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 538,
+     "predicted": 0.5672,
+     "actual": 0.5836,
+     "error": 0.0164
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 68,
+     "predicted": 0.6148,
+     "actual": 0.5294,
+     "error": -0.0854
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 6,
+     "predicted": 0.6578,
+     "actual": 1,
+     "error": 0.3422
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 0,
+     "predicted": null,
+     "actual": null,
+     "error": null
+    }
+   ]
+  },
+  "raw": {
+   "n": 2085,
+   "logLoss": 0.6874,
+   "brier": 0.2471,
+   "slope": 0.709,
+   "intercept": 0.018,
+   "accuracy": 0.5511,
+   "maxBucketError": 0.0511,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 946,
+     "predicted": 0.5248,
+     "actual": 0.5296,
+     "error": 0.0048
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 740,
+     "predicted": 0.5729,
+     "actual": 0.5581,
+     "error": -0.0148
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 281,
+     "predicted": 0.6182,
+     "actual": 0.573,
+     "error": -0.0452
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 96,
+     "predicted": 0.6657,
+     "actual": 0.6146,
+     "error": -0.0511
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 22,
+     "predicted": 0.7223,
+     "actual": 0.6818,
+     "error": -0.0405
+    }
+   ]
+  },
+  "odds": {
+   "n": 2085,
+   "final": {
+    "n": 2085,
+    "logLoss": 0.6837,
+    "brier": 0.2453,
+    "slope": 0.978,
+    "intercept": 0.007,
+    "accuracy": 0.5568,
+    "maxBucketError": 0.033,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1074,
+      "predicted": 0.5244,
+      "actual": 0.5279,
+      "error": 0.0036
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 716,
+      "predicted": 0.5716,
+      "actual": 0.5726,
+      "error": 0.001
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 226,
+      "predicted": 0.6179,
+      "actual": 0.5973,
+      "error": -0.0206
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 61,
+      "predicted": 0.6719,
+      "actual": 0.7049,
+      "error": 0.033
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 8,
+      "predicted": 0.7131,
+      "actual": 0.75,
+      "error": 0.0369
+     }
+    ]
+   },
+   "model": {
+    "n": 2085,
+    "logLoss": 0.6874,
+    "brier": 0.2471,
+    "slope": 1.125,
+    "intercept": 0.003,
+    "accuracy": 0.5549,
+    "maxBucketError": 0.0854,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1473,
+      "predicted": 0.5245,
+      "actual": 0.5438,
+      "error": 0.0192
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 538,
+      "predicted": 0.5672,
+      "actual": 0.5836,
+      "error": 0.0164
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 68,
+      "predicted": 0.6148,
+      "actual": 0.5294,
+      "error": -0.0854
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 6,
+      "predicted": 0.6578,
+      "actual": 1,
+      "error": 0.3422
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 2085,
+    "logLoss": 0.6874,
+    "brier": 0.2471,
+    "slope": 0.709,
+    "intercept": 0.018,
+    "accuracy": 0.5511,
+    "maxBucketError": 0.0511,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 946,
+      "predicted": 0.5248,
+      "actual": 0.5296,
+      "error": 0.0048
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 740,
+      "predicted": 0.5729,
+      "actual": 0.5581,
+      "error": -0.0148
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 281,
+      "predicted": 0.6182,
+      "actual": 0.573,
+      "error": -0.0452
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 96,
+      "predicted": 0.6657,
+      "actual": 0.6146,
+      "error": -0.0511
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 22,
+      "predicted": 0.7223,
+      "actual": 0.6818,
+      "error": -0.0405
+     }
+    ]
+   },
+   "market": {
+    "n": 2085,
+    "logLoss": 0.6839,
+    "brier": 0.2454,
+    "slope": 0.864,
+    "intercept": 0.019,
+    "accuracy": 0.5549,
+    "maxBucketError": 0.0252,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 915,
+      "predicted": 0.523,
+      "actual": 0.5169,
+      "error": -0.0061
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 790,
+      "predicted": 0.5717,
+      "actual": 0.5658,
+      "error": -0.0059
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 285,
+      "predicted": 0.6209,
+      "actual": 0.6,
+      "error": -0.0209
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 76,
+      "predicted": 0.6721,
+      "actual": 0.6974,
+      "error": 0.0252
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 19,
+      "predicted": 0.7177,
+      "actual": 0.6842,
+      "error": -0.0335
+     }
+    ]
+   }
+  },
+  "bets": {
+   "n": 160,
+   "units": 4.38,
+   "roiFlat": 0.0274,
+   "roiKelly": 0.0062,
+   "bankrollReturn": 0.0099,
+   "avgClv": 0.00936,
+   "clvN": 160
+  },
+  "leans": {
+   "clvN": 2085,
+   "avgClv": 0.00366
+  }
+ },
+ "search": {
+  "configsTried": 50,
+  "stopReason": "3 consecutive rounds improved log loss by < 0.001",
+  "rounds": 5
+ },
+ "lightSearch": {
+  "at": "2026-09-23T02:59:56.360Z",
+  "evaluated": 0,
+  "promoted": false,
+  "note": "initial full search"
+ },
+ "updatedAt": "2026-09-23T02:59:56.360Z"
+}

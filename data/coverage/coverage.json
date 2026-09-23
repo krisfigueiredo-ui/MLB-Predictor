@@ -1,0 +1,202 @@
+{
+ "alerts": [],
+ "runs": [],
+ "season": {
+  "scheduled": 2374,
+  "completed": 2351,
+  "predicted": 2351,
+  "missing": []
+ },
+ "notPredicted": [
+  {
+   "gameId": "401814780",
+   "date": "20260402",
+   "matchup": "TOR @ CWS",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401814790",
+   "date": "20260403",
+   "matchup": "MIL @ KC",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401814798",
+   "date": "20260404",
+   "matchup": "CHC @ CLE",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815082",
+   "date": "20260425",
+   "matchup": "COL @ NYM",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815137",
+   "date": "20260429",
+   "matchup": "SF @ PHI",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815136",
+   "date": "20260429",
+   "matchup": "HOU @ BAL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815223",
+   "date": "20260505",
+   "matchup": "MIL @ STL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815224",
+   "date": "20260505",
+   "matchup": "NYM @ COL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815273",
+   "date": "20260509",
+   "matchup": "TB @ BOS",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815446",
+   "date": "20260522",
+   "matchup": "STL @ CIN",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815462",
+   "date": "20260523",
+   "matchup": "TB @ NYY",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815457",
+   "date": "20260523",
+   "matchup": "DET @ BAL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815476",
+   "date": "20260524",
+   "matchup": "STL @ CIN",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815644",
+   "date": "20260606",
+   "matchup": "BOS @ NYY",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815716",
+   "date": "20260611",
+   "matchup": "ATL @ CWS",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815751",
+   "date": "20260614",
+   "matchup": "DET @ CLE",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815805",
+   "date": "20260618",
+   "matchup": "SF @ ATL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815848",
+   "date": "20260621",
+   "matchup": "TOR @ CHC",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815854",
+   "date": "20260622",
+   "matchup": "CHC @ NYM",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401815904",
+   "date": "20260625",
+   "matchup": "AZ @ STL",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816100",
+   "date": "20260710",
+   "matchup": "MIL @ PIT",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816144",
+   "date": "20260717",
+   "matchup": "PIT @ CLE",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816157",
+   "date": "20260718",
+   "matchup": "LAD @ NYY",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816204",
+   "date": "20260721",
+   "matchup": "PIT @ NYY",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816201",
+   "date": "20260721",
+   "matchup": "BAL @ BOS",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816283",
+   "date": "20260727",
+   "matchup": "CLE @ CIN",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  },
+  {
+   "gameId": "401816293",
+   "date": "20260728",
+   "matchup": "ATL @ NYM",
+   "status": "postponed",
+   "reason": "postponed (not played on this date)"
+  }
+ ],
+ "fetchFailures": []
+}

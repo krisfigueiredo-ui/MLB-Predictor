@@ -1,0 +1,1046 @@
+{
+ "range": {
+  "lastCompleted": "20260922",
+  "holdoutStart": "20260902",
+  "tuningEnd": "20260901"
+ },
+ "configsTried": 50,
+ "stopReason": "3 consecutive rounds improved log loss by < 0.001",
+ "chosen": {
+  "version": "cfg-1cf05144",
+  "config": {
+   "featureSet": "elo",
+   "hl": 30,
+   "members": "elo",
+   "lambda": 10,
+   "trainHl": 60,
+   "calMethod": "platt",
+   "calWindow": 60,
+   "w0": 0.7
+  }
+ },
+ "tuning": {
+  "n": 2085,
+  "final": {
+   "n": 2085,
+   "logLoss": 0.6837,
+   "brier": 0.2453,
+   "slope": 0.978,
+   "intercept": 0.007,
+   "accuracy": 0.5568,
+   "maxBucketError": 0.033,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 1074,
+     "predicted": 0.5244,
+     "actual": 0.5279,
+     "error": 0.0036
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 716,
+     "predicted": 0.5716,
+     "actual": 0.5726,
+     "error": 0.001
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 226,
+     "predicted": 0.6179,
+     "actual": 0.5973,
+     "error": -0.0206
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 61,
+     "predicted": 0.6719,
+     "actual": 0.7049,
+     "error": 0.033
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 8,
+     "predicted": 0.7131,
+     "actual": 0.75,
+     "error": 0.0369
+    }
+   ]
+  },
+  "model": {
+   "n": 2085,
+   "logLoss": 0.6874,
+   "brier": 0.2471,
+   "slope": 1.125,
+   "intercept": 0.003,
+   "accuracy": 0.5549,
+   "maxBucketError": 0.0854,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 1473,
+     "predicted": 0.5245,
+     "actual": 0.5438,
+     "error": 0.0192
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 538,
+     "predicted": 0.5672,
+     "actual": 0.5836,
+     "error": 0.0164
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 68,
+     "predicted": 0.6148,
+     "actual": 0.5294,
+     "error": -0.0854
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 6,
+     "predicted": 0.6578,
+     "actual": 1,
+     "error": 0.3422
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 0,
+     "predicted": null,
+     "actual": null,
+     "error": null
+    }
+   ]
+  },
+  "raw": {
+   "n": 2085,
+   "logLoss": 0.6874,
+   "brier": 0.2471,
+   "slope": 0.709,
+   "intercept": 0.018,
+   "accuracy": 0.5511,
+   "maxBucketError": 0.0511,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 946,
+     "predicted": 0.5248,
+     "actual": 0.5296,
+     "error": 0.0048
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 740,
+     "predicted": 0.5729,
+     "actual": 0.5581,
+     "error": -0.0148
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 281,
+     "predicted": 0.6182,
+     "actual": 0.573,
+     "error": -0.0452
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 96,
+     "predicted": 0.6657,
+     "actual": 0.6146,
+     "error": -0.0511
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 22,
+     "predicted": 0.7223,
+     "actual": 0.6818,
+     "error": -0.0405
+    }
+   ]
+  },
+  "odds": {
+   "n": 2085,
+   "final": {
+    "n": 2085,
+    "logLoss": 0.6837,
+    "brier": 0.2453,
+    "slope": 0.978,
+    "intercept": 0.007,
+    "accuracy": 0.5568,
+    "maxBucketError": 0.033,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1074,
+      "predicted": 0.5244,
+      "actual": 0.5279,
+      "error": 0.0036
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 716,
+      "predicted": 0.5716,
+      "actual": 0.5726,
+      "error": 0.001
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 226,
+      "predicted": 0.6179,
+      "actual": 0.5973,
+      "error": -0.0206
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 61,
+      "predicted": 0.6719,
+      "actual": 0.7049,
+      "error": 0.033
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 8,
+      "predicted": 0.7131,
+      "actual": 0.75,
+      "error": 0.0369
+     }
+    ]
+   },
+   "model": {
+    "n": 2085,
+    "logLoss": 0.6874,
+    "brier": 0.2471,
+    "slope": 1.125,
+    "intercept": 0.003,
+    "accuracy": 0.5549,
+    "maxBucketError": 0.0854,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1473,
+      "predicted": 0.5245,
+      "actual": 0.5438,
+      "error": 0.0192
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 538,
+      "predicted": 0.5672,
+      "actual": 0.5836,
+      "error": 0.0164
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 68,
+      "predicted": 0.6148,
+      "actual": 0.5294,
+      "error": -0.0854
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 6,
+      "predicted": 0.6578,
+      "actual": 1,
+      "error": 0.3422
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 2085,
+    "logLoss": 0.6874,
+    "brier": 0.2471,
+    "slope": 0.709,
+    "intercept": 0.018,
+    "accuracy": 0.5511,
+    "maxBucketError": 0.0511,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 946,
+      "predicted": 0.5248,
+      "actual": 0.5296,
+      "error": 0.0048
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 740,
+      "predicted": 0.5729,
+      "actual": 0.5581,
+      "error": -0.0148
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 281,
+      "predicted": 0.6182,
+      "actual": 0.573,
+      "error": -0.0452
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 96,
+      "predicted": 0.6657,
+      "actual": 0.6146,
+      "error": -0.0511
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 22,
+      "predicted": 0.7223,
+      "actual": 0.6818,
+      "error": -0.0405
+     }
+    ]
+   },
+   "market": {
+    "n": 2085,
+    "logLoss": 0.6839,
+    "brier": 0.2454,
+    "slope": 0.864,
+    "intercept": 0.019,
+    "accuracy": 0.5549,
+    "maxBucketError": 0.0252,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 915,
+      "predicted": 0.523,
+      "actual": 0.5169,
+      "error": -0.0061
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 790,
+      "predicted": 0.5717,
+      "actual": 0.5658,
+      "error": -0.0059
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 285,
+      "predicted": 0.6209,
+      "actual": 0.6,
+      "error": -0.0209
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 76,
+      "predicted": 0.6721,
+      "actual": 0.6974,
+      "error": 0.0252
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 19,
+      "predicted": 0.7177,
+      "actual": 0.6842,
+      "error": -0.0335
+     }
+    ]
+   }
+  },
+  "bets": {
+   "n": 160,
+   "units": 4.38,
+   "roiFlat": 0.0274,
+   "roiKelly": 0.0062,
+   "bankrollReturn": 0.0099,
+   "avgClv": 0.00936,
+   "clvN": 160
+  },
+  "leans": {
+   "clvN": 2085,
+   "avgClv": 0.00366
+  }
+ },
+ "holdout": {
+  "n": 266,
+  "final": {
+   "n": 266,
+   "logLoss": 0.661,
+   "brier": 0.2344,
+   "slope": 1.472,
+   "intercept": 0.013,
+   "accuracy": 0.5827,
+   "maxBucketError": 0.0477,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 92,
+     "predicted": 0.5238,
+     "actual": 0.4783,
+     "error": -0.0455
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 101,
+     "predicted": 0.57,
+     "actual": 0.5842,
+     "error": 0.0142
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 52,
+     "predicted": 0.6254,
+     "actual": 0.6731,
+     "error": 0.0477
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 12,
+     "predicted": 0.6751,
+     "actual": 0.6667,
+     "error": -0.0085
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 9,
+     "predicted": 0.724,
+     "actual": 1,
+     "error": 0.276
+    }
+   ]
+  },
+  "model": {
+   "n": 266,
+   "logLoss": 0.6705,
+   "brier": 0.2389,
+   "slope": 1.909,
+   "intercept": -0.118,
+   "accuracy": 0.5902,
+   "maxBucketError": 0.0262,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 134,
+     "predicted": 0.526,
+     "actual": 0.5522,
+     "error": 0.0262
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 95,
+     "predicted": 0.5722,
+     "actual": 0.5895,
+     "error": 0.0173
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 27,
+     "predicted": 0.6234,
+     "actual": 0.6667,
+     "error": 0.0433
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 10,
+     "predicted": 0.6656,
+     "actual": 0.9,
+     "error": 0.2344
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 0,
+     "predicted": null,
+     "actual": null,
+     "error": null
+    }
+   ]
+  },
+  "raw": {
+   "n": 266,
+   "logLoss": 0.6682,
+   "brier": 0.2379,
+   "slope": 1.285,
+   "intercept": 0.06,
+   "accuracy": 0.5977,
+   "maxBucketError": 0.063,
+   "buckets": [
+    {
+     "range": [
+      0.5,
+      0.55
+     ],
+     "n": 111,
+     "predicted": 0.5248,
+     "actual": 0.5225,
+     "error": -0.0023
+    },
+    {
+     "range": [
+      0.55,
+      0.6
+     ],
+     "n": 88,
+     "predicted": 0.5734,
+     "actual": 0.6364,
+     "error": 0.063
+    },
+    {
+     "range": [
+      0.6,
+      0.65
+     ],
+     "n": 42,
+     "predicted": 0.6208,
+     "actual": 0.5714,
+     "error": -0.0493
+    },
+    {
+     "range": [
+      0.65,
+      0.7
+     ],
+     "n": 21,
+     "predicted": 0.6728,
+     "actual": 0.8571,
+     "error": 0.1843
+    },
+    {
+     "range": [
+      0.7,
+      1
+     ],
+     "n": 4,
+     "predicted": 0.7173,
+     "actual": 0.75,
+     "error": 0.0327
+    }
+   ]
+  },
+  "odds": {
+   "n": 266,
+   "final": {
+    "n": 266,
+    "logLoss": 0.661,
+    "brier": 0.2344,
+    "slope": 1.472,
+    "intercept": 0.013,
+    "accuracy": 0.5827,
+    "maxBucketError": 0.0477,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 92,
+      "predicted": 0.5238,
+      "actual": 0.4783,
+      "error": -0.0455
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 101,
+      "predicted": 0.57,
+      "actual": 0.5842,
+      "error": 0.0142
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 52,
+      "predicted": 0.6254,
+      "actual": 0.6731,
+      "error": 0.0477
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 12,
+      "predicted": 0.6751,
+      "actual": 0.6667,
+      "error": -0.0085
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 9,
+      "predicted": 0.724,
+      "actual": 1,
+      "error": 0.276
+     }
+    ]
+   },
+   "model": {
+    "n": 266,
+    "logLoss": 0.6705,
+    "brier": 0.2389,
+    "slope": 1.909,
+    "intercept": -0.118,
+    "accuracy": 0.5902,
+    "maxBucketError": 0.0262,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 134,
+      "predicted": 0.526,
+      "actual": 0.5522,
+      "error": 0.0262
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 95,
+      "predicted": 0.5722,
+      "actual": 0.5895,
+      "error": 0.0173
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 27,
+      "predicted": 0.6234,
+      "actual": 0.6667,
+      "error": 0.0433
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 10,
+      "predicted": 0.6656,
+      "actual": 0.9,
+      "error": 0.2344
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 266,
+    "logLoss": 0.6682,
+    "brier": 0.2379,
+    "slope": 1.285,
+    "intercept": 0.06,
+    "accuracy": 0.5977,
+    "maxBucketError": 0.063,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 111,
+      "predicted": 0.5248,
+      "actual": 0.5225,
+      "error": -0.0023
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 88,
+      "predicted": 0.5734,
+      "actual": 0.6364,
+      "error": 0.063
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 42,
+      "predicted": 0.6208,
+      "actual": 0.5714,
+      "error": -0.0493
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 21,
+      "predicted": 0.6728,
+      "actual": 0.8571,
+      "error": 0.1843
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 4,
+      "predicted": 0.7173,
+      "actual": 0.75,
+      "error": 0.0327
+     }
+    ]
+   },
+   "market": {
+    "n": 266,
+    "logLoss": 0.661,
+    "brier": 0.2344,
+    "slope": 1.472,
+    "intercept": 0.013,
+    "accuracy": 0.5827,
+    "maxBucketError": 0.0477,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 92,
+      "predicted": 0.5238,
+      "actual": 0.4783,
+      "error": -0.0455
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 101,
+      "predicted": 0.57,
+      "actual": 0.5842,
+      "error": 0.0142
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 52,
+      "predicted": 0.6254,
+      "actual": 0.6731,
+      "error": 0.0477
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 12,
+      "predicted": 0.6751,
+      "actual": 0.6667,
+      "error": -0.0085
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 9,
+      "predicted": 0.724,
+      "actual": 1,
+      "error": 0.276
+     }
+    ]
+   }
+  },
+  "bets": {
+   "n": 0,
+   "units": 0,
+   "roiFlat": null,
+   "roiKelly": null,
+   "bankrollReturn": 0,
+   "avgClv": null,
+   "clvN": 0
+  },
+  "leans": {
+   "clvN": 266,
+   "avgClv": 0.00547
+  }
+ },
+ "oddsTotals": {
+  "games": 2351,
+  "open": 2351,
+  "close": 2351,
+  "anyPrice": 2351
+ },
+ "oddsByMonth": {
+  "202603": {
+   "games": 76,
+   "open": 76,
+   "close": 76,
+   "anyPrice": 76,
+   "none": 0
+  },
+  "202604": {
+   "games": 392,
+   "open": 392,
+   "close": 392,
+   "anyPrice": 392,
+   "none": 0
+  },
+  "202605": {
+   "games": 419,
+   "open": 419,
+   "close": 419,
+   "anyPrice": 419,
+   "none": 0
+  },
+  "202606": {
+   "games": 394,
+   "open": 394,
+   "close": 394,
+   "anyPrice": 394,
+   "none": 0
+  },
+  "202607": {
+   "games": 372,
+   "open": 372,
+   "close": 372,
+   "anyPrice": 372,
+   "none": 0
+  },
+  "202608": {
+   "games": 417,
+   "open": 417,
+   "close": 417,
+   "anyPrice": 417,
+   "none": 0
+  },
+  "202609": {
+   "games": 281,
+   "open": 281,
+   "close": 281,
+   "anyPrice": 281,
+   "none": 0
+  }
+ },
+ "coverage": {
+  "scheduled": 2374,
+  "completed": 2351,
+  "predicted": 2351,
+  "missing": []
+ },
+ "calibrator": {
+  "version": 60,
+  "calibrator": {
+   "method": "platt",
+   "params": {
+    "a": 0.10332152597896556,
+    "b": 0.7245233877025994
+   },
+   "n": 786,
+   "fitDate": "2026-09-13T16:09:00.000Z",
+   "window": 60,
+   "halfLife": 21,
+   "gate": {
+    "heldOut": "last 14 days",
+    "nHeldOut": 170,
+    "candidateLogLoss": 0.66524,
+    "incumbentLogLoss": 0.66308,
+    "candidateMethod": "platt",
+    "incumbentMethod": "platt"
+   }
+  },
+  "w": 1,
+  "wOpt": 1,
+  "capTightened": true,
+  "cap": [
+   0.42,
+   0.6
+  ],
+  "paused": true,
+  "pausedSince": "20260629",
+  "stepdown": false,
+  "lastStepDate": null,
+  "badDays": 33,
+  "goodDays": 0,
+  "inRangeDays": 0,
+  "modelConfig": {
+   "version": "cfg-1cf05144",
+   "featureSet": "elo",
+   "hl": 30,
+   "members": "elo",
+   "lambda": 10,
+   "trainHl": 60,
+   "calMethod": "platt",
+   "calWindow": 60,
+   "w0": 0.7
+  },
+  "driftStatus": "red",
+  "driftReasons": [
+   "slope 2.424 outside 0.7–1.3",
+   "paused: no edge vs market",
+   "14-day model Brier 0.2325 > market 0.231",
+   "bucket error 0.0539 > 0.05"
+  ],
+  "lastRefit": "2026-09-23T17:09:00.000Z",
+  "lastRefitDate": "20260923",
+  "metrics": {
+   "n": 170,
+   "brier": 0.231,
+   "logLoss": 0.6539,
+   "modelBrier14": 0.2325,
+   "slope": 2.424,
+   "slopeSE": 0.696,
+   "maxBucketError": 0.0539,
+   "oddsN": 170,
+   "modelBrierOdds": 0.2325,
+   "marketBrierOdds": 0.231
+  },
+  "wFloor": 1
+ }
+}

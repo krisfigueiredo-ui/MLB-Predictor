@@ -1,0 +1,3764 @@
+{
+ "generatedAt": "2026-09-23T02:59:56.383Z",
+ "baseline": "market favorite at the de-vigged market probability (games with real odds only)",
+ "frozen_pregame": {
+  "overall": {
+   "n": 0,
+   "final": {
+    "n": 0,
+    "logLoss": null,
+    "brier": null,
+    "slope": null,
+    "intercept": null,
+    "accuracy": null,
+    "maxBucketError": null,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "model": {
+    "n": 0,
+    "logLoss": null,
+    "brier": null,
+    "slope": null,
+    "intercept": null,
+    "accuracy": null,
+    "maxBucketError": null,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 0,
+    "logLoss": null,
+    "brier": null,
+    "slope": null,
+    "intercept": null,
+    "accuracy": null,
+    "maxBucketError": null,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "odds": {
+    "n": 0,
+    "final": {
+     "n": 0,
+     "logLoss": null,
+     "brier": null,
+     "slope": null,
+     "intercept": null,
+     "accuracy": null,
+     "maxBucketError": null,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "model": {
+     "n": 0,
+     "logLoss": null,
+     "brier": null,
+     "slope": null,
+     "intercept": null,
+     "accuracy": null,
+     "maxBucketError": null,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "raw": {
+     "n": 0,
+     "logLoss": null,
+     "brier": null,
+     "slope": null,
+     "intercept": null,
+     "accuracy": null,
+     "maxBucketError": null,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "market": {
+     "n": 0,
+     "logLoss": null,
+     "brier": null,
+     "slope": null,
+     "intercept": null,
+     "accuracy": null,
+     "maxBucketError": null,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    }
+   },
+   "bets": {
+    "n": 0,
+    "units": 0,
+    "roiFlat": null,
+    "roiKelly": null,
+    "bankrollReturn": 0,
+    "avgClv": null,
+    "clvN": 0
+   },
+   "leans": {
+    "clvN": 0,
+    "avgClv": null
+   }
+  },
+  "rolling14": []
+ },
+ "backfill_walkforward": {
+  "overall": {
+   "n": 2351,
+   "final": {
+    "n": 2351,
+    "logLoss": 0.6811,
+    "brier": 0.2441,
+    "slope": 1.068,
+    "intercept": 0.005,
+    "accuracy": 0.5598,
+    "maxBucketError": 0.0262,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1166,
+      "predicted": 0.5243,
+      "actual": 0.524,
+      "error": -0.0003
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 817,
+      "predicted": 0.5714,
+      "actual": 0.5741,
+      "error": 0.0027
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 278,
+      "predicted": 0.6193,
+      "actual": 0.6115,
+      "error": -0.0078
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 73,
+      "predicted": 0.6724,
+      "actual": 0.6986,
+      "error": 0.0262
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 17,
+      "predicted": 0.7189,
+      "actual": 0.8824,
+      "error": 0.1635
+     }
+    ]
+   },
+   "model": {
+    "n": 2351,
+    "logLoss": 0.6855,
+    "brier": 0.2462,
+    "slope": 1.276,
+    "intercept": -0.012,
+    "accuracy": 0.5589,
+    "maxBucketError": 0.0488,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1607,
+      "predicted": 0.5247,
+      "actual": 0.5445,
+      "error": 0.0198
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 633,
+      "predicted": 0.568,
+      "actual": 0.5845,
+      "error": 0.0165
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 95,
+      "predicted": 0.6172,
+      "actual": 0.5684,
+      "error": -0.0488
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 16,
+      "predicted": 0.6627,
+      "actual": 0.9375,
+      "error": 0.2748
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 0,
+      "predicted": null,
+      "actual": null,
+      "error": null
+     }
+    ]
+   },
+   "raw": {
+    "n": 2351,
+    "logLoss": 0.6852,
+    "brier": 0.2461,
+    "slope": 0.789,
+    "intercept": 0.018,
+    "accuracy": 0.5564,
+    "maxBucketError": 0.0458,
+    "buckets": [
+     {
+      "range": [
+       0.5,
+       0.55
+      ],
+      "n": 1057,
+      "predicted": 0.5248,
+      "actual": 0.5289,
+      "error": 0.004
+     },
+     {
+      "range": [
+       0.55,
+       0.6
+      ],
+      "n": 828,
+      "predicted": 0.573,
+      "actual": 0.5664,
+      "error": -0.0066
+     },
+     {
+      "range": [
+       0.6,
+       0.65
+      ],
+      "n": 323,
+      "predicted": 0.6185,
+      "actual": 0.5728,
+      "error": -0.0458
+     },
+     {
+      "range": [
+       0.65,
+       0.7
+      ],
+      "n": 117,
+      "predicted": 0.667,
+      "actual": 0.6581,
+      "error": -0.0089
+     },
+     {
+      "range": [
+       0.7,
+       1
+      ],
+      "n": 26,
+      "predicted": 0.7215,
+      "actual": 0.6923,
+      "error": -0.0292
+     }
+    ]
+   },
+   "odds": {
+    "n": 2351,
+    "final": {
+     "n": 2351,
+     "logLoss": 0.6811,
+     "brier": 0.2441,
+     "slope": 1.068,
+     "intercept": 0.005,
+     "accuracy": 0.5598,
+     "maxBucketError": 0.0262,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 1166,
+       "predicted": 0.5243,
+       "actual": 0.524,
+       "error": -0.0003
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 817,
+       "predicted": 0.5714,
+       "actual": 0.5741,
+       "error": 0.0027
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 278,
+       "predicted": 0.6193,
+       "actual": 0.6115,
+       "error": -0.0078
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 73,
+       "predicted": 0.6724,
+       "actual": 0.6986,
+       "error": 0.0262
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 17,
+       "predicted": 0.7189,
+       "actual": 0.8824,
+       "error": 0.1635
+      }
+     ]
+    },
+    "model": {
+     "n": 2351,
+     "logLoss": 0.6855,
+     "brier": 0.2462,
+     "slope": 1.276,
+     "intercept": -0.012,
+     "accuracy": 0.5589,
+     "maxBucketError": 0.0488,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 1607,
+       "predicted": 0.5247,
+       "actual": 0.5445,
+       "error": 0.0198
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 633,
+       "predicted": 0.568,
+       "actual": 0.5845,
+       "error": 0.0165
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 95,
+       "predicted": 0.6172,
+       "actual": 0.5684,
+       "error": -0.0488
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 16,
+       "predicted": 0.6627,
+       "actual": 0.9375,
+       "error": 0.2748
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "raw": {
+     "n": 2351,
+     "logLoss": 0.6852,
+     "brier": 0.2461,
+     "slope": 0.789,
+     "intercept": 0.018,
+     "accuracy": 0.5564,
+     "maxBucketError": 0.0458,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 1057,
+       "predicted": 0.5248,
+       "actual": 0.5289,
+       "error": 0.004
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 828,
+       "predicted": 0.573,
+       "actual": 0.5664,
+       "error": -0.0066
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 323,
+       "predicted": 0.6185,
+       "actual": 0.5728,
+       "error": -0.0458
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 117,
+       "predicted": 0.667,
+       "actual": 0.6581,
+       "error": -0.0089
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 26,
+       "predicted": 0.7215,
+       "actual": 0.6923,
+       "error": -0.0292
+      }
+     ]
+    },
+    "market": {
+     "n": 2351,
+     "logLoss": 0.6813,
+     "brier": 0.2442,
+     "slope": 0.955,
+     "intercept": 0.016,
+     "accuracy": 0.5581,
+     "maxBucketError": 0.0206,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 1007,
+       "predicted": 0.5231,
+       "actual": 0.5134,
+       "error": -0.0097
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 891,
+       "predicted": 0.5715,
+       "actual": 0.5679,
+       "error": -0.0036
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 337,
+       "predicted": 0.6216,
+       "actual": 0.6113,
+       "error": -0.0103
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 88,
+       "predicted": 0.6725,
+       "actual": 0.6932,
+       "error": 0.0206
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 28,
+       "predicted": 0.7197,
+       "actual": 0.7857,
+       "error": 0.066
+      }
+     ]
+    }
+   },
+   "bets": {
+    "n": 160,
+    "units": 4.38,
+    "roiFlat": 0.0274,
+    "roiKelly": 0.0062,
+    "bankrollReturn": 0.0099,
+    "avgClv": 0.00936,
+    "clvN": 160
+   },
+   "leans": {
+    "clvN": 2351,
+    "avgClv": 0.00386
+   }
+  },
+  "rolling14": [
+   {
+    "date": "20260325",
+    "n": 1,
+    "brier": 0.2378,
+    "logLoss": 0.6687,
+    "oddsN": 1,
+    "brierOdds": 0.2378,
+    "marketBrier": 0.2362,
+    "logLossOdds": 0.6687,
+    "marketLogLoss": 0.6655
+   },
+   {
+    "date": "20260326",
+    "n": 12,
+    "brier": 0.2394,
+    "logLoss": 0.672,
+    "oddsN": 12,
+    "brierOdds": 0.2394,
+    "marketBrier": 0.2367,
+    "logLossOdds": 0.672,
+    "marketLogLoss": 0.6666
+   },
+   {
+    "date": "20260327",
+    "n": 20,
+    "brier": 0.227,
+    "logLoss": 0.6467,
+    "oddsN": 20,
+    "brierOdds": 0.227,
+    "marketBrier": 0.2216,
+    "logLossOdds": 0.6467,
+    "marketLogLoss": 0.6357
+   },
+   {
+    "date": "20260328",
+    "n": 35,
+    "brier": 0.2242,
+    "logLoss": 0.6409,
+    "oddsN": 35,
+    "brierOdds": 0.2242,
+    "marketBrier": 0.2205,
+    "logLossOdds": 0.6409,
+    "marketLogLoss": 0.6331
+   },
+   {
+    "date": "20260329",
+    "n": 47,
+    "brier": 0.2303,
+    "logLoss": 0.6534,
+    "oddsN": 47,
+    "brierOdds": 0.2303,
+    "marketBrier": 0.2281,
+    "logLossOdds": 0.6534,
+    "marketLogLoss": 0.6488
+   },
+   {
+    "date": "20260330",
+    "n": 62,
+    "brier": 0.2393,
+    "logLoss": 0.6718,
+    "oddsN": 62,
+    "brierOdds": 0.2393,
+    "marketBrier": 0.2377,
+    "logLossOdds": 0.6718,
+    "marketLogLoss": 0.6686
+   },
+   {
+    "date": "20260331",
+    "n": 76,
+    "brier": 0.2353,
+    "logLoss": 0.6635,
+    "oddsN": 76,
+    "brierOdds": 0.2353,
+    "marketBrier": 0.2341,
+    "logLossOdds": 0.6635,
+    "marketLogLoss": 0.6609
+   },
+   {
+    "date": "20260401",
+    "n": 91,
+    "brier": 0.2396,
+    "logLoss": 0.6726,
+    "oddsN": 91,
+    "brierOdds": 0.2396,
+    "marketBrier": 0.2386,
+    "logLossOdds": 0.6726,
+    "marketLogLoss": 0.6704
+   },
+   {
+    "date": "20260402",
+    "n": 94,
+    "brier": 0.241,
+    "logLoss": 0.6753,
+    "oddsN": 94,
+    "brierOdds": 0.241,
+    "marketBrier": 0.24,
+    "logLossOdds": 0.6753,
+    "marketLogLoss": 0.6733
+   },
+   {
+    "date": "20260403",
+    "n": 108,
+    "brier": 0.2392,
+    "logLoss": 0.6717,
+    "oddsN": 108,
+    "brierOdds": 0.2392,
+    "marketBrier": 0.2383,
+    "logLossOdds": 0.6717,
+    "marketLogLoss": 0.6696
+   },
+   {
+    "date": "20260404",
+    "n": 123,
+    "brier": 0.2393,
+    "logLoss": 0.6715,
+    "oddsN": 123,
+    "brierOdds": 0.2393,
+    "marketBrier": 0.2384,
+    "logLossOdds": 0.6715,
+    "marketLogLoss": 0.6696
+   },
+   {
+    "date": "20260405",
+    "n": 139,
+    "brier": 0.2451,
+    "logLoss": 0.6835,
+    "oddsN": 139,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.2443,
+    "logLossOdds": 0.6835,
+    "marketLogLoss": 0.6818
+   },
+   {
+    "date": "20260406",
+    "n": 152,
+    "brier": 0.2464,
+    "logLoss": 0.6861,
+    "oddsN": 152,
+    "brierOdds": 0.2464,
+    "marketBrier": 0.2457,
+    "logLossOdds": 0.6861,
+    "marketLogLoss": 0.6846
+   },
+   {
+    "date": "20260407",
+    "n": 167,
+    "brier": 0.246,
+    "logLoss": 0.6852,
+    "oddsN": 167,
+    "brierOdds": 0.246,
+    "marketBrier": 0.2454,
+    "logLossOdds": 0.6852,
+    "marketLogLoss": 0.6839
+   },
+   {
+    "date": "20260408",
+    "n": 182,
+    "brier": 0.248,
+    "logLoss": 0.6893,
+    "oddsN": 182,
+    "brierOdds": 0.248,
+    "marketBrier": 0.248,
+    "logLossOdds": 0.6893,
+    "marketLogLoss": 0.6892
+   },
+   {
+    "date": "20260409",
+    "n": 178,
+    "brier": 0.2496,
+    "logLoss": 0.6924,
+    "oddsN": 178,
+    "brierOdds": 0.2496,
+    "marketBrier": 0.2502,
+    "logLossOdds": 0.6924,
+    "marketLogLoss": 0.6936
+   },
+   {
+    "date": "20260410",
+    "n": 187,
+    "brier": 0.2516,
+    "logLoss": 0.6966,
+    "oddsN": 187,
+    "brierOdds": 0.2516,
+    "marketBrier": 0.2529,
+    "logLossOdds": 0.6966,
+    "marketLogLoss": 0.6991
+   },
+   {
+    "date": "20260411",
+    "n": 186,
+    "brier": 0.2538,
+    "logLoss": 0.701,
+    "oddsN": 186,
+    "brierOdds": 0.2538,
+    "marketBrier": 0.2555,
+    "logLossOdds": 0.701,
+    "marketLogLoss": 0.7045
+   },
+   {
+    "date": "20260412",
+    "n": 186,
+    "brier": 0.2545,
+    "logLoss": 0.7025,
+    "oddsN": 186,
+    "brierOdds": 0.2545,
+    "marketBrier": 0.2557,
+    "logLossOdds": 0.7025,
+    "marketLogLoss": 0.7048
+   },
+   {
+    "date": "20260413",
+    "n": 186,
+    "brier": 0.2517,
+    "logLoss": 0.6967,
+    "oddsN": 186,
+    "brierOdds": 0.2517,
+    "marketBrier": 0.2525,
+    "logLossOdds": 0.6967,
+    "marketLogLoss": 0.6982
+   },
+   {
+    "date": "20260414",
+    "n": 187,
+    "brier": 0.2522,
+    "logLoss": 0.6978,
+    "oddsN": 187,
+    "brierOdds": 0.2522,
+    "marketBrier": 0.2534,
+    "logLossOdds": 0.6978,
+    "marketLogLoss": 0.7
+   },
+   {
+    "date": "20260415",
+    "n": 183,
+    "brier": 0.2513,
+    "logLoss": 0.6958,
+    "oddsN": 183,
+    "brierOdds": 0.2513,
+    "marketBrier": 0.2526,
+    "logLossOdds": 0.6958,
+    "marketLogLoss": 0.6983
+   },
+   {
+    "date": "20260416",
+    "n": 191,
+    "brier": 0.2513,
+    "logLoss": 0.6958,
+    "oddsN": 191,
+    "brierOdds": 0.2513,
+    "marketBrier": 0.2529,
+    "logLossOdds": 0.6958,
+    "marketLogLoss": 0.699
+   },
+   {
+    "date": "20260417",
+    "n": 194,
+    "brier": 0.2516,
+    "logLoss": 0.6965,
+    "oddsN": 194,
+    "brierOdds": 0.2516,
+    "marketBrier": 0.2526,
+    "logLossOdds": 0.6965,
+    "marketLogLoss": 0.6983
+   },
+   {
+    "date": "20260418",
+    "n": 193,
+    "brier": 0.253,
+    "logLoss": 0.6994,
+    "oddsN": 193,
+    "brierOdds": 0.253,
+    "marketBrier": 0.2544,
+    "logLossOdds": 0.6994,
+    "marketLogLoss": 0.7023
+   },
+   {
+    "date": "20260419",
+    "n": 189,
+    "brier": 0.2513,
+    "logLoss": 0.6959,
+    "oddsN": 189,
+    "brierOdds": 0.2513,
+    "marketBrier": 0.2536,
+    "logLossOdds": 0.6959,
+    "marketLogLoss": 0.7007
+   },
+   {
+    "date": "20260420",
+    "n": 190,
+    "brier": 0.2509,
+    "logLoss": 0.6951,
+    "oddsN": 190,
+    "brierOdds": 0.2509,
+    "marketBrier": 0.2527,
+    "logLossOdds": 0.6951,
+    "marketLogLoss": 0.6988
+   },
+   {
+    "date": "20260421",
+    "n": 190,
+    "brier": 0.2528,
+    "logLoss": 0.6988,
+    "oddsN": 190,
+    "brierOdds": 0.2528,
+    "marketBrier": 0.2554,
+    "logLossOdds": 0.6988,
+    "marketLogLoss": 0.7044
+   },
+   {
+    "date": "20260422",
+    "n": 186,
+    "brier": 0.2493,
+    "logLoss": 0.6917,
+    "oddsN": 186,
+    "brierOdds": 0.2493,
+    "marketBrier": 0.2506,
+    "logLossOdds": 0.6917,
+    "marketLogLoss": 0.6946
+   },
+   {
+    "date": "20260423",
+    "n": 190,
+    "brier": 0.2461,
+    "logLoss": 0.6853,
+    "oddsN": 190,
+    "brierOdds": 0.2461,
+    "marketBrier": 0.2465,
+    "logLossOdds": 0.6853,
+    "marketLogLoss": 0.6863
+   },
+   {
+    "date": "20260424",
+    "n": 192,
+    "brier": 0.2451,
+    "logLoss": 0.6833,
+    "oddsN": 192,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.245,
+    "logLossOdds": 0.6833,
+    "marketLogLoss": 0.6833
+   },
+   {
+    "date": "20260425",
+    "n": 190,
+    "brier": 0.2444,
+    "logLoss": 0.682,
+    "oddsN": 190,
+    "brierOdds": 0.2444,
+    "marketBrier": 0.2438,
+    "logLossOdds": 0.682,
+    "marketLogLoss": 0.6809
+   },
+   {
+    "date": "20260426",
+    "n": 188,
+    "brier": 0.2457,
+    "logLoss": 0.6846,
+    "oddsN": 188,
+    "brierOdds": 0.2457,
+    "marketBrier": 0.2456,
+    "logLossOdds": 0.6846,
+    "marketLogLoss": 0.6847
+   },
+   {
+    "date": "20260427",
+    "n": 188,
+    "brier": 0.2471,
+    "logLoss": 0.6874,
+    "oddsN": 188,
+    "brierOdds": 0.2471,
+    "marketBrier": 0.2471,
+    "logLossOdds": 0.6874,
+    "marketLogLoss": 0.6877
+   },
+   {
+    "date": "20260428",
+    "n": 190,
+    "brier": 0.2459,
+    "logLoss": 0.685,
+    "oddsN": 190,
+    "brierOdds": 0.2459,
+    "marketBrier": 0.2461,
+    "logLossOdds": 0.685,
+    "marketLogLoss": 0.6857
+   },
+   {
+    "date": "20260429",
+    "n": 188,
+    "brier": 0.2501,
+    "logLoss": 0.6935,
+    "oddsN": 188,
+    "brierOdds": 0.2501,
+    "marketBrier": 0.2507,
+    "logLossOdds": 0.6935,
+    "marketLogLoss": 0.6951
+   },
+   {
+    "date": "20260430",
+    "n": 187,
+    "brier": 0.2506,
+    "logLoss": 0.6945,
+    "oddsN": 187,
+    "brierOdds": 0.2506,
+    "marketBrier": 0.2517,
+    "logLossOdds": 0.6945,
+    "marketLogLoss": 0.6973
+   },
+   {
+    "date": "20260501",
+    "n": 192,
+    "brier": 0.2501,
+    "logLoss": 0.6936,
+    "oddsN": 192,
+    "brierOdds": 0.2501,
+    "marketBrier": 0.2512,
+    "logLossOdds": 0.6936,
+    "marketLogLoss": 0.6962
+   },
+   {
+    "date": "20260502",
+    "n": 188,
+    "brier": 0.2499,
+    "logLoss": 0.6931,
+    "oddsN": 188,
+    "brierOdds": 0.2499,
+    "marketBrier": 0.2518,
+    "logLossOdds": 0.6931,
+    "marketLogLoss": 0.6975
+   },
+   {
+    "date": "20260503",
+    "n": 185,
+    "brier": 0.2462,
+    "logLoss": 0.6856,
+    "oddsN": 185,
+    "brierOdds": 0.2462,
+    "marketBrier": 0.2462,
+    "logLossOdds": 0.6856,
+    "marketLogLoss": 0.6858
+   },
+   {
+    "date": "20260504",
+    "n": 190,
+    "brier": 0.2457,
+    "logLoss": 0.6847,
+    "oddsN": 190,
+    "brierOdds": 0.2457,
+    "marketBrier": 0.246,
+    "logLossOdds": 0.6847,
+    "marketLogLoss": 0.6854
+   },
+   {
+    "date": "20260505",
+    "n": 191,
+    "brier": 0.246,
+    "logLoss": 0.6853,
+    "oddsN": 191,
+    "brierOdds": 0.246,
+    "marketBrier": 0.2473,
+    "logLossOdds": 0.6853,
+    "marketLogLoss": 0.6881
+   },
+   {
+    "date": "20260506",
+    "n": 189,
+    "brier": 0.2457,
+    "logLoss": 0.6846,
+    "oddsN": 189,
+    "brierOdds": 0.2457,
+    "marketBrier": 0.2467,
+    "logLossOdds": 0.6846,
+    "marketLogLoss": 0.6868
+   },
+   {
+    "date": "20260507",
+    "n": 187,
+    "brier": 0.2465,
+    "logLoss": 0.6861,
+    "oddsN": 187,
+    "brierOdds": 0.2465,
+    "marketBrier": 0.2477,
+    "logLossOdds": 0.6861,
+    "marketLogLoss": 0.6889
+   },
+   {
+    "date": "20260508",
+    "n": 192,
+    "brier": 0.2472,
+    "logLoss": 0.6876,
+    "oddsN": 192,
+    "brierOdds": 0.2472,
+    "marketBrier": 0.2484,
+    "logLossOdds": 0.6876,
+    "marketLogLoss": 0.6902
+   },
+   {
+    "date": "20260509",
+    "n": 187,
+    "brier": 0.247,
+    "logLoss": 0.6871,
+    "oddsN": 187,
+    "brierOdds": 0.247,
+    "marketBrier": 0.2486,
+    "logLossOdds": 0.6871,
+    "marketLogLoss": 0.6907
+   },
+   {
+    "date": "20260510",
+    "n": 186,
+    "brier": 0.246,
+    "logLoss": 0.6852,
+    "oddsN": 186,
+    "brierOdds": 0.246,
+    "marketBrier": 0.2471,
+    "logLossOdds": 0.6852,
+    "marketLogLoss": 0.6875
+   },
+   {
+    "date": "20260511",
+    "n": 187,
+    "brier": 0.2462,
+    "logLoss": 0.6854,
+    "oddsN": 187,
+    "brierOdds": 0.2462,
+    "marketBrier": 0.2472,
+    "logLossOdds": 0.6854,
+    "marketLogLoss": 0.6877
+   },
+   {
+    "date": "20260512",
+    "n": 188,
+    "brier": 0.2476,
+    "logLoss": 0.6884,
+    "oddsN": 188,
+    "brierOdds": 0.2476,
+    "marketBrier": 0.2489,
+    "logLossOdds": 0.6884,
+    "marketLogLoss": 0.6911
+   },
+   {
+    "date": "20260513",
+    "n": 187,
+    "brier": 0.245,
+    "logLoss": 0.6831,
+    "oddsN": 187,
+    "brierOdds": 0.245,
+    "marketBrier": 0.2455,
+    "logLossOdds": 0.6831,
+    "marketLogLoss": 0.6841
+   },
+   {
+    "date": "20260514",
+    "n": 186,
+    "brier": 0.2433,
+    "logLoss": 0.6795,
+    "oddsN": 186,
+    "brierOdds": 0.2433,
+    "marketBrier": 0.2426,
+    "logLossOdds": 0.6795,
+    "marketLogLoss": 0.6782
+   },
+   {
+    "date": "20260515",
+    "n": 193,
+    "brier": 0.2438,
+    "logLoss": 0.6807,
+    "oddsN": 193,
+    "brierOdds": 0.2438,
+    "marketBrier": 0.2438,
+    "logLossOdds": 0.6807,
+    "marketLogLoss": 0.6806
+   },
+   {
+    "date": "20260516",
+    "n": 190,
+    "brier": 0.2449,
+    "logLoss": 0.6828,
+    "oddsN": 190,
+    "brierOdds": 0.2449,
+    "marketBrier": 0.2448,
+    "logLossOdds": 0.6828,
+    "marketLogLoss": 0.6825
+   },
+   {
+    "date": "20260517",
+    "n": 186,
+    "brier": 0.2454,
+    "logLoss": 0.6838,
+    "oddsN": 186,
+    "brierOdds": 0.2454,
+    "marketBrier": 0.2452,
+    "logLossOdds": 0.6838,
+    "marketLogLoss": 0.6833
+   },
+   {
+    "date": "20260518",
+    "n": 192,
+    "brier": 0.2461,
+    "logLoss": 0.6851,
+    "oddsN": 192,
+    "brierOdds": 0.2461,
+    "marketBrier": 0.2462,
+    "logLossOdds": 0.6851,
+    "marketLogLoss": 0.6853
+   },
+   {
+    "date": "20260519",
+    "n": 195,
+    "brier": 0.2465,
+    "logLoss": 0.686,
+    "oddsN": 195,
+    "brierOdds": 0.2465,
+    "marketBrier": 0.2468,
+    "logLossOdds": 0.686,
+    "marketLogLoss": 0.6866
+   },
+   {
+    "date": "20260520",
+    "n": 192,
+    "brier": 0.2451,
+    "logLoss": 0.6832,
+    "oddsN": 192,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.2447,
+    "logLossOdds": 0.6832,
+    "marketLogLoss": 0.6822
+   },
+   {
+    "date": "20260521",
+    "n": 188,
+    "brier": 0.2452,
+    "logLoss": 0.6835,
+    "oddsN": 188,
+    "brierOdds": 0.2452,
+    "marketBrier": 0.2452,
+    "logLossOdds": 0.6835,
+    "marketLogLoss": 0.6833
+   },
+   {
+    "date": "20260522",
+    "n": 191,
+    "brier": 0.2461,
+    "logLoss": 0.6852,
+    "oddsN": 191,
+    "brierOdds": 0.2461,
+    "marketBrier": 0.2464,
+    "logLossOdds": 0.6852,
+    "marketLogLoss": 0.6857
+   },
+   {
+    "date": "20260523",
+    "n": 188,
+    "brier": 0.2481,
+    "logLoss": 0.6892,
+    "oddsN": 188,
+    "brierOdds": 0.2481,
+    "marketBrier": 0.2488,
+    "logLossOdds": 0.6892,
+    "marketLogLoss": 0.6907
+   },
+   {
+    "date": "20260524",
+    "n": 186,
+    "brier": 0.2494,
+    "logLoss": 0.692,
+    "oddsN": 186,
+    "brierOdds": 0.2494,
+    "marketBrier": 0.2507,
+    "logLossOdds": 0.692,
+    "marketLogLoss": 0.6945
+   },
+   {
+    "date": "20260525",
+    "n": 196,
+    "brier": 0.2494,
+    "logLoss": 0.6918,
+    "oddsN": 196,
+    "brierOdds": 0.2494,
+    "marketBrier": 0.2507,
+    "logLossOdds": 0.6918,
+    "marketLogLoss": 0.6944
+   },
+   {
+    "date": "20260526",
+    "n": 197,
+    "brier": 0.249,
+    "logLoss": 0.691,
+    "oddsN": 197,
+    "brierOdds": 0.249,
+    "marketBrier": 0.2503,
+    "logLossOdds": 0.691,
+    "marketLogLoss": 0.6937
+   },
+   {
+    "date": "20260527",
+    "n": 197,
+    "brier": 0.2449,
+    "logLoss": 0.6827,
+    "oddsN": 197,
+    "brierOdds": 0.2449,
+    "marketBrier": 0.2449,
+    "logLossOdds": 0.6827,
+    "marketLogLoss": 0.6824
+   },
+   {
+    "date": "20260528",
+    "n": 189,
+    "brier": 0.2474,
+    "logLoss": 0.6878,
+    "oddsN": 189,
+    "brierOdds": 0.2474,
+    "marketBrier": 0.2485,
+    "logLossOdds": 0.6878,
+    "marketLogLoss": 0.6898
+   },
+   {
+    "date": "20260529",
+    "n": 194,
+    "brier": 0.2466,
+    "logLoss": 0.6861,
+    "oddsN": 194,
+    "brierOdds": 0.2466,
+    "marketBrier": 0.2476,
+    "logLossOdds": 0.6861,
+    "marketLogLoss": 0.688
+   },
+   {
+    "date": "20260530",
+    "n": 190,
+    "brier": 0.2472,
+    "logLoss": 0.6874,
+    "oddsN": 190,
+    "brierOdds": 0.2472,
+    "marketBrier": 0.2482,
+    "logLossOdds": 0.6874,
+    "marketLogLoss": 0.6892
+   },
+   {
+    "date": "20260531",
+    "n": 188,
+    "brier": 0.245,
+    "logLoss": 0.6829,
+    "oddsN": 188,
+    "brierOdds": 0.245,
+    "marketBrier": 0.2452,
+    "logLossOdds": 0.6829,
+    "marketLogLoss": 0.6831
+   },
+   {
+    "date": "20260601",
+    "n": 188,
+    "brier": 0.2468,
+    "logLoss": 0.6865,
+    "oddsN": 188,
+    "brierOdds": 0.2468,
+    "marketBrier": 0.2474,
+    "logLossOdds": 0.6865,
+    "marketLogLoss": 0.6876
+   },
+   {
+    "date": "20260602",
+    "n": 188,
+    "brier": 0.247,
+    "logLoss": 0.687,
+    "oddsN": 188,
+    "brierOdds": 0.247,
+    "marketBrier": 0.2474,
+    "logLossOdds": 0.687,
+    "marketLogLoss": 0.6877
+   },
+   {
+    "date": "20260603",
+    "n": 185,
+    "brier": 0.2489,
+    "logLoss": 0.6907,
+    "oddsN": 185,
+    "brierOdds": 0.2489,
+    "marketBrier": 0.2492,
+    "logLossOdds": 0.6907,
+    "marketLogLoss": 0.6912
+   },
+   {
+    "date": "20260604",
+    "n": 187,
+    "brier": 0.2497,
+    "logLoss": 0.6924,
+    "oddsN": 187,
+    "brierOdds": 0.2497,
+    "marketBrier": 0.2502,
+    "logLossOdds": 0.6924,
+    "marketLogLoss": 0.6933
+   },
+   {
+    "date": "20260605",
+    "n": 190,
+    "brier": 0.2497,
+    "logLoss": 0.6924,
+    "oddsN": 190,
+    "brierOdds": 0.2497,
+    "marketBrier": 0.2499,
+    "logLossOdds": 0.6924,
+    "marketLogLoss": 0.6928
+   },
+   {
+    "date": "20260606",
+    "n": 189,
+    "brier": 0.2463,
+    "logLoss": 0.6853,
+    "oddsN": 189,
+    "brierOdds": 0.2463,
+    "marketBrier": 0.2468,
+    "logLossOdds": 0.6853,
+    "marketLogLoss": 0.6862
+   },
+   {
+    "date": "20260607",
+    "n": 186,
+    "brier": 0.2444,
+    "logLoss": 0.6815,
+    "oddsN": 186,
+    "brierOdds": 0.2444,
+    "marketBrier": 0.244,
+    "logLossOdds": 0.6815,
+    "marketLogLoss": 0.6805
+   },
+   {
+    "date": "20260608",
+    "n": 183,
+    "brier": 0.2424,
+    "logLoss": 0.6776,
+    "oddsN": 183,
+    "brierOdds": 0.2424,
+    "marketBrier": 0.2415,
+    "logLossOdds": 0.6776,
+    "marketLogLoss": 0.6755
+   },
+   {
+    "date": "20260609",
+    "n": 186,
+    "brier": 0.2448,
+    "logLoss": 0.6825,
+    "oddsN": 186,
+    "brierOdds": 0.2448,
+    "marketBrier": 0.2446,
+    "logLossOdds": 0.6825,
+    "marketLogLoss": 0.6818
+   },
+   {
+    "date": "20260610",
+    "n": 183,
+    "brier": 0.2491,
+    "logLoss": 0.6911,
+    "oddsN": 183,
+    "brierOdds": 0.2491,
+    "marketBrier": 0.2498,
+    "logLossOdds": 0.6911,
+    "marketLogLoss": 0.6924
+   },
+   {
+    "date": "20260611",
+    "n": 183,
+    "brier": 0.2482,
+    "logLoss": 0.6896,
+    "oddsN": 183,
+    "brierOdds": 0.2482,
+    "marketBrier": 0.2484,
+    "logLossOdds": 0.6896,
+    "marketLogLoss": 0.6897
+   },
+   {
+    "date": "20260612",
+    "n": 188,
+    "brier": 0.2482,
+    "logLoss": 0.6895,
+    "oddsN": 188,
+    "brierOdds": 0.2482,
+    "marketBrier": 0.2475,
+    "logLossOdds": 0.6895,
+    "marketLogLoss": 0.688
+   },
+   {
+    "date": "20260613",
+    "n": 186,
+    "brier": 0.2479,
+    "logLoss": 0.6888,
+    "oddsN": 186,
+    "brierOdds": 0.2479,
+    "marketBrier": 0.2471,
+    "logLossOdds": 0.6888,
+    "marketLogLoss": 0.6871
+   },
+   {
+    "date": "20260614",
+    "n": 181,
+    "brier": 0.2516,
+    "logLoss": 0.6962,
+    "oddsN": 181,
+    "brierOdds": 0.2516,
+    "marketBrier": 0.2523,
+    "logLossOdds": 0.6962,
+    "marketLogLoss": 0.6976
+   },
+   {
+    "date": "20260615",
+    "n": 185,
+    "brier": 0.2492,
+    "logLoss": 0.6914,
+    "oddsN": 185,
+    "brierOdds": 0.2492,
+    "marketBrier": 0.2492,
+    "logLossOdds": 0.6914,
+    "marketLogLoss": 0.6913
+   },
+   {
+    "date": "20260616",
+    "n": 187,
+    "brier": 0.2479,
+    "logLoss": 0.6888,
+    "oddsN": 187,
+    "brierOdds": 0.2479,
+    "marketBrier": 0.2473,
+    "logLossOdds": 0.6888,
+    "marketLogLoss": 0.6874
+   },
+   {
+    "date": "20260617",
+    "n": 185,
+    "brier": 0.2454,
+    "logLoss": 0.6838,
+    "oddsN": 185,
+    "brierOdds": 0.2454,
+    "marketBrier": 0.2443,
+    "logLossOdds": 0.6838,
+    "marketLogLoss": 0.6814
+   },
+   {
+    "date": "20260618",
+    "n": 183,
+    "brier": 0.2455,
+    "logLoss": 0.684,
+    "oddsN": 183,
+    "brierOdds": 0.2455,
+    "marketBrier": 0.2446,
+    "logLossOdds": 0.684,
+    "marketLogLoss": 0.6821
+   },
+   {
+    "date": "20260619",
+    "n": 187,
+    "brier": 0.2424,
+    "logLoss": 0.6775,
+    "oddsN": 187,
+    "brierOdds": 0.2424,
+    "marketBrier": 0.2414,
+    "logLossOdds": 0.6775,
+    "marketLogLoss": 0.6754
+   },
+   {
+    "date": "20260620",
+    "n": 182,
+    "brier": 0.2463,
+    "logLoss": 0.6857,
+    "oddsN": 182,
+    "brierOdds": 0.2463,
+    "marketBrier": 0.2444,
+    "logLossOdds": 0.6857,
+    "marketLogLoss": 0.6818
+   },
+   {
+    "date": "20260621",
+    "n": 179,
+    "brier": 0.2491,
+    "logLoss": 0.6914,
+    "oddsN": 179,
+    "brierOdds": 0.2491,
+    "marketBrier": 0.248,
+    "logLossOdds": 0.6914,
+    "marketLogLoss": 0.6891
+   },
+   {
+    "date": "20260622",
+    "n": 186,
+    "brier": 0.2487,
+    "logLoss": 0.6907,
+    "oddsN": 186,
+    "brierOdds": 0.2487,
+    "marketBrier": 0.2478,
+    "logLossOdds": 0.6907,
+    "marketLogLoss": 0.6888
+   },
+   {
+    "date": "20260623",
+    "n": 187,
+    "brier": 0.2492,
+    "logLoss": 0.6917,
+    "oddsN": 187,
+    "brierOdds": 0.2492,
+    "marketBrier": 0.2479,
+    "logLossOdds": 0.6917,
+    "marketLogLoss": 0.689
+   },
+   {
+    "date": "20260624",
+    "n": 186,
+    "brier": 0.2475,
+    "logLoss": 0.6882,
+    "oddsN": 186,
+    "brierOdds": 0.2475,
+    "marketBrier": 0.246,
+    "logLossOdds": 0.6882,
+    "marketLogLoss": 0.6851
+   },
+   {
+    "date": "20260625",
+    "n": 184,
+    "brier": 0.2485,
+    "logLoss": 0.6903,
+    "oddsN": 184,
+    "brierOdds": 0.2485,
+    "marketBrier": 0.2473,
+    "logLossOdds": 0.6903,
+    "marketLogLoss": 0.6877
+   },
+   {
+    "date": "20260626",
+    "n": 189,
+    "brier": 0.2479,
+    "logLoss": 0.689,
+    "oddsN": 189,
+    "brierOdds": 0.2479,
+    "marketBrier": 0.2472,
+    "logLossOdds": 0.689,
+    "marketLogLoss": 0.6876
+   },
+   {
+    "date": "20260627",
+    "n": 187,
+    "brier": 0.2488,
+    "logLoss": 0.6909,
+    "oddsN": 187,
+    "brierOdds": 0.2488,
+    "marketBrier": 0.248,
+    "logLossOdds": 0.6909,
+    "marketLogLoss": 0.6891
+   },
+   {
+    "date": "20260628",
+    "n": 185,
+    "brier": 0.2484,
+    "logLoss": 0.69,
+    "oddsN": 185,
+    "brierOdds": 0.2484,
+    "marketBrier": 0.2473,
+    "logLossOdds": 0.69,
+    "marketLogLoss": 0.6879
+   },
+   {
+    "date": "20260629",
+    "n": 194,
+    "brier": 0.2476,
+    "logLoss": 0.6883,
+    "oddsN": 194,
+    "brierOdds": 0.2476,
+    "marketBrier": 0.247,
+    "logLossOdds": 0.6883,
+    "marketLogLoss": 0.6871
+   },
+   {
+    "date": "20260630",
+    "n": 195,
+    "brier": 0.2482,
+    "logLoss": 0.6896,
+    "oddsN": 195,
+    "brierOdds": 0.2482,
+    "marketBrier": 0.2476,
+    "logLossOdds": 0.6896,
+    "marketLogLoss": 0.6883
+   },
+   {
+    "date": "20260701",
+    "n": 191,
+    "brier": 0.2492,
+    "logLoss": 0.6916,
+    "oddsN": 191,
+    "brierOdds": 0.2492,
+    "marketBrier": 0.2489,
+    "logLossOdds": 0.6916,
+    "marketLogLoss": 0.691
+   },
+   {
+    "date": "20260702",
+    "n": 190,
+    "brier": 0.2486,
+    "logLoss": 0.6904,
+    "oddsN": 190,
+    "brierOdds": 0.2486,
+    "marketBrier": 0.2485,
+    "logLossOdds": 0.6904,
+    "marketLogLoss": 0.6902
+   },
+   {
+    "date": "20260703",
+    "n": 196,
+    "brier": 0.2483,
+    "logLoss": 0.6898,
+    "oddsN": 196,
+    "brierOdds": 0.2483,
+    "marketBrier": 0.2482,
+    "logLossOdds": 0.6898,
+    "marketLogLoss": 0.6896
+   },
+   {
+    "date": "20260704",
+    "n": 194,
+    "brier": 0.2481,
+    "logLoss": 0.6893,
+    "oddsN": 194,
+    "brierOdds": 0.2481,
+    "marketBrier": 0.248,
+    "logLossOdds": 0.6893,
+    "marketLogLoss": 0.6892
+   },
+   {
+    "date": "20260705",
+    "n": 190,
+    "brier": 0.2466,
+    "logLoss": 0.6861,
+    "oddsN": 190,
+    "brierOdds": 0.2466,
+    "marketBrier": 0.2465,
+    "logLossOdds": 0.6861,
+    "marketLogLoss": 0.686
+   },
+   {
+    "date": "20260706",
+    "n": 189,
+    "brier": 0.2471,
+    "logLoss": 0.6873,
+    "oddsN": 189,
+    "brierOdds": 0.2471,
+    "marketBrier": 0.2471,
+    "logLossOdds": 0.6873,
+    "marketLogLoss": 0.6872
+   },
+   {
+    "date": "20260707",
+    "n": 191,
+    "brier": 0.2452,
+    "logLoss": 0.6834,
+    "oddsN": 191,
+    "brierOdds": 0.2452,
+    "marketBrier": 0.2452,
+    "logLossOdds": 0.6834,
+    "marketLogLoss": 0.6834
+   },
+   {
+    "date": "20260708",
+    "n": 188,
+    "brier": 0.2441,
+    "logLoss": 0.6812,
+    "oddsN": 188,
+    "brierOdds": 0.2441,
+    "marketBrier": 0.2441,
+    "logLossOdds": 0.6812,
+    "marketLogLoss": 0.6812
+   },
+   {
+    "date": "20260709",
+    "n": 191,
+    "brier": 0.2417,
+    "logLoss": 0.6764,
+    "oddsN": 191,
+    "brierOdds": 0.2417,
+    "marketBrier": 0.2417,
+    "logLossOdds": 0.6764,
+    "marketLogLoss": 0.6764
+   },
+   {
+    "date": "20260710",
+    "n": 195,
+    "brier": 0.2445,
+    "logLoss": 0.6821,
+    "oddsN": 195,
+    "brierOdds": 0.2445,
+    "marketBrier": 0.2445,
+    "logLossOdds": 0.6821,
+    "marketLogLoss": 0.6821
+   },
+   {
+    "date": "20260711",
+    "n": 194,
+    "brier": 0.2436,
+    "logLoss": 0.6804,
+    "oddsN": 194,
+    "brierOdds": 0.2436,
+    "marketBrier": 0.2436,
+    "logLossOdds": 0.6804,
+    "marketLogLoss": 0.6804
+   },
+   {
+    "date": "20260712",
+    "n": 191,
+    "brier": 0.244,
+    "logLoss": 0.6813,
+    "oddsN": 191,
+    "brierOdds": 0.244,
+    "marketBrier": 0.244,
+    "logLossOdds": 0.6813,
+    "marketLogLoss": 0.6813
+   },
+   {
+    "date": "20260714",
+    "n": 170,
+    "brier": 0.2451,
+    "logLoss": 0.6836,
+    "oddsN": 170,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.2451,
+    "logLossOdds": 0.6836,
+    "marketLogLoss": 0.6836
+   },
+   {
+    "date": "20260716",
+    "n": 145,
+    "brier": 0.2442,
+    "logLoss": 0.6816,
+    "oddsN": 145,
+    "brierOdds": 0.2442,
+    "marketBrier": 0.2442,
+    "logLossOdds": 0.6816,
+    "marketLogLoss": 0.6816
+   },
+   {
+    "date": "20260717",
+    "n": 150,
+    "brier": 0.2474,
+    "logLoss": 0.6883,
+    "oddsN": 150,
+    "brierOdds": 0.2474,
+    "marketBrier": 0.2474,
+    "logLossOdds": 0.6883,
+    "marketLogLoss": 0.6883
+   },
+   {
+    "date": "20260718",
+    "n": 151,
+    "brier": 0.2458,
+    "logLoss": 0.685,
+    "oddsN": 151,
+    "brierOdds": 0.2458,
+    "marketBrier": 0.2458,
+    "logLossOdds": 0.685,
+    "marketLogLoss": 0.685
+   },
+   {
+    "date": "20260719",
+    "n": 145,
+    "brier": 0.2431,
+    "logLoss": 0.6796,
+    "oddsN": 145,
+    "brierOdds": 0.2431,
+    "marketBrier": 0.2431,
+    "logLossOdds": 0.6796,
+    "marketLogLoss": 0.6796
+   },
+   {
+    "date": "20260720",
+    "n": 154,
+    "brier": 0.242,
+    "logLoss": 0.6774,
+    "oddsN": 154,
+    "brierOdds": 0.242,
+    "marketBrier": 0.242,
+    "logLossOdds": 0.6774,
+    "marketLogLoss": 0.6774
+   },
+   {
+    "date": "20260721",
+    "n": 152,
+    "brier": 0.2458,
+    "logLoss": 0.6852,
+    "oddsN": 152,
+    "brierOdds": 0.2458,
+    "marketBrier": 0.2458,
+    "logLossOdds": 0.6852,
+    "marketLogLoss": 0.6852
+   },
+   {
+    "date": "20260722",
+    "n": 153,
+    "brier": 0.2466,
+    "logLoss": 0.6865,
+    "oddsN": 153,
+    "brierOdds": 0.2466,
+    "marketBrier": 0.2466,
+    "logLossOdds": 0.6865,
+    "marketLogLoss": 0.6865
+   },
+   {
+    "date": "20260723",
+    "n": 145,
+    "brier": 0.2472,
+    "logLoss": 0.6878,
+    "oddsN": 145,
+    "brierOdds": 0.2472,
+    "marketBrier": 0.2472,
+    "logLossOdds": 0.6878,
+    "marketLogLoss": 0.6878
+   },
+   {
+    "date": "20260724",
+    "n": 149,
+    "brier": 0.251,
+    "logLoss": 0.6955,
+    "oddsN": 149,
+    "brierOdds": 0.251,
+    "marketBrier": 0.251,
+    "logLossOdds": 0.6955,
+    "marketLogLoss": 0.6955
+   },
+   {
+    "date": "20260725",
+    "n": 144,
+    "brier": 0.247,
+    "logLoss": 0.6872,
+    "oddsN": 144,
+    "brierOdds": 0.247,
+    "marketBrier": 0.247,
+    "logLossOdds": 0.6872,
+    "marketLogLoss": 0.6872
+   },
+   {
+    "date": "20260726",
+    "n": 142,
+    "brier": 0.2447,
+    "logLoss": 0.6822,
+    "oddsN": 142,
+    "brierOdds": 0.2447,
+    "marketBrier": 0.2447,
+    "logLossOdds": 0.6822,
+    "marketLogLoss": 0.6822
+   },
+   {
+    "date": "20260727",
+    "n": 153,
+    "brier": 0.2451,
+    "logLoss": 0.6831,
+    "oddsN": 153,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.2451,
+    "logLossOdds": 0.6831,
+    "marketLogLoss": 0.6831
+   },
+   {
+    "date": "20260728",
+    "n": 168,
+    "brier": 0.2456,
+    "logLoss": 0.6842,
+    "oddsN": 168,
+    "brierOdds": 0.2456,
+    "marketBrier": 0.2456,
+    "logLossOdds": 0.6842,
+    "marketLogLoss": 0.6842
+   },
+   {
+    "date": "20260729",
+    "n": 183,
+    "brier": 0.2458,
+    "logLoss": 0.6847,
+    "oddsN": 183,
+    "brierOdds": 0.2458,
+    "marketBrier": 0.2458,
+    "logLossOdds": 0.6847,
+    "marketLogLoss": 0.6847
+   },
+   {
+    "date": "20260730",
+    "n": 192,
+    "brier": 0.2442,
+    "logLoss": 0.6813,
+    "oddsN": 192,
+    "brierOdds": 0.2442,
+    "marketBrier": 0.2442,
+    "logLossOdds": 0.6813,
+    "marketLogLoss": 0.6813
+   },
+   {
+    "date": "20260731",
+    "n": 201,
+    "brier": 0.2452,
+    "logLoss": 0.6835,
+    "oddsN": 201,
+    "brierOdds": 0.2452,
+    "marketBrier": 0.2452,
+    "logLossOdds": 0.6835,
+    "marketLogLoss": 0.6835
+   },
+   {
+    "date": "20260801",
+    "n": 196,
+    "brier": 0.2436,
+    "logLoss": 0.6802,
+    "oddsN": 196,
+    "brierOdds": 0.2436,
+    "marketBrier": 0.2436,
+    "logLossOdds": 0.6802,
+    "marketLogLoss": 0.6802
+   },
+   {
+    "date": "20260802",
+    "n": 192,
+    "brier": 0.2456,
+    "logLoss": 0.6843,
+    "oddsN": 192,
+    "brierOdds": 0.2456,
+    "marketBrier": 0.2456,
+    "logLossOdds": 0.6843,
+    "marketLogLoss": 0.6843
+   },
+   {
+    "date": "20260803",
+    "n": 192,
+    "brier": 0.2479,
+    "logLoss": 0.6889,
+    "oddsN": 192,
+    "brierOdds": 0.2479,
+    "marketBrier": 0.2479,
+    "logLossOdds": 0.6889,
+    "marketLogLoss": 0.6889
+   },
+   {
+    "date": "20260804",
+    "n": 194,
+    "brier": 0.2451,
+    "logLoss": 0.6834,
+    "oddsN": 194,
+    "brierOdds": 0.2451,
+    "marketBrier": 0.2451,
+    "logLossOdds": 0.6834,
+    "marketLogLoss": 0.6834
+   },
+   {
+    "date": "20260805",
+    "n": 188,
+    "brier": 0.2435,
+    "logLoss": 0.68,
+    "oddsN": 188,
+    "brierOdds": 0.2435,
+    "marketBrier": 0.2435,
+    "logLossOdds": 0.68,
+    "marketLogLoss": 0.68
+   },
+   {
+    "date": "20260806",
+    "n": 191,
+    "brier": 0.2424,
+    "logLoss": 0.6777,
+    "oddsN": 191,
+    "brierOdds": 0.2424,
+    "marketBrier": 0.2424,
+    "logLossOdds": 0.6777,
+    "marketLogLoss": 0.6777
+   },
+   {
+    "date": "20260807",
+    "n": 195,
+    "brier": 0.2434,
+    "logLoss": 0.6798,
+    "oddsN": 195,
+    "brierOdds": 0.2434,
+    "marketBrier": 0.2434,
+    "logLossOdds": 0.6798,
+    "marketLogLoss": 0.6798
+   },
+   {
+    "date": "20260808",
+    "n": 191,
+    "brier": 0.2453,
+    "logLoss": 0.6836,
+    "oddsN": 191,
+    "brierOdds": 0.2453,
+    "marketBrier": 0.2453,
+    "logLossOdds": 0.6836,
+    "marketLogLoss": 0.6836
+   },
+   {
+    "date": "20260809",
+    "n": 191,
+    "brier": 0.245,
+    "logLoss": 0.6831,
+    "oddsN": 191,
+    "brierOdds": 0.245,
+    "marketBrier": 0.245,
+    "logLossOdds": 0.6831,
+    "marketLogLoss": 0.6831
+   },
+   {
+    "date": "20260810",
+    "n": 193,
+    "brier": 0.2436,
+    "logLoss": 0.6802,
+    "oddsN": 193,
+    "brierOdds": 0.2436,
+    "marketBrier": 0.2436,
+    "logLossOdds": 0.6802,
+    "marketLogLoss": 0.6802
+   },
+   {
+    "date": "20260811",
+    "n": 195,
+    "brier": 0.2446,
+    "logLoss": 0.6823,
+    "oddsN": 195,
+    "brierOdds": 0.2446,
+    "marketBrier": 0.2446,
+    "logLossOdds": 0.6823,
+    "marketLogLoss": 0.6823
+   },
+   {
+    "date": "20260812",
+    "n": 192,
+    "brier": 0.2421,
+    "logLoss": 0.6771,
+    "oddsN": 192,
+    "brierOdds": 0.2421,
+    "marketBrier": 0.2421,
+    "logLossOdds": 0.6771,
+    "marketLogLoss": 0.6771
+   },
+   {
+    "date": "20260813",
+    "n": 191,
+    "brier": 0.2454,
+    "logLoss": 0.6838,
+    "oddsN": 191,
+    "brierOdds": 0.2454,
+    "marketBrier": 0.2454,
+    "logLossOdds": 0.6838,
+    "marketLogLoss": 0.6838
+   },
+   {
+    "date": "20260814",
+    "n": 194,
+    "brier": 0.2471,
+    "logLoss": 0.6872,
+    "oddsN": 194,
+    "brierOdds": 0.2471,
+    "marketBrier": 0.2471,
+    "logLossOdds": 0.6872,
+    "marketLogLoss": 0.6872
+   },
+   {
+    "date": "20260815",
+    "n": 192,
+    "brier": 0.2498,
+    "logLoss": 0.6927,
+    "oddsN": 192,
+    "brierOdds": 0.2498,
+    "marketBrier": 0.2498,
+    "logLossOdds": 0.6927,
+    "marketLogLoss": 0.6927
+   },
+   {
+    "date": "20260816",
+    "n": 187,
+    "brier": 0.2512,
+    "logLoss": 0.6956,
+    "oddsN": 187,
+    "brierOdds": 0.2512,
+    "marketBrier": 0.2512,
+    "logLossOdds": 0.6956,
+    "marketLogLoss": 0.6956
+   },
+   {
+    "date": "20260817",
+    "n": 195,
+    "brier": 0.2473,
+    "logLoss": 0.6874,
+    "oddsN": 195,
+    "brierOdds": 0.2473,
+    "marketBrier": 0.2473,
+    "logLossOdds": 0.6874,
+    "marketLogLoss": 0.6874
+   },
+   {
+    "date": "20260818",
+    "n": 196,
+    "brier": 0.2462,
+    "logLoss": 0.6853,
+    "oddsN": 196,
+    "brierOdds": 0.2462,
+    "marketBrier": 0.2462,
+    "logLossOdds": 0.6853,
+    "marketLogLoss": 0.6853
+   },
+   {
+    "date": "20260819",
+    "n": 192,
+    "brier": 0.247,
+    "logLoss": 0.6869,
+    "oddsN": 192,
+    "brierOdds": 0.247,
+    "marketBrier": 0.247,
+    "logLossOdds": 0.6869,
+    "marketLogLoss": 0.6869
+   },
+   {
+    "date": "20260820",
+    "n": 189,
+    "brier": 0.249,
+    "logLoss": 0.691,
+    "oddsN": 189,
+    "brierOdds": 0.249,
+    "marketBrier": 0.249,
+    "logLossOdds": 0.691,
+    "marketLogLoss": 0.691
+   },
+   {
+    "date": "20260821",
+    "n": 195,
+    "brier": 0.2417,
+    "logLoss": 0.6762,
+    "oddsN": 195,
+    "brierOdds": 0.2417,
+    "marketBrier": 0.2417,
+    "logLossOdds": 0.6762,
+    "marketLogLoss": 0.6762
+   },
+   {
+    "date": "20260822",
+    "n": 190,
+    "brier": 0.2389,
+    "logLoss": 0.6704,
+    "oddsN": 190,
+    "brierOdds": 0.2389,
+    "marketBrier": 0.2389,
+    "logLossOdds": 0.6704,
+    "marketLogLoss": 0.6704
+   },
+   {
+    "date": "20260823",
+    "n": 189,
+    "brier": 0.236,
+    "logLoss": 0.6643,
+    "oddsN": 189,
+    "brierOdds": 0.236,
+    "marketBrier": 0.236,
+    "logLossOdds": 0.6643,
+    "marketLogLoss": 0.6643
+   },
+   {
+    "date": "20260824",
+    "n": 194,
+    "brier": 0.2342,
+    "logLoss": 0.6608,
+    "oddsN": 194,
+    "brierOdds": 0.2342,
+    "marketBrier": 0.2342,
+    "logLossOdds": 0.6608,
+    "marketLogLoss": 0.6608
+   },
+   {
+    "date": "20260825",
+    "n": 194,
+    "brier": 0.2388,
+    "logLoss": 0.6701,
+    "oddsN": 194,
+    "brierOdds": 0.2388,
+    "marketBrier": 0.2388,
+    "logLossOdds": 0.6701,
+    "marketLogLoss": 0.6701
+   },
+   {
+    "date": "20260826",
+    "n": 190,
+    "brier": 0.2377,
+    "logLoss": 0.668,
+    "oddsN": 190,
+    "brierOdds": 0.2377,
+    "marketBrier": 0.2377,
+    "logLossOdds": 0.668,
+    "marketLogLoss": 0.668
+   },
+   {
+    "date": "20260827",
+    "n": 188,
+    "brier": 0.2373,
+    "logLoss": 0.6671,
+    "oddsN": 188,
+    "brierOdds": 0.2373,
+    "marketBrier": 0.2373,
+    "logLossOdds": 0.6671,
+    "marketLogLoss": 0.6671
+   },
+   {
+    "date": "20260828",
+    "n": 192,
+    "brier": 0.232,
+    "logLoss": 0.6564,
+    "oddsN": 192,
+    "brierOdds": 0.232,
+    "marketBrier": 0.232,
+    "logLossOdds": 0.6564,
+    "marketLogLoss": 0.6564
+   },
+   {
+    "date": "20260829",
+    "n": 191,
+    "brier": 0.2291,
+    "logLoss": 0.6504,
+    "oddsN": 191,
+    "brierOdds": 0.2291,
+    "marketBrier": 0.2291,
+    "logLossOdds": 0.6504,
+    "marketLogLoss": 0.6504
+   },
+   {
+    "date": "20260830",
+    "n": 188,
+    "brier": 0.2263,
+    "logLoss": 0.6447,
+    "oddsN": 188,
+    "brierOdds": 0.2263,
+    "marketBrier": 0.2263,
+    "logLossOdds": 0.6447,
+    "marketLogLoss": 0.6447
+   },
+   {
+    "date": "20260831",
+    "n": 191,
+    "brier": 0.2279,
+    "logLoss": 0.6479,
+    "oddsN": 191,
+    "brierOdds": 0.2279,
+    "marketBrier": 0.2279,
+    "logLossOdds": 0.6479,
+    "marketLogLoss": 0.6479
+   },
+   {
+    "date": "20260901",
+    "n": 193,
+    "brier": 0.2313,
+    "logLoss": 0.655,
+    "oddsN": 193,
+    "brierOdds": 0.2313,
+    "marketBrier": 0.2313,
+    "logLossOdds": 0.655,
+    "marketLogLoss": 0.655
+   },
+   {
+    "date": "20260902",
+    "n": 192,
+    "brier": 0.2337,
+    "logLoss": 0.66,
+    "oddsN": 192,
+    "brierOdds": 0.2337,
+    "marketBrier": 0.2337,
+    "logLossOdds": 0.66,
+    "marketLogLoss": 0.66
+   },
+   {
+    "date": "20260903",
+    "n": 191,
+    "brier": 0.2348,
+    "logLoss": 0.662,
+    "oddsN": 191,
+    "brierOdds": 0.2348,
+    "marketBrier": 0.2348,
+    "logLossOdds": 0.662,
+    "marketLogLoss": 0.662
+   },
+   {
+    "date": "20260904",
+    "n": 198,
+    "brier": 0.235,
+    "logLoss": 0.6624,
+    "oddsN": 198,
+    "brierOdds": 0.235,
+    "marketBrier": 0.235,
+    "logLossOdds": 0.6624,
+    "marketLogLoss": 0.6624
+   },
+   {
+    "date": "20260905",
+    "n": 193,
+    "brier": 0.2402,
+    "logLoss": 0.6731,
+    "oddsN": 193,
+    "brierOdds": 0.2402,
+    "marketBrier": 0.2402,
+    "logLossOdds": 0.6731,
+    "marketLogLoss": 0.6731
+   },
+   {
+    "date": "20260906",
+    "n": 190,
+    "brier": 0.2413,
+    "logLoss": 0.6753,
+    "oddsN": 190,
+    "brierOdds": 0.2413,
+    "marketBrier": 0.2413,
+    "logLossOdds": 0.6753,
+    "marketLogLoss": 0.6753
+   },
+   {
+    "date": "20260907",
+    "n": 197,
+    "brier": 0.2406,
+    "logLoss": 0.6741,
+    "oddsN": 197,
+    "brierOdds": 0.2406,
+    "marketBrier": 0.2406,
+    "logLossOdds": 0.6741,
+    "marketLogLoss": 0.6741
+   },
+   {
+    "date": "20260908",
+    "n": 197,
+    "brier": 0.2377,
+    "logLoss": 0.6678,
+    "oddsN": 197,
+    "brierOdds": 0.2377,
+    "marketBrier": 0.2377,
+    "logLossOdds": 0.6678,
+    "marketLogLoss": 0.6678
+   },
+   {
+    "date": "20260909",
+    "n": 192,
+    "brier": 0.2371,
+    "logLoss": 0.6665,
+    "oddsN": 192,
+    "brierOdds": 0.2371,
+    "marketBrier": 0.2371,
+    "logLossOdds": 0.6665,
+    "marketLogLoss": 0.6665
+   },
+   {
+    "date": "20260910",
+    "n": 190,
+    "brier": 0.2362,
+    "logLoss": 0.6647,
+    "oddsN": 190,
+    "brierOdds": 0.2362,
+    "marketBrier": 0.2362,
+    "logLossOdds": 0.6647,
+    "marketLogLoss": 0.6647
+   },
+   {
+    "date": "20260911",
+    "n": 194,
+    "brier": 0.2352,
+    "logLoss": 0.6627,
+    "oddsN": 194,
+    "brierOdds": 0.2352,
+    "marketBrier": 0.2352,
+    "logLossOdds": 0.6627,
+    "marketLogLoss": 0.6627
+   },
+   {
+    "date": "20260912",
+    "n": 190,
+    "brier": 0.2358,
+    "logLoss": 0.6639,
+    "oddsN": 190,
+    "brierOdds": 0.2358,
+    "marketBrier": 0.2358,
+    "logLossOdds": 0.6639,
+    "marketLogLoss": 0.6639
+   },
+   {
+    "date": "20260913",
+    "n": 188,
+    "brier": 0.2392,
+    "logLoss": 0.6708,
+    "oddsN": 188,
+    "brierOdds": 0.2392,
+    "marketBrier": 0.2392,
+    "logLossOdds": 0.6708,
+    "marketLogLoss": 0.6708
+   },
+   {
+    "date": "20260914",
+    "n": 191,
+    "brier": 0.2379,
+    "logLoss": 0.6683,
+    "oddsN": 191,
+    "brierOdds": 0.2379,
+    "marketBrier": 0.2379,
+    "logLossOdds": 0.6683,
+    "marketLogLoss": 0.6683
+   },
+   {
+    "date": "20260915",
+    "n": 192,
+    "brier": 0.239,
+    "logLoss": 0.6703,
+    "oddsN": 192,
+    "brierOdds": 0.239,
+    "marketBrier": 0.239,
+    "logLossOdds": 0.6703,
+    "marketLogLoss": 0.6703
+   },
+   {
+    "date": "20260916",
+    "n": 189,
+    "brier": 0.2367,
+    "logLoss": 0.6657,
+    "oddsN": 189,
+    "brierOdds": 0.2367,
+    "marketBrier": 0.2367,
+    "logLossOdds": 0.6657,
+    "marketLogLoss": 0.6657
+   },
+   {
+    "date": "20260917",
+    "n": 189,
+    "brier": 0.235,
+    "logLoss": 0.6621,
+    "oddsN": 189,
+    "brierOdds": 0.235,
+    "marketBrier": 0.235,
+    "logLossOdds": 0.6621,
+    "marketLogLoss": 0.6621
+   },
+   {
+    "date": "20260918",
+    "n": 192,
+    "brier": 0.2348,
+    "logLoss": 0.6617,
+    "oddsN": 192,
+    "brierOdds": 0.2348,
+    "marketBrier": 0.2348,
+    "logLossOdds": 0.6617,
+    "marketLogLoss": 0.6617
+   },
+   {
+    "date": "20260919",
+    "n": 188,
+    "brier": 0.231,
+    "logLoss": 0.6538,
+    "oddsN": 188,
+    "brierOdds": 0.231,
+    "marketBrier": 0.231,
+    "logLossOdds": 0.6538,
+    "marketLogLoss": 0.6538
+   },
+   {
+    "date": "20260920",
+    "n": 186,
+    "brier": 0.2283,
+    "logLoss": 0.6483,
+    "oddsN": 186,
+    "brierOdds": 0.2283,
+    "marketBrier": 0.2283,
+    "logLossOdds": 0.6483,
+    "marketLogLoss": 0.6483
+   },
+   {
+    "date": "20260921",
+    "n": 180,
+    "brier": 0.2301,
+    "logLoss": 0.6518,
+    "oddsN": 180,
+    "brierOdds": 0.2301,
+    "marketBrier": 0.2301,
+    "logLossOdds": 0.6518,
+    "marketLogLoss": 0.6518
+   },
+   {
+    "date": "20260922",
+    "n": 175,
+    "brier": 0.2298,
+    "logLoss": 0.6513,
+    "oddsN": 175,
+    "brierOdds": 0.2298,
+    "marketBrier": 0.2298,
+    "logLossOdds": 0.6513,
+    "marketLogLoss": 0.6513
+   }
+  ]
+ },
+ "coverage": {
+  "scheduled": 2374,
+  "completed": 2351,
+  "predicted": 2351,
+  "missing": []
+ },
+ "status": {
+  "configVersion": "cfg-1cf05144",
+  "config": {
+   "featureSet": "elo",
+   "hl": 30,
+   "members": "elo",
+   "lambda": 10,
+   "trainHl": 60,
+   "calMethod": "platt",
+   "calWindow": 60,
+   "w0": 0.7
+  },
+  "calibratorVersion": "cal-v60",
+  "method": "platt",
+  "n": 786,
+  "lastFit": "2026-09-13T16:09:00.000Z",
+  "lastRefit": "2026-09-23T17:09:00.000Z",
+  "w": 1,
+  "wOpt": 1,
+  "cap": [
+   0.42,
+   0.6
+  ],
+  "paused": true,
+  "driftStatus": "red",
+  "driftReasons": [
+   "slope 2.424 outside 0.7–1.3",
+   "paused: no edge vs market",
+   "14-day model Brier 0.2325 > market 0.231",
+   "bucket error 0.0539 > 0.05"
+  ],
+  "drift": {
+   "n": 170,
+   "brier": 0.231,
+   "logLoss": 0.6539,
+   "modelBrier14": 0.2325,
+   "slope": 2.424,
+   "slopeSE": 0.696,
+   "maxBucketError": 0.0539,
+   "oddsN": 170,
+   "modelBrierOdds": 0.2325,
+   "marketBrierOdds": 0.231
+  },
+  "versions": [
+   {
+    "version": 31,
+    "method": "platt",
+    "n": 778,
+    "w": 0.5,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 32,
+    "method": "platt",
+    "n": 778,
+    "w": 0.6,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 33,
+    "method": "platt",
+    "n": 778,
+    "w": 0.5,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 34,
+    "method": "platt",
+    "n": 778,
+    "w": 0.55,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 35,
+    "method": "platt",
+    "n": 778,
+    "w": 0.6,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 36,
+    "method": "platt",
+    "n": 778,
+    "w": 0.5,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 37,
+    "method": "platt",
+    "n": 778,
+    "w": 0.55,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 38,
+    "method": "platt",
+    "n": 778,
+    "w": 0.65,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 39,
+    "method": "platt",
+    "n": 778,
+    "w": 0.7,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 40,
+    "method": "platt",
+    "n": 778,
+    "w": 0.6,
+    "fitDate": "2026-05-24T16:14:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 41,
+    "method": "platt",
+    "n": 793,
+    "w": 0.7,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 42,
+    "method": "platt",
+    "n": 793,
+    "w": 0.75,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 43,
+    "method": "platt",
+    "n": 793,
+    "w": 0.85,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 44,
+    "method": "platt",
+    "n": 793,
+    "w": 0.95,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 45,
+    "method": "platt",
+    "n": 793,
+    "w": 1,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 46,
+    "method": "platt",
+    "n": 793,
+    "w": 0.95,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 47,
+    "method": "platt",
+    "n": 793,
+    "w": 0.9,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 48,
+    "method": "platt",
+    "n": 793,
+    "w": 1,
+    "fitDate": "2026-06-16T22:39:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 49,
+    "method": "platt",
+    "n": 794,
+    "w": 1,
+    "fitDate": "2026-06-27T16:59:00.000Z",
+    "paused": false
+   },
+   {
+    "version": 50,
+    "method": "platt",
+    "n": 794,
+    "w": 1,
+    "fitDate": "2026-06-27T16:59:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 51,
+    "method": "platt",
+    "n": 794,
+    "w": 1,
+    "fitDate": "2026-06-27T16:59:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 52,
+    "method": "platt",
+    "n": 790,
+    "w": 1,
+    "fitDate": "2026-07-10T22:39:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 53,
+    "method": "platt",
+    "n": 743,
+    "w": 1,
+    "fitDate": "2026-07-24T20:09:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 54,
+    "method": "platt",
+    "n": 743,
+    "w": 1,
+    "fitDate": "2026-07-24T20:09:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 55,
+    "method": "platt",
+    "n": 767,
+    "w": 1,
+    "fitDate": "2026-08-19T16:34:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 56,
+    "method": "platt",
+    "n": 767,
+    "w": 1,
+    "fitDate": "2026-08-19T16:34:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 57,
+    "method": "platt",
+    "n": 764,
+    "w": 1,
+    "fitDate": "2026-08-23T17:34:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 58,
+    "method": "platt",
+    "n": 767,
+    "w": 1,
+    "fitDate": "2026-08-27T17:04:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 59,
+    "method": "platt",
+    "n": 786,
+    "w": 1,
+    "fitDate": "2026-09-13T16:09:00.000Z",
+    "paused": true
+   },
+   {
+    "version": 60,
+    "method": "platt",
+    "n": 786,
+    "w": 1,
+    "fitDate": "2026-09-13T16:09:00.000Z",
+    "paused": true
+   }
+  ],
+  "log": [
+   {
+    "at": "2026-08-31T22:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67321 > incumbent 0.66647 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-09-01T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67443 > incumbent 0.67061 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-02T16:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67713 > incumbent 0.67537 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-03T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68179 > incumbent 0.68108 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-04T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68256 > incumbent 0.6815 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-05T20:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68625 > incumbent 0.68589 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-06T16:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69211 > incumbent 0.69094 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-09-07T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.69472 > incumbent 0.69326 on last 14 days (n=190)"
+   },
+   {
+    "at": "2026-09-08T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68863 > incumbent 0.68851 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-09T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68679 > incumbent 0.68631 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-10T16:14:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68447 > incumbent 0.68415 on last 14 days (n=191)"
+   },
+   {
+    "at": "2026-09-11T18:19:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68358 > incumbent 0.68303 on last 14 days (n=189)"
+   },
+   {
+    "at": "2026-09-12T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.68018 > incumbent 0.68003 on last 14 days (n=188)"
+   },
+   {
+    "at": "2026-09-13T16:09:00.000Z",
+    "event": "calibrator-promoted",
+    "detail": "platt n=786 (held-out LL 0.68084 vs 0.68088)"
+   },
+   {
+    "at": "2026-09-14T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67881 > incumbent 0.67813 on last 14 days (n=187)"
+   },
+   {
+    "at": "2026-09-15T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67764 > incumbent 0.67723 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-09-16T16:59:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67752 > incumbent 0.67677 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-09-17T16:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67309 > incumbent 0.66982 on last 14 days (n=186)"
+   },
+   {
+    "at": "2026-09-18T22:39:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67063 > incumbent 0.66728 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-09-19T18:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.67072 > incumbent 0.668 on last 14 days (n=185)"
+   },
+   {
+    "at": "2026-09-20T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66515 > incumbent 0.65643 on last 14 days (n=184)"
+   },
+   {
+    "at": "2026-09-21T22:34:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66144 > incumbent 0.65727 on last 14 days (n=177)"
+   },
+   {
+    "at": "2026-09-21T22:34:00.000Z",
+    "event": "drift-slope",
+    "detail": "14-day slope 2.414 outside 0.7–1.3: cap tightened to [0.42, 0.60], w 1 → 1"
+   },
+   {
+    "at": "2026-09-22T17:04:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66458 > incumbent 0.66331 on last 14 days (n=177)"
+   },
+   {
+    "at": "2026-09-23T17:09:00.000Z",
+    "event": "calibrator-kept",
+    "detail": "candidate platt held-out LL 0.66524 > incumbent 0.66308 on last 14 days (n=170)"
+   }
+  ],
+  "holdout": {
+   "range": {
+    "lastCompleted": "20260922",
+    "holdoutStart": "20260902",
+    "tuningEnd": "20260901"
+   },
+   "metrics": {
+    "n": 266,
+    "final": {
+     "n": 266,
+     "logLoss": 0.661,
+     "brier": 0.2344,
+     "slope": 1.472,
+     "intercept": 0.013,
+     "accuracy": 0.5827,
+     "maxBucketError": 0.0477,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 92,
+       "predicted": 0.5238,
+       "actual": 0.4783,
+       "error": -0.0455
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 101,
+       "predicted": 0.57,
+       "actual": 0.5842,
+       "error": 0.0142
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 52,
+       "predicted": 0.6254,
+       "actual": 0.6731,
+       "error": 0.0477
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 12,
+       "predicted": 0.6751,
+       "actual": 0.6667,
+       "error": -0.0085
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 9,
+       "predicted": 0.724,
+       "actual": 1,
+       "error": 0.276
+      }
+     ]
+    },
+    "model": {
+     "n": 266,
+     "logLoss": 0.6705,
+     "brier": 0.2389,
+     "slope": 1.909,
+     "intercept": -0.118,
+     "accuracy": 0.5902,
+     "maxBucketError": 0.0262,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 134,
+       "predicted": 0.526,
+       "actual": 0.5522,
+       "error": 0.0262
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 95,
+       "predicted": 0.5722,
+       "actual": 0.5895,
+       "error": 0.0173
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 27,
+       "predicted": 0.6234,
+       "actual": 0.6667,
+       "error": 0.0433
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 10,
+       "predicted": 0.6656,
+       "actual": 0.9,
+       "error": 0.2344
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 0,
+       "predicted": null,
+       "actual": null,
+       "error": null
+      }
+     ]
+    },
+    "raw": {
+     "n": 266,
+     "logLoss": 0.6682,
+     "brier": 0.2379,
+     "slope": 1.285,
+     "intercept": 0.06,
+     "accuracy": 0.5977,
+     "maxBucketError": 0.063,
+     "buckets": [
+      {
+       "range": [
+        0.5,
+        0.55
+       ],
+       "n": 111,
+       "predicted": 0.5248,
+       "actual": 0.5225,
+       "error": -0.0023
+      },
+      {
+       "range": [
+        0.55,
+        0.6
+       ],
+       "n": 88,
+       "predicted": 0.5734,
+       "actual": 0.6364,
+       "error": 0.063
+      },
+      {
+       "range": [
+        0.6,
+        0.65
+       ],
+       "n": 42,
+       "predicted": 0.6208,
+       "actual": 0.5714,
+       "error": -0.0493
+      },
+      {
+       "range": [
+        0.65,
+        0.7
+       ],
+       "n": 21,
+       "predicted": 0.6728,
+       "actual": 0.8571,
+       "error": 0.1843
+      },
+      {
+       "range": [
+        0.7,
+        1
+       ],
+       "n": 4,
+       "predicted": 0.7173,
+       "actual": 0.75,
+       "error": 0.0327
+      }
+     ]
+    },
+    "odds": {
+     "n": 266,
+     "final": {
+      "n": 266,
+      "logLoss": 0.661,
+      "brier": 0.2344,
+      "slope": 1.472,
+      "intercept": 0.013,
+      "accuracy": 0.5827,
+      "maxBucketError": 0.0477,
+      "buckets": [
+       {
+        "range": [
+         0.5,
+         0.55
+        ],
+        "n": 92,
+        "predicted": 0.5238,
+        "actual": 0.4783,
+        "error": -0.0455
+       },
+       {
+        "range": [
+         0.55,
+         0.6
+        ],
+        "n": 101,
+        "predicted": 0.57,
+        "actual": 0.5842,
+        "error": 0.0142
+       },
+       {
+        "range": [
+         0.6,
+         0.65
+        ],
+        "n": 52,
+        "predicted": 0.6254,
+        "actual": 0.6731,
+        "error": 0.0477
+       },
+       {
+        "range": [
+         0.65,
+         0.7
+        ],
+        "n": 12,
+        "predicted": 0.6751,
+        "actual": 0.6667,
+        "error": -0.0085
+       },
+       {
+        "range": [
+         0.7,
+         1
+        ],
+        "n": 9,
+        "predicted": 0.724,
+        "actual": 1,
+        "error": 0.276
+       }
+      ]
+     },
+     "model": {
+      "n": 266,
+      "logLoss": 0.6705,
+      "brier": 0.2389,
+      "slope": 1.909,
+      "intercept": -0.118,
+      "accuracy": 0.5902,
+      "maxBucketError": 0.0262,
+      "buckets": [
+       {
+        "range": [
+         0.5,
+         0.55
+        ],
+        "n": 134,
+        "predicted": 0.526,
+        "actual": 0.5522,
+        "error": 0.0262
+       },
+       {
+        "range": [
+         0.55,
+         0.6
+        ],
+        "n": 95,
+        "predicted": 0.5722,
+        "actual": 0.5895,
+        "error": 0.0173
+       },
+       {
+        "range": [
+         0.6,
+         0.65
+        ],
+        "n": 27,
+        "predicted": 0.6234,
+        "actual": 0.6667,
+        "error": 0.0433
+       },
+       {
+        "range": [
+         0.65,
+         0.7
+        ],
+        "n": 10,
+        "predicted": 0.6656,
+        "actual": 0.9,
+        "error": 0.2344
+       },
+       {
+        "range": [
+         0.7,
+         1
+        ],
+        "n": 0,
+        "predicted": null,
+        "actual": null,
+        "error": null
+       }
+      ]
+     },
+     "raw": {
+      "n": 266,
+      "logLoss": 0.6682,
+      "brier": 0.2379,
+      "slope": 1.285,
+      "intercept": 0.06,
+      "accuracy": 0.5977,
+      "maxBucketError": 0.063,
+      "buckets": [
+       {
+        "range": [
+         0.5,
+         0.55
+        ],
+        "n": 111,
+        "predicted": 0.5248,
+        "actual": 0.5225,
+        "error": -0.0023
+       },
+       {
+        "range": [
+         0.55,
+         0.6
+        ],
+        "n": 88,
+        "predicted": 0.5734,
+        "actual": 0.6364,
+        "error": 0.063
+       },
+       {
+        "range": [
+         0.6,
+         0.65
+        ],
+        "n": 42,
+        "predicted": 0.6208,
+        "actual": 0.5714,
+        "error": -0.0493
+       },
+       {
+        "range": [
+         0.65,
+         0.7
+        ],
+        "n": 21,
+        "predicted": 0.6728,
+        "actual": 0.8571,
+        "error": 0.1843
+       },
+       {
+        "range": [
+         0.7,
+         1
+        ],
+        "n": 4,
+        "predicted": 0.7173,
+        "actual": 0.75,
+        "error": 0.0327
+       }
+      ]
+     },
+     "market": {
+      "n": 266,
+      "logLoss": 0.661,
+      "brier": 0.2344,
+      "slope": 1.472,
+      "intercept": 0.013,
+      "accuracy": 0.5827,
+      "maxBucketError": 0.0477,
+      "buckets": [
+       {
+        "range": [
+         0.5,
+         0.55
+        ],
+        "n": 92,
+        "predicted": 0.5238,
+        "actual": 0.4783,
+        "error": -0.0455
+       },
+       {
+        "range": [
+         0.55,
+         0.6
+        ],
+        "n": 101,
+        "predicted": 0.57,
+        "actual": 0.5842,
+        "error": 0.0142
+       },
+       {
+        "range": [
+         0.6,
+         0.65
+        ],
+        "n": 52,
+        "predicted": 0.6254,
+        "actual": 0.6731,
+        "error": 0.0477
+       },
+       {
+        "range": [
+         0.65,
+         0.7
+        ],
+        "n": 12,
+        "predicted": 0.6751,
+        "actual": 0.6667,
+        "error": -0.0085
+       },
+       {
+        "range": [
+         0.7,
+         1
+        ],
+        "n": 9,
+        "predicted": 0.724,
+        "actual": 1,
+        "error": 0.276
+       }
+      ]
+     }
+    },
+    "bets": {
+     "n": 0,
+     "units": 0,
+     "roiFlat": null,
+     "roiKelly": null,
+     "bankrollReturn": 0,
+     "avgClv": null,
+     "clvN": 0
+    },
+    "leans": {
+     "clvN": 266,
+     "avgClv": 0.00547
+    }
+   },
+   "worseThanMarket": false,
+   "noMarket": false,
+   "evaluatedAt": "2026-09-23T02:59:56.360Z"
+  },
+  "lightSearch": {
+   "at": "2026-09-23T02:59:56.360Z",
+   "evaluated": 0,
+   "promoted": false,
+   "note": "initial full search"
+  }
+ }
+}
