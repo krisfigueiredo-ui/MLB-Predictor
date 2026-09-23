@@ -4,6 +4,8 @@
 //   search:  a grid round, then TPE-style rounds (sample each dimension from
 //            the best quartile's values), 10 configs per round, logging every
 //            config and its metrics to the experiments table.
+//   objective: walk-forward log loss of the calibrated model probability
+//            (Brier, then |slope − 1| break ties); final_p is reported too.
 //   stop:    3 consecutive rounds improving best log loss by < 0.001, or 200 configs.
 //   select:  reject calibration slope outside 0.8–1.2; among configs within
 //            0.002 log loss of the best, take the simplest.
@@ -54,18 +56,22 @@ function splitDates(ctx) {
 }
 
 function objective(ev) {
-  return { logLoss: ev.final.logLoss, brier: ev.final.brier, slope: ev.final.slope };
+  return { logLoss: ev.model.logLoss, brier: ev.model.brier, slope: ev.model.slope };
 }
 
 function evaluateConfig(ctx, config, range) {
   const wf = WF.runWalkForward(ctx, config, { toDate: range.tuningEnd, light: true });
   const tuningRows = wf.rows.filter(r => r.date <= range.tuningEnd);
   const ev = M.evaluateRows(tuningRows);
-  const slope = ev.final.slope;
+  // The objective is the calibrated MODEL probability. final_p is mostly the
+  // market once w is 0.7–1.0, which makes every config look alike (the first
+  // real run put all 50 within 0.002); w has its own tuning at every refit.
+  const slope = ev.model.slope;
   const valid = slope != null && slope >= 0.8 && slope <= 1.2;
   return {
     version: wf.version, config, complexity: WF.complexity(config),
-    metrics: { n: ev.n, logLoss: ev.final.logLoss, brier: ev.final.brier, slope, maxBucketError: ev.final.maxBucketError, accuracy: ev.final.accuracy,
+    metrics: { n: ev.n, logLoss: ev.model.logLoss, brier: ev.model.brier, slope, maxBucketError: ev.model.maxBucketError, accuracy: ev.model.accuracy,
+      finalLogLoss: ev.final.logLoss, finalBrier: ev.final.brier, finalSlope: ev.final.slope,
       modelLogLoss: ev.model.logLoss, modelSlope: ev.model.slope, rawLogLoss: ev.raw.logLoss, rawSlope: ev.raw.slope,
       oddsN: ev.odds.n, finalLogLossOdds: ev.odds.final.logLoss, marketLogLossOdds: ev.odds.market.logLoss,
       modelLogLossOdds: ev.odds.model.logLoss },

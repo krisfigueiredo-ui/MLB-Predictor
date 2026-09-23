@@ -59,8 +59,9 @@ function build({ ctx, search, chosen, hold, model, cov, s26, box, fallback }) {
     `- Rejected for calibration slope outside 0.8–1.2: ${search.experiments.length - valid.length}`,
     `- Winner: \`${chosen.version}\` \`${JSON.stringify(chosen.config)}\``,
     `- Why: ${fallback || `simplest config (complexity ${chosen.complexity}) within 0.002 of the best tuning log loss (${f4(search.selection.bestLogLoss)}); ${search.selection.nearCount} configs were in that band`}`, ``,
-    `| Rank | Version | Tuning LL | Brier | Slope | Complexity | Config |`, `|---|---|---|---|---|---|---|`,
-    ...top.map((e, i) => `| ${i + 1} | ${e.version} | ${f4(e.metrics.logLoss)} | ${f4(e.metrics.brier)} | ${f3(e.metrics.slope)} | ${e.complexity} | ${e.config.featureSet}/${e.config.members} hl=${e.config.hl} λ=${e.config.lambda} trainHl=${e.config.trainHl} ${e.config.calMethod} win=${e.config.calWindow} w0=${e.config.w0} |`), ``);
+    `Objective: walk-forward log loss of the calibrated model probability (the market weight w is tuned separately at every refit).`, ``,
+    `| Rank | Version | Model LL | Brier | Slope | final_p LL | Complexity | Config |`, `|---|---|---|---|---|---|---|---|`,
+    ...top.map((e, i) => `| ${i + 1} | ${e.version} | ${f4(e.metrics.logLoss)} | ${f4(e.metrics.brier)} | ${f3(e.metrics.slope)} | ${f4(e.metrics.finalLogLoss)} | ${e.complexity} | ${e.config.featureSet}/${e.config.members} hl=${e.config.hl} λ=${e.config.lambda} trainHl=${e.config.trainHl} ${e.config.calMethod} win=${e.config.calWindow} w0=${e.config.w0} |`), ``);
   md.push(`## Before / after (walk-forward, out of sample)`, ``,
     `"Before" = the raw ensemble probability with no calibration layer; "calibrated" = model after the auto-calibrator; "final" = market-anchored final_p. Market rows are restricted to games with a real price.`, ``);
   for (const [name, ev] of [["Tuning set", t], ["Locked holdout", h]]) {
