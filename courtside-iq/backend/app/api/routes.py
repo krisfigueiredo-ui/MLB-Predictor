@@ -295,10 +295,15 @@ def board(league: str | None = None, hours: int = 36, db: Session = Depends(get_
         p = modeling.project_game(db, g, n_sims=5000, explain=False)
         if not p:
             continue
-        p.pop("features", None)
+        feats = p.pop("features", {}) or {}
+        p["projected"]["possessions"] = feats.get("exp_pace")
+        p["projected"]["home_pace"] = feats.get("h_pace")
+        p["projected"]["away_pace"] = feats.get("a_pace")
         for k in ("margin_hist", "total_hist"):
             p["simulation"].pop(k, None)
-        rows.append(dict(game=game_out(db, g), projected=p["projected"], simulation=p["simulation"], vs_market=p["vs_market"],
+        if g.status == "live":
+            p["live"] = _live_projection(g, p)
+        rows.append(dict(game=game_out(db, g), projected=p["projected"], simulation=p["simulation"], vs_market=p["vs_market"], live=p.get("live"),
                          market={k: v for k, v in p["market"].items() if k != "by_book"}, by_book=p["market"].get("by_book", []),
                          model_version=p["model_version"], model_data_source=p["model_data_source"]))
     return _clean(dict(generated_at=iso(_now()), demo=get_settings().demo_mode, games=rows))
@@ -355,7 +360,8 @@ def correlations(league: str, db: Session = Depends(get_db)):
 # ---------------- predictions & performance ----------------
 @router.get("/predictions")
 def predictions(league: str | None = None, market_: str | None = Query(default=None, alias="market"), result: str | None = None,
-                limit: int = 200, db: Session = Depends(get_db)):
+                limit: int = 200, settled: bool = False, games_only: bool = False, player_id: int | None = None,
+                db: Session = Depends(get_db)):
     q = (select(m.Prediction, m.Game).join(m.Game).order_by(m.Game.start_time.desc(), m.Prediction.created_at.desc()))
     if league:
         q = q.where(m.Prediction.league == league.upper())
@@ -363,6 +369,12 @@ def predictions(league: str | None = None, market_: str | None = Query(default=N
         q = q.where(m.Prediction.market.like(f"{market_}%"))
     if result:
         q = q.where(m.Prediction.result == result)
+    if settled:
+        q = q.where(m.Prediction.result != "pending")
+    if games_only:
+        q = q.where(m.Prediction.player_id.is_(None))
+    if player_id:
+        q = q.where(m.Prediction.player_id == player_id)
     players = {p.id: p.full_name for p in db.scalars(select(m.Player))}
     rows = []
     for p, g in db.execute(q.limit(limit)).all():

@@ -84,10 +84,13 @@ def summary(db: Session, league: str | None = None) -> dict:
     out["monthly"] = [dict(month=k, **_block(v)) for k, v in by_month]
     dec = dec.sort_values("start_time")
     hits = (dec["result"] == "win").astype(float)
-    roll = hits.rolling(50, min_periods=20).mean()
-    out["rolling"] = [dict(t=str(t), rate=float(r), n=int(i + 1)) for i, (t, r) in enumerate(zip(dec["start_time"], roll)) if not np.isnan(r)][::5]
+    win = max(30, min(300, len(dec) // 8))
+    roll = hits.rolling(win, min_periods=max(10, win // 3)).mean()
+    step = max(1, len(dec) // 120)
+    out["rolling_window"] = win
+    out["rolling"] = [dict(t=str(t), rate=float(r), n=int(i + 1)) for i, (t, r) in enumerate(zip(dec["start_time"], roll)) if not np.isnan(r)][::step]
     cum = np.cumsum([profit_units(r, int(p)) if p == p and p is not None else 0 for r, p in zip(dec["result"], dec["price"])])
-    out["cumulative_units"] = [dict(t=str(t), units=float(u)) for t, u in zip(dec["start_time"], cum)][::5]
+    out["cumulative_units"] = [dict(t=str(t), units=float(u)) for t, u in zip(dec["start_time"], cum)][::step]
     return out
 
 
