@@ -77,11 +77,12 @@ def frame(db: Session, name: str, league: str | None = None, dataset_id: int | N
 
 
 def _strip_tz(df: pd.DataFrame) -> pd.DataFrame:
+    """Excel cannot store timezone-aware datetimes: convert to naive UTC."""
     df = df.copy()
     for c in df.columns:
-        if pd.api.types.is_datetime64tz_dtype(df[c]) if hasattr(pd.api.types, "is_datetime64tz_dtype") else False:
+        if isinstance(df[c].dtype, pd.DatetimeTZDtype):
             df[c] = df[c].dt.tz_convert("UTC").dt.tz_localize(None)
-        elif df[c].dtype == object and len(df) and isinstance(df[c].dropna().iloc[0] if df[c].notna().any() else None, datetime):
+        elif df[c].dtype == object:
             df[c] = df[c].map(lambda x: x.astimezone(timezone.utc).replace(tzinfo=None) if isinstance(x, datetime) and x.tzinfo else x)
     return df
 
@@ -98,10 +99,6 @@ def render(df: pd.DataFrame, fmt: str, name: str) -> tuple[bytes, str]:
 
         buf = io.BytesIO()
         df = _strip_tz(df)
-        try:
-            df = df.apply(lambda s: s.dt.tz_localize(None) if hasattr(s, "dt") and getattr(s.dt, "tz", None) is not None else s)
-        except Exception:
-            pass
         with pd.ExcelWriter(buf, engine="openpyxl") as xw:
             df.to_excel(xw, sheet_name=name[:31], index=False)
             ws = xw.sheets[name[:31]]
