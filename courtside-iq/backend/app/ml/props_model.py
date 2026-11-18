@@ -24,6 +24,10 @@ FLOW_STATS = {"pts", "ast", "fg3m"}
 MIN_FEATURES = ["min_ewm", "min_last5", "min_season", "games", "rest", "blowout_risk", "team_injury", "is_home"]
 LEAGUE_PACE = {"NBA": 99.0, "CBB": 68.0}
 LEAGUE_ORTG = {"NBA": 113.0, "CBB": 104.0}
+# Weight on the model when a sportsbook line exists: mean = w*model + (1-w)*line. This is a
+# documented prior (no historical prop-line archive to fit it on yet); refit it once enough
+# settled prop predictions exist (details.model_only_mean is archived for that purpose).
+PROP_MODEL_WEIGHT = 0.5
 
 
 def player_frame(logs: pd.DataFrame, game_feats: pd.DataFrame, league: str) -> pd.DataFrame:
@@ -105,22 +109,27 @@ class PropsBundle:
     data_source: str
     n_train: int
 
-    def project(self, row: dict, n: int, seed: int) -> dict:
+    def project(self, row: dict, n: int, seed: int, anchors: dict | None = None, w_model: float = PROP_MODEL_WEIGHT) -> dict:
         X = pd.DataFrame([{k: row.get(k, np.nan) for k in MIN_FEATURES}])
         mu_min = float(np.clip(self.minutes_model.predict(X)[0], 0, 46))
         rates = _rates(row, self.league)
         rng = np.random.default_rng(seed)
         mins = np.clip(rng.normal(mu_min, self.sigma_minutes, n), 0, 48)
         flow = rng.gamma(self.flow_k, 1 / self.flow_k, n)
-        sims = {}
+        sims, model_means = {}, {}
         for s in STATS:
             rt = rates[s] if not pd.isna(rates[s]) else 0.0
-            mu = np.maximum(1e-3, rt * mins * (flow if s in FLOW_STATS else 1.0))
+            model_means[s] = rt * mu_min
+            scale = 1.0
+            if anchors and s in anchors and model_means[s] > 0.05:
+                scale = (w_model * model_means[s] + (1 - w_model) * anchors[s]) / model_means[s]
+            mu = np.maximum(1e-3, rt * scale * mins * (flow if s in FLOW_STATS else 1.0))
             r = self.dispersion[s]
             sims[s] = rng.negative_binomial(r, r / (r + mu))
         sims["pra"] = sims["pts"] + sims["reb"] + sims["ast"]
         sims["min"] = mins
-        return dict(mu_minutes=mu_min, sims=sims, rates=rates)
+        model_means["pra"] = model_means["pts"] + model_means["reb"] + model_means["ast"]
+        return dict(mu_minutes=mu_min, sims=sims, rates=rates, model_means=model_means)
 
 
 def summarize(sims: np.ndarray, line: float | None) -> dict:

@@ -112,11 +112,14 @@ def generate_demo_data(db: Session, seed: int, now: datetime | None = None) -> d
                     for pl in g.player_lines:
                         pstats.append(dict(game_id=gid, **pl))
                 if not is_hist:
+                    all_props = _demo_props(gid, g, books, sim, datetime.max.replace(tzinfo=timezone.utc))
+                    due = [r for r in all_props if r["captured_at"] <= now]
+                    later = [dict(r, captured_at=r["captured_at"].isoformat()) for r in all_props if r["captured_at"] > now]
                     outcomes.append(dict(game_id=gid, payload=dict(
                         home=hb, away=ab, ot=g.result["ot"], players=g.player_lines, market=mk,
-                        ot_periods=g.result["ot"])))
+                        ot_periods=g.result["ot"], pending_props=later)))
                     odds += _demo_odds(gid, g.start, mk, books, sim.rng, now)
-                    props += _demo_props(gid, g, books, sim, now)
+                    props += due
                 elif yr == last_hist:
                     odds += _demo_odds(gid, g.start, mk, {"draftkings": books["draftkings"]}, sim.rng, now, closing_only=True)
         for chunk in _chunks(games, 2000):

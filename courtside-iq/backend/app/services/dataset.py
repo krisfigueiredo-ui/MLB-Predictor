@@ -45,6 +45,30 @@ def games_df(db: Session, league: str, include_demo: bool = True) -> pd.DataFram
     return df
 
 
+def market_lines(db: Session, league: str, lead_minutes: int = 55) -> pd.DataFrame:
+    """Pre-game consensus (median across books of each book's latest snapshot captured at least
+    `lead_minutes` before tip-off) for the home spread and the full-game total."""
+    q = (select(m.OddsSnapshot.game_id, m.OddsSnapshot.sportsbook_id, m.OddsSnapshot.market, m.OddsSnapshot.line,
+                m.OddsSnapshot.captured_at, m.Game.start_time)
+         .join(m.Game, m.Game.id == m.OddsSnapshot.game_id)
+         .where(m.Game.league == league, m.OddsSnapshot.line.is_not(None),
+                ((m.OddsSnapshot.market == "spreads") & (m.OddsSnapshot.outcome == "home"))
+                | ((m.OddsSnapshot.market == "totals") & (m.OddsSnapshot.outcome == "over"))))
+    df = pd.DataFrame(db.execute(q).all(), columns=["id", "book", "market", "line", "captured_at", "start_time"])
+    if df.empty:
+        return pd.DataFrame(columns=["id", "mkt_spread_home", "mkt_total"])
+    cap = pd.to_datetime(df["captured_at"], utc=True)
+    st = pd.to_datetime(df["start_time"], utc=True)
+    df = df[cap <= st - pd.Timedelta(minutes=lead_minutes)].assign(captured_at=cap)
+    df = df.sort_values("captured_at").groupby(["id", "book", "market"]).tail(1)
+    piv = df.groupby(["id", "market"])["line"].median().unstack()
+    piv = piv.rename(columns={"spreads": "mkt_spread_home", "totals": "mkt_total"}).reset_index()
+    for c in ("mkt_spread_home", "mkt_total"):
+        if c not in piv:
+            piv[c] = float("nan")
+    return piv[["id", "mkt_spread_home", "mkt_total"]]
+
+
 def feature_frame(db: Session, league: str) -> pd.DataFrame:
     from ..ml.features import build_features
 
@@ -52,4 +76,6 @@ def feature_frame(db: Session, league: str) -> pd.DataFrame:
     if g.empty:
         return g
     f = build_features(g, teams_df(db, league), league)
-    return f.merge(g[["id", "start_time", "season", "status", "is_historical_sim", "home_team_id", "away_team_id"]], on="id")
+    f = f.merge(g[["id", "start_time", "season", "status", "is_historical_sim", "home_team_id", "away_team_id"]], on="id")
+    # market lines are NOT model features; they are used only for the market-informed blend
+    return f.merge(market_lines(db, league), on="id", how="left")

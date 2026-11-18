@@ -68,6 +68,7 @@ class GameModelBundle:
     train_start: str
     train_end: str
     n_train: int
+    blend: dict | None = None  # market-informed posterior weights (see train_game_model)
 
     # ---------- inference ----------
     def point(self, X: pd.DataFrame) -> dict[str, np.ndarray]:
@@ -78,10 +79,28 @@ class GameModelBundle:
             return p_raw
         return np.clip(self.calibrator.predict(np.asarray(p_raw)), 0.01, 0.99)
 
-    def simulate(self, mu_margin: float, mu_total: float, mu_h1: float, n: int, seed: int) -> dict:
+    def posterior(self, mu_margin: float, mu_total: float, mu_h1: float, spread_home: float | None,
+                  total_line: float | None) -> dict:
+        """Combine the model projection with the market line: mu = w*model + (1-w)*market.
+        Weights and residual SDs were fit on the out-of-sample calibration fold."""
+        b = self.blend or {}
+        out = dict(margin=mu_margin, total=mu_total, h1_total=mu_h1, sigma_margin=self.sigma_margin,
+                   sigma_total=self.sigma_total, w_margin=1.0, w_total=1.0, market_informed=False)
+        if b.get("w_margin") is not None and spread_home is not None:
+            w = b["w_margin"]
+            out.update(margin=w * mu_margin + (1 - w) * (-spread_home), sigma_margin=b["sigma_margin"], w_margin=w, market_informed=True)
+        if b.get("w_total") is not None and total_line is not None:
+            w = b["w_total"]
+            t = w * mu_total + (1 - w) * total_line
+            out.update(total=t, h1_total=mu_h1 * t / mu_total if mu_total else mu_h1, sigma_total=b["sigma_total"], w_total=w,
+                       market_informed=True)
+        return out
+
+    def simulate(self, mu_margin: float, mu_total: float, mu_h1: float, n: int, seed: int,
+                 sigma_margin: float | None = None, sigma_total: float | None = None) -> dict:
         rng = np.random.default_rng(seed)
-        cov = [[self.sigma_margin**2, self.rho * self.sigma_margin * self.sigma_total],
-               [self.rho * self.sigma_margin * self.sigma_total, self.sigma_total**2]]
+        sm, st = sigma_margin or self.sigma_margin, sigma_total or self.sigma_total
+        cov = [[sm**2, self.rho * sm * st], [self.rho * sm * st, st**2]]
         mt = rng.multivariate_normal([mu_margin, mu_total], cov, size=n)
         home = np.rint((mt[:, 1] + mt[:, 0]) / 2)
         away = np.rint((mt[:, 1] - mt[:, 0]) / 2)
@@ -213,7 +232,15 @@ def train_game_model(df: pd.DataFrame, league: str, data_source: str, seed: int 
     rh = calh["y_h1_total"].values - _pred_pair(models["h1_total"], calh[feats], "h1_total")
     sm, st, sh = float(np.std(rm)), float(np.std(rt)), float(np.std(rh))
     rho = float(np.corrcoef(rm, rt)[0, 1])
-    p_cal_raw = norm.cdf(_pred_pair(models["margin"], cal[feats], "margin") / sm)
+    # ---- market-informed blend: fit w on calibration rows that have a pre-game market line ----
+    blend = _fit_blend(cal, _pred_pair(models["margin"], cal[feats], "margin"), _pred_pair(models["total"], cal[feats], "total"))
+    mu_cal = _pred_pair(models["margin"], cal[feats], "margin")
+    sd_cal = np.full(len(cal), sm)
+    if blend:
+        has = cal["mkt_spread_home"].notna().values
+        mu_cal = np.where(has, blend["w_margin"] * mu_cal + (1 - blend["w_margin"]) * (-cal["mkt_spread_home"].fillna(0).values), mu_cal)
+        sd_cal = np.where(has, blend["sigma_margin"], sm)
+    p_cal_raw = norm.cdf(mu_cal / sd_cal)
     iso = IsotonicRegression(out_of_bounds="clip", y_min=0.01, y_max=0.99).fit(p_cal_raw, cal["y_home_win"].values)
 
     # ---- held-out test evaluation (never used for fitting) ----
@@ -247,6 +274,7 @@ def train_game_model(df: pd.DataFrame, league: str, data_source: str, seed: int 
                                   total=M.regression_metrics(te["naive_total"].values, te["y_total"].values)),
         ),
         residuals=dict(sigma_margin=sm, sigma_total=st, sigma_h1=sh, rho=rho),
+        market_blend=dict(fit=blend, test=_blend_eval(te, pm, pt, sm, st, blend)),
         walk_forward=walk_forward(df, feats, seed=seed),
         feature_importance=_importance(models, feats),
     )
@@ -256,7 +284,54 @@ def train_game_model(df: pd.DataFrame, league: str, data_source: str, seed: int 
         league=league, version=version, features=feats, models=models, sigma_margin=sm, sigma_total=st,
         rho=rho, sigma_h1=sh, calibrator=iso, metrics=metrics, trained_at=now.isoformat(),
         data_source=data_source, train_start=str(tr.start_time.min()), train_end=str(tr.start_time.max()), n_train=len(tr),
+        blend=blend,
     )
+
+
+def _fit_blend(cal: pd.DataFrame, pm: np.ndarray, pt: np.ndarray, min_rows: int = 100) -> dict | None:
+    if "mkt_spread_home" not in cal:
+        return None
+    has_m, has_t = cal["mkt_spread_home"].notna().values, cal["mkt_total"].notna().values
+    if has_m.sum() < min_rows or has_t.sum() < min_rows:
+        return None
+    grid = np.linspace(0, 1, 41)
+    ym, mm = cal["y_margin"].values[has_m], -cal["mkt_spread_home"].values[has_m]
+    yt, mt = cal["y_total"].values[has_t], cal["mkt_total"].values[has_t]
+    em = [np.mean((w * pm[has_m] + (1 - w) * mm - ym) ** 2) for w in grid]
+    et = [np.mean((w * pt[has_t] + (1 - w) * mt - yt) ** 2) for w in grid]
+    wm, wt = float(grid[int(np.argmin(em))]), float(grid[int(np.argmin(et))])
+    return dict(w_margin=wm, w_total=wt, sigma_margin=float(np.sqrt(min(em))), sigma_total=float(np.sqrt(min(et))),
+                n_margin=int(has_m.sum()), n_total=int(has_t.sum()),
+                note="w = weight on the model; 1-w on the pre-game market line. Fit by MSE on the calibration fold.")
+
+
+def _blend_eval(te: pd.DataFrame, pm, pt, sm, st, blend) -> dict | None:
+    """Against-the-spread / over-under calibration on the test fold: model-only vs market-informed."""
+    if "mkt_spread_home" not in te:
+        return None
+    out = {}
+    hm = te["mkt_spread_home"].notna().values
+    if hm.sum() >= 30:
+        line = te["mkt_spread_home"].values[hm]
+        y = te["y_margin"].values[hm] + line
+        keep = y != 0
+        yc = (y[keep] > 0).astype(float)
+        p_model = norm.cdf((pm[hm][keep] + line[keep]) / sm)
+        out["spread_model_only"] = M.classification_metrics(p_model, yc)
+        if blend:
+            mu = blend["w_margin"] * pm[hm] + (1 - blend["w_margin"]) * (-line)
+            out["spread_market_informed"] = M.classification_metrics(norm.cdf((mu[keep] + line[keep]) / blend["sigma_margin"]), yc)
+    ht = te["mkt_total"].notna().values
+    if ht.sum() >= 30:
+        line = te["mkt_total"].values[ht]
+        y = te["y_total"].values[ht] - line
+        keep = y != 0
+        yo = (y[keep] > 0).astype(float)
+        out["total_model_only"] = M.classification_metrics(norm.cdf((pt[ht][keep] - line[keep]) / st), yo)
+        if blend:
+            mu = blend["w_total"] * pt[ht] + (1 - blend["w_total"]) * line
+            out["total_market_informed"] = M.classification_metrics(norm.cdf((mu[keep] - line[keep]) / blend["sigma_total"]), yo)
+    return out or None
 
 
 def _importance(models, feats) -> list[dict]:

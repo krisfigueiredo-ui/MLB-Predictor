@@ -150,16 +150,30 @@ def project_game(db: Session, game: m.Game, n_sims: int | None = None, explain: 
     settings = get_settings()
     n = n_sims or settings.monte_carlo_sims
     cons = market.consensus(db, game.id, as_of=as_of)
-    sims = bundle.simulate(float(pt["margin"][0]), float(pt["total"][0]), float(pt["h1_total"][0]), n,
-                           seed=settings.random_seed + game.id)
+    post = bundle.posterior(float(pt["margin"][0]), float(pt["total"][0]), float(pt["h1_total"][0]),
+                            cons.get("spread_home"), cons.get("total")) if hasattr(bundle, "posterior") else None
+    if post:
+        sims = bundle.simulate(post["margin"], post["total"], post["h1_total"], n, seed=settings.random_seed + game.id,
+                               sigma_margin=post["sigma_margin"], sigma_total=post["sigma_total"])
+    else:
+        sims = bundle.simulate(float(pt["margin"][0]), float(pt["total"][0]), float(pt["h1_total"][0]), n,
+                               seed=settings.random_seed + game.id)
     summary = GM.summarize_sims(sims, cons.get("spread_home"), cons.get("total"), cons.get("h1_total"), bundle.calibrator)
+    tt = {}
+    for side in ("home", "away"):
+        ln = cons.get(f"team_total_{side}")
+        if ln is not None:
+            x = sims[side]
+            tt[side] = dict(line=ln, mean=float(x.mean()), p_over=float((x > ln).mean()), p_under=float((x < ln).mean()),
+                            p_push=float((x == ln).mean()))
+    summary["team_totals"] = tt
     out = dict(
         game_id=game.id, model_version=mv.version, model_data_source=mv.data_source, seed=settings.random_seed + game.id,
         projected=dict(margin=float(pt["margin"][0]), total=float(pt["total"][0]), h1_total=float(pt["h1_total"][0]),
                        home_score=float((pt["total"][0] + pt["margin"][0]) / 2),
                        away_score=float((pt["total"][0] - pt["margin"][0]) / 2),
                        spread_home=-float(pt["margin"][0])),
-        simulation=summary, market=cons,
+        simulation=summary, market=cons, posterior=post,
         features={k: float(row.iloc[0][k]) for k in bundle.features},
     )
     out["vs_market"] = market_comparison(out, cons)
@@ -237,11 +251,13 @@ def project_props(db: Session, game: m.Game, as_of: datetime | None = None, n_si
             continue
         injured = db.scalar(select(m.Injury).where(m.Injury.player_id == rm.player_id, m.Injury.cleared_at.is_(None),
                                                    m.Injury.status == "out"))
-        proj = pb.project(row, n_sims, seed=get_settings().random_seed + game.id * 1000 + rm.player_id)
+        anchors = {stat: v["line"] for (pid_, stat), v in lines.items() if pid_ == rm.player_id}
+        proj = pb.project(row, n_sims, seed=get_settings().random_seed + game.id * 1000 + rm.player_id, anchors=anchors)
         markets = {}
         for stat in PM.STATS + ["pra"]:
             ln = lines.get((rm.player_id, stat))
             summ = PM.summarize(proj["sims"][stat], ln["line"] if ln else None)
+            summ["model_only_mean"] = proj["model_means"].get(stat)
             if ln:
                 summ.update(book=ln["book"], over_price=ln["over_price"], under_price=ln["under_price"],
                             captured_at=ln["captured_at"],
@@ -304,16 +320,11 @@ def archive_game_predictions(db: Session, game: m.Game, as_of: datetime | None =
                                      predicted_prob=t[f"p_{sel}"], line=t["market_line"],
                                      price_american=cons.get(f"total_price_{sel}") if mk == "total" else None,
                                      details=dict(mode=mode, p_push=t["p_push"])))
-    # team totals (model team scores vs. market team-total lines)
-    for team_side in ("home", "away"):
-        ln = cons.get(f"team_total_{team_side}")
-        if ln is not None:
-            mu = proj["projected"][f"{team_side}_score"]
-            p_over = float(1 - _norm_cdf((ln - mu) / (proj["simulation"][f"{team_side}_score"]["sd"] or 1)))
-            sel = "over" if p_over >= 0.5 else "under"
-            rows.append(m.Prediction(**base, market=f"team_total_{team_side}", selection=sel, predicted_value=mu,
-                                     predicted_prob=p_over if sel == "over" else 1 - p_over, line=ln,
-                                     details=dict(mode=mode)))
+    # team totals: probabilities counted from the same (market-informed) simulation
+    for team_side, t in s.get("team_totals", {}).items():
+        sel = "over" if t["p_over"] >= t["p_under"] else "under"
+        rows.append(m.Prediction(**base, market=f"team_total_{team_side}", selection=sel, predicted_value=proj["projected"][f"{team_side}_score"],
+                                 predicted_prob=t[f"p_{sel}"], line=t["line"], details=dict(mode=mode, p_push=t["p_push"])))
     # props
     pmv = active_version(db, game.league, "props")
     if pmv:
@@ -330,6 +341,7 @@ def archive_game_predictions(db: Session, game: m.Game, as_of: datetime | None =
                                          predicted_value=sm["mean"], predicted_prob=sm[f"p_{sel}"], line=sm["line"],
                                          price_american=sm["over_price"] if sel == "over" else sm["under_price"],
                                          details=dict(mode=mode, p_push=sm["p_push"], minutes=pp["minutes"]["mean"],
+                                                      model_only_mean=sm.get("model_only_mean"),
                                                       book=sm.get("book"))))
     db.add_all(rows)
     db.commit()

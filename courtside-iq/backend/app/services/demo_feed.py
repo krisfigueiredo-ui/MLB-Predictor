@@ -84,11 +84,17 @@ def tick(db: Session, now: datetime | None = None) -> dict:
                                                m.Game.start_time > now - timedelta(minutes=30),
                                                m.Game.start_time <= now + timedelta(hours=max(SNAP_OFFSETS_H))))
     for g in upcoming:
+        out = db.get(m.DemoOutcome, g.id)
+        pend = (out.payload.get("pending_props") or []) if out else []
+        if pend and _aware(datetime.fromisoformat(pend[0]["captured_at"])) <= now and not db.scalar(
+                select(m.PropLine.id).where(m.PropLine.game_id == g.id)):
+            for r in pend:
+                db.add(m.PropLine(**dict(r, captured_at=datetime.fromisoformat(r["captured_at"]))))
+            changed["snapshots"] += len(pend)
         have = {_aware(t) for (t,) in db.execute(select(m.OddsSnapshot.captured_at).where(m.OddsSnapshot.game_id == g.id).distinct())}
         due = [_aware(g.start_time) - timedelta(hours=o) for o in SNAP_OFFSETS_H]
         if all(d > now or d in have for d in due):
             continue
-        out = db.get(m.DemoOutcome, g.id)
         rng = np.random.default_rng(g.id)
         rows = [r for r in _demo_odds(g.id, _aware(g.start_time), out.payload["market"], books, rng, now) if _aware(r["captured_at"]) not in have]
         for r in rows:
