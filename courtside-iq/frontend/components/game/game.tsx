@@ -12,12 +12,12 @@ import type { BoardRow, Explain, Game, PropProjection, Simulation, Team, VsMarke
 export function StatusPill({ g }: { g: Game }) {
   if (g.status === "live")
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-md bg-loss/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-loss">
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-loss/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-loss">
         <LiveDot /> {periodLabel(g.league, g.period, g.clock, g.status)}
       </span>
     );
-  if (g.status === "final") return <span className="rounded-md bg-ink-700 px-2 py-0.5 font-mono text-[11px] font-semibold text-mist-300">FINAL</span>;
-  return <span className="rounded-md bg-volt/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-volt-300">{timeShort(g.start_time)}</span>;
+  if (g.status === "final") return <span className="whitespace-nowrap rounded-md bg-ink-700 px-2 py-0.5 font-mono text-[11px] font-semibold text-mist-300">FINAL</span>;
+  return <span className="whitespace-nowrap rounded-md bg-volt/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-volt-300">{timeShort(g.start_time)}</span>;
 }
 
 /** Matchup card used on the Command Center and league centers. */
@@ -68,10 +68,10 @@ export function MatchupCard({ row, index = 0 }: { row: BoardRow; index?: number 
           <ProbBar left={s.win_prob_away} right={s.win_prob_home} leftColor={g.away.primary} rightColor={g.home.primary} />
         </div>
         <div className="mt-3 grid grid-cols-3 divide-x divide-line/60 border-t border-line/60">
-          <MiniMetric label={`Spread ${g.home.abbr}`} vegas={sp ? spreadLine(sp.market_line_home) : "—"} model={spreadLine(row.projected.spread_home)} edge={sp?.line_diff} />
+          <MiniMetric label="Spread" vegas={sp ? spreadLine(sp.market_line_home) : "—"} model={spreadLine(row.projected.spread_home)} edge={sp?.line_diff} />
           <MiniMetric label="Total" vegas={tot ? num(tot.market_line, 1) : "—"} model={num(row.projected.total, 1)} edge={tot ? tot.line_diff : undefined} />
           <MiniMetric
-            label="Home win"
+            label="Win %"
             vegas={vs.moneyline ? pct(vs.moneyline.no_vig_home, 0) : "—"}
             model={pct(s.win_prob_home, 0)}
             edgeText={vs.moneyline ? `${signed(vs.moneyline.diff_home * 100, 1)} pp` : undefined}

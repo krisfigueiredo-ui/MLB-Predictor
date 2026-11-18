@@ -364,7 +364,7 @@ def explain(bundle: GameModelBundle, X: pd.DataFrame, target: str = "margin", to
 
 
 def tune_lightgbm(df: pd.DataFrame, league: str, n_trials: int = 20, seed: int = 7) -> dict:
-    """Optuna search on LightGBM margin MAE using a chronological validation fold."""
+    """Optuna search on the LightGBM residual (margin) learner, scored by MAE on a chronological validation fold."""
     import optuna
 
     feats = feature_names(league)
@@ -378,8 +378,9 @@ def tune_lightgbm(df: pd.DataFrame, league: str, n_trials: int = 20, seed: int =
                       min_child_samples=trial.suggest_int("min_child_samples", 10, 120),
                       n_estimators=trial.suggest_int("n_estimators", 150, 900),
                       reg_lambda=trial.suggest_float("reg_lambda", 0.0, 10.0))
-        m = _lgb({**params, "random_state": seed}).fit(tr[feats], tr["y_margin"])
-        return float(np.mean(np.abs(m.predict(va[feats]) - va["y_margin"])))
+        # tune the residual learner exactly as it is used in production (target = y - baseline)
+        m = _lgb({**params, "random_state": seed}).fit(tr[feats], tr["y_margin"] - tr["naive_margin"])
+        return float(np.mean(np.abs(va["naive_margin"].values + m.predict(va[feats]) - va["y_margin"].values)))
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
     study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=seed))

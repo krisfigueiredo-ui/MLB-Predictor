@@ -393,11 +393,14 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
 
 function ScoreSide({ team, score, proj, label, right }: { team: any; score: number | null; proj?: number; label: string; right?: boolean }) {
   return (
-    <Link href={`/teams/${team.id}`} className={cn("group flex min-w-0 items-center gap-3 md:gap-5", right && "flex-row-reverse text-right")}>
+    <Link
+      href={`/teams/${team.id}`}
+      className={cn("group flex min-w-0 flex-col items-center gap-2 text-center md:flex-row md:gap-5 md:text-left", right && "md:flex-row-reverse md:text-right")}
+    >
       <TeamCrest team={team} size={72} className="h-12 w-12 md:h-[72px] md:w-[72px]" />
       <div className="min-w-0">
         <div className="label">{label}</div>
-        <div className="truncate font-display text-lg font-semibold text-mist group-hover:text-volt-300 md:text-2xl">{team.location}</div>
+        <div className="font-display text-base font-semibold leading-tight text-mist group-hover:text-volt-300 md:truncate md:text-2xl">{team.location}</div>
         <div className="truncate text-xs text-mist-400 md:text-sm">{team.nickname}</div>
       </div>
     </Link>

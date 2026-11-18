@@ -115,3 +115,9 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system map and [VALIDATION.m
 ## Deployment
 
 Every push to `main` runs unit tests and packages `index.html`, `css/`, and the complete `js/` tree for GitHub Pages. The Three.js module remains external and lazy-loaded from a pinned CDN version.
+
+---
+
+## Also in this repository: COURTSIDE IQ
+
+[`courtside-iq/`](courtside-iq/) contains **COURTSIDE IQ**, a separate NBA and college basketball analytics platform (FastAPI + Next.js) with ML projections, sportsbook comparison, player props, a prediction archive, data import/cleaning and a Claude research assistant. See [`courtside-iq/README.md`](courtside-iq/README.md).

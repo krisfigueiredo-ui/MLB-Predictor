@@ -89,3 +89,10 @@ html[data-density="compact"] {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+/* Grid/flex items default to min-width:auto, which lets wide tables inside scroll containers
+   stretch the whole layout on small screens. Allow them to shrink. */
+.grid > *,
+main > * {
+  min-width: 0;
+}

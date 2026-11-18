@@ -32,7 +32,7 @@ export function PanelHeader({
   icon?: React.ReactNode;
 }) {
   return (
-    <header className={cn("flex items-start justify-between gap-3 border-b border-line/70 px-4 py-3", className)}>
+    <header className={cn("flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-line/70 px-4 py-3", className)}>
       <div className="min-w-0">
         {eyebrow && <div className="label mb-0.5">{eyebrow}</div>}
         <h3 className="flex items-center gap-2 truncate font-display text-[15px] font-semibold tracking-tight text-mist">
@@ -40,7 +40,7 @@ export function PanelHeader({
           {title}
         </h3>
       </div>
-      {right && <div className="flex shrink-0 items-center gap-2">{right}</div>}
+      {right && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{right}</div>}
     </header>
   );
 }
@@ -131,7 +131,7 @@ export function Segmented<T extends string>({
   size?: "sm" | "md";
 }) {
   return (
-    <div role="tablist" className={cn("inline-flex rounded-lg border border-line bg-ink-900/80 p-0.5", className)}>
+    <div role="tablist" className={cn("inline-flex max-w-full flex-wrap rounded-lg border border-line bg-ink-900/80 p-0.5", className)}>
       {options.map((o) => (
         <button
           key={o.value}

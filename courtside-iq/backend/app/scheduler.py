@@ -84,7 +84,8 @@ def loop(stop: threading.Event):
     while not stop.is_set():
         try:
             r = run_cycle()
-            if any(v for k, v in r.items() if k != "demo") or (r.get("demo") and any(r["demo"].values())):
+            d = r.get("demo") or {}
+            if any(v for k, v in r.items() if k != "demo") or d.get("final") or d.get("snapshots"):
                 log.info("cycle: %s", r)
         except Exception:
             _state["errors"] += 1

@@ -165,7 +165,8 @@ function Performance({ lq }: { lq: string }) {
         </Panel>
         <Panel>
           <PanelHeader eyebrow="Monthly" title="Performance by month" />
-          <table className="w-full text-[12.5px]">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[420px] text-[12.5px]">
             <thead>
               <tr className="border-b border-line/70">
                 {["Month", "n", "Win %", "Avg pred", "Brier", "Units"].map((h) => (
@@ -186,6 +187,7 @@ function Performance({ lq }: { lq: string }) {
               ))}
             </tbody>
           </table>
+          </div>
           <div className="grid grid-cols-2 gap-px border-t border-line/60 bg-line/40">
             {Object.entries<PerfBlock>(s.data.over_under ?? {}).map(([k, v]) => (
               <div key={k} className="bg-ink-850 px-4 py-3">
