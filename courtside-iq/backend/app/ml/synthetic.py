@@ -234,11 +234,11 @@ class LeagueSimulator:
             mins = float(np.clip(r.normal(prof["min"] - blowout, 3.2), 8, 46))
             pace_f = poss / self.p["pace"]
             f = mins / 36 * pace_f * pl.talent
-            flow = r.gamma(12, 1 / 12)  # shared game-flow multiplier => stat correlation
+            flow = r.gamma(30, 1 / 30)  # shared game-flow multiplier => stat correlation
             line = dict(player_id=pl.player_id, team_id=pl.team_id, minutes=round(mins, 1), started=True)
             for k in ("pts", "reb", "ast", "fg3m", "stl", "blk", "fga", "fta", "tov"):
                 mu = max(0.05, prof[k] * f * (flow if k in ("pts", "ast", "fga", "fg3m") else 1.0))
-                disp = 6.0 if k in ("pts", "fga") else 4.0
+                disp = 30.0 if k in ("pts", "fga") else 12.0
                 line[k] = int(r.negative_binomial(disp, disp / (disp + mu)))
             line["fg3a"] = max(line["fg3m"], int(round(line["fg3m"] / 0.36 + r.normal(0, 1))))
             team_fga = (g.result["home"] if pl.team_id == g.home else g.result["away"])["fga"]

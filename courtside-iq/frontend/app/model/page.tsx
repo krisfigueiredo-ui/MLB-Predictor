@@ -119,7 +119,7 @@ function GameModelCard({ m }: { m: any }) {
                 legend: { top: 0, textStyle: { color: C.mist4, fontSize: 11 } },
                 tooltip: { ...tooltip, valueFormatter: (v: any) => (v as number).toFixed(2) },
                 xAxis: { type: "category", data: ["Margin", "Total"], ...baseAxis },
-                yAxis: { type: "value", scale: true, ...baseAxis },
+                yAxis: { type: "value", min: (v: { min: number }) => Math.floor(v.min * 0.9), ...baseAxis },
                 series: [
                   { name: "LGBM+CatBoost", type: "bar", data: [t.margin.mae, t.total.mae], itemStyle: { color: C.volt, borderRadius: [3, 3, 0, 0] } },
                   { name: "XGBoost", type: "bar", data: [bm.xgboost.margin.mae, bm.xgboost.total.mae], itemStyle: { color: C.violet, borderRadius: [3, 3, 0, 0] } },

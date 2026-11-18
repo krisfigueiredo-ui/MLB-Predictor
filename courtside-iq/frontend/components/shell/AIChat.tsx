@@ -85,7 +85,9 @@ export function AIChat({ compact, context }: { compact?: boolean; context?: Reco
       setMsgs((m) => [...m, { role: "assistant", content: r.answer ?? "", citations: r.citations, tool_calls: r.tool_calls, error: r.error, model: r.model }]),
     onError: (e: any) => setMsgs((m) => [...m, { role: "assistant", content: "", error: e.message }]),
   });
-  useEffect(() => bottom.current?.scrollIntoView({ behavior: "smooth" }), [msgs, ask.isPending]);
+  useEffect(() => {
+    bottom.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [msgs, ask.isPending]);
   const send = (text: string) => {
     if (!text.trim() || ask.isPending) return;
     setMsgs((m) => [...m, { role: "user", content: text }]);

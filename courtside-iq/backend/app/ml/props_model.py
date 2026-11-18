@@ -166,7 +166,7 @@ def train_props_model(pf: pd.DataFrame, league: str, data_source: str, seed: int
         r = float(np.clip(np.mean(mu[ok] ** 2) / max(var_excess, 1e-3), 1.5, 60.0))
         disp[s] = r
     bundle = PropsBundle(league, f"{league.lower()}-props-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}", mm,
-                         sig_min, disp, 12.0, {}, datetime.now(timezone.utc).isoformat(), data_source, len(tr))
+                         sig_min, disp, 30.0, {}, datetime.now(timezone.utc).isoformat(), data_source, len(tr))
     # ---- held-out evaluation: MAE of mean projection & calibration of P(over floor(mean)+0.5) ----
     ev = {"minutes": M.regression_metrics(mm.predict(te[MIN_FEATURES]), te["y_min"].values)}
     sample = te.sample(min(400, len(te)), random_state=seed)

@@ -5,7 +5,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 import numpy as np
-from sqlalchemy import func, insert, select
+from sqlalchemy import func, insert, select, text
 from sqlalchemy.orm import Session
 
 from .. import models as m
@@ -135,9 +135,19 @@ def generate_demo_data(db: Session, seed: int, now: datetime | None = None) -> d
         for chunk in _chunks(outcomes, 2000):
             db.execute(insert(m.DemoOutcome), chunk)
         db.commit()
+        _sync_sequences(db)
         summary[league] = dict(games=len(games), team_stats=len(tstats), player_stats=len(pstats), odds=len(odds))
         log.info("demo %s: %s", league, summary[league])
     return summary
+
+
+def _sync_sequences(db: Session) -> None:
+    """Explicit-ID bulk inserts bypass PostgreSQL sequences; move them past MAX(id)."""
+    if db.bind.dialect.name != "postgresql":
+        return
+    for table in ("games", "team_game_stats", "player_game_stats", "odds_snapshots", "prop_lines"):
+        db.execute(text(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), COALESCE((SELECT MAX(id) FROM {table}), 1))"))
+    db.commit()
 
 
 def _chunks(xs, n):

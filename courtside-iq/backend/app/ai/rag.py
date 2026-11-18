@@ -42,7 +42,11 @@ def upsert(db: Session, source_type: str, source_id: str, title: str, content: s
 def search(db: Session, query: str, k: int = 6, source_types: list[str] | None = None) -> list[dict]:
     qv = embed(query)
     if db.bind.dialect.name == "postgresql":
-        q = select(m.AIDocument, m.AIDocument.embedding.cosine_distance(qv).label("d"))  # pgvector operator
+        from pgvector.sqlalchemy import Vector
+        from sqlalchemy import Float, bindparam
+
+        dist = m.AIDocument.embedding.op("<=>", return_type=Float)(bindparam("qv", qv, type_=Vector(DIM)))  # pgvector cosine distance
+        q = select(m.AIDocument, dist.label("d"))
         if source_types:
             q = q.where(m.AIDocument.source_type.in_(source_types))
         rows = db.execute(q.order_by("d").limit(k)).all()

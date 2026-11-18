@@ -34,16 +34,21 @@ def live_state(league: str, start: datetime, now: datetime, final_home: int, fin
     period = int(frac * nper) + 1
     in_period = frac * nper - (period - 1)
     secs = int((1 - in_period) * plen * 60)
-    rng = np.random.default_rng(seed + int(frac * 1000))
-    if frac <= 0.5:
-        f = frac / 0.5
-        h, a = h1_home * f, h1_away * f
-    else:
-        f = (frac - 0.5) / 0.5
-        h = h1_home + (final_home - h1_home) * f
-        a = h1_away + (final_away - h1_away) * f
-    h = int(max(0, round(h + rng.normal(0, 1.2))))
-    a = int(max(0, round(a + rng.normal(0, 1.2))))
+    # Deterministic, monotonic scoring path anchored at the half-time and final scores.
+    # A per-game phase gives each team uneven runs without ever decreasing a score.
+    phase = (seed % 97) / 97 * 6.283
+
+    def path(x: float, k: float) -> float:  # monotonic on [0,1], path(0)=0, path(1)=1
+        return min(1.0, max(0.0, x + 0.6 * np.sin(6.283 * 2 * x + k) / (6.283 * 2) - 0.6 * np.sin(k) / (6.283 * 2) * (1 - x)
+                                - 0.6 * np.sin(6.283 * 2 + k) / (6.283 * 2) * x))
+
+    def team(h1: int, fin: int, k: float) -> int:
+        if frac <= 0.5:
+            return int(np.floor(h1 * path(frac / 0.5, k)))
+        return int(np.floor(h1 + (fin - h1) * path((frac - 0.5) / 0.5, k + 1.3)))
+
+    h = team(h1_home, final_home, phase)
+    a = team(h1_away, final_away, phase + 2.1)
     return dict(status="live", period=period, clock=f"{secs // 60}:{secs % 60:02d}", home=h, away=a, frac=frac)
 
 
