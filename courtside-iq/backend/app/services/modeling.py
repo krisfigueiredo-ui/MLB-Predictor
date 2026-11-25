@@ -237,6 +237,7 @@ def project_props(db: Session, game: m.Game, as_of: datetime | None = None, n_si
     members = db.execute(select(m.RosterMembership).where(m.RosterMembership.team_id.in_([game.home_team_id, game.away_team_id]),
                                                           m.RosterMembership.end_date.is_(None))).scalars().all()
     lines = market.prop_lines(db, game.id, as_of=as_of)
+    prop_weights = ((mv.params or {}).get("prop_blend") or {}).get("weights") or PM.PROP_MODEL_WEIGHT
     out = []
     for rm in members:
         ph = hist[hist["player_id"] == rm.player_id]
@@ -252,7 +253,8 @@ def project_props(db: Session, game: m.Game, as_of: datetime | None = None, n_si
         injured = db.scalar(select(m.Injury).where(m.Injury.player_id == rm.player_id, m.Injury.cleared_at.is_(None),
                                                    m.Injury.status == "out"))
         anchors = {stat: v["line"] for (pid_, stat), v in lines.items() if pid_ == rm.player_id}
-        proj = pb.project(row, n_sims, seed=get_settings().random_seed + game.id * 1000 + rm.player_id, anchors=anchors)
+        proj = pb.project(row, n_sims, seed=get_settings().random_seed + game.id * 1000 + rm.player_id, anchors=anchors,
+                          w_model=prop_weights)
         markets = {}
         for stat in PM.STATS + ["pra"]:
             ln = lines.get((rm.player_id, stat))
@@ -270,6 +272,70 @@ def project_props(db: Session, game: m.Game, as_of: datetime | None = None, n_si
                                      p90=float(np.percentile(proj["sims"]["min"], 90))),
                         blowout_risk=float(g["naive_margin"]), markets=markets,
                         correlation=_corr(proj["sims"])))
+    return out
+
+
+def fit_prop_blend(db: Session, league: str, min_n: int = 120) -> dict:
+    """Fit, per stat, the weight w on the pure model mean versus the sportsbook line,
+    mean = w*model + (1-w)*line, by least squares on settled archived prop forecasts.
+
+    Honest evaluation: w is first fit on the oldest 70% of forecasts and scored on the newest
+    30% (holdout MSE vs model-only and line-only); the weight stored for future use is then
+    refit on all of them. Archived predictions are never rewritten.
+    """
+    mv = active_version(db, league, "props")
+    if mv is None:
+        return {"status": "no props model"}
+    rows = []
+    q = (select(m.Prediction, m.Game.start_time).join(m.Game, m.Game.id == m.Prediction.game_id)
+         .where(m.Prediction.league == league, m.Prediction.market.like("prop_%"),
+                m.Prediction.result.in_(["win", "loss", "push"]), m.Prediction.actual_value.is_not(None)))
+    for p, st in db.execute(q).all():
+        mom = (p.details or {}).get("model_only_mean")
+        if mom is None or p.line is None:
+            continue
+        rows.append(dict(stat=p.market[5:], t=st, model=float(mom), line=float(p.line), y=float(p.actual_value)))
+    df = pd.DataFrame(rows)
+    out = {"weights": {}, "evaluation": {}, "fitted_at": datetime.now(timezone.utc).isoformat(), "min_n": min_n}
+    if df.empty:
+        out["status"] = "no settled prop forecasts with archived model means"
+        return out
+
+    def fit(d: pd.DataFrame) -> float:
+        dm, dy = (d["model"] - d["line"]).values, (d["y"] - d["line"]).values
+        den = float(np.sum(dm * dm))
+        return float(np.clip(np.sum(dm * dy) / den, 0.0, 1.0)) if den > 0 else 0.0
+
+    for stat, d in df.sort_values("t").groupby("stat"):
+        n = len(d)
+        if n < min_n:
+            out["evaluation"][stat] = {"n": n, "status": f"insufficient sample (< {min_n}); prior {PM.PROP_MODEL_WEIGHT} kept"}
+            continue
+        cut = int(n * 0.7)
+        tr, ho = d.iloc[:cut], d.iloc[cut:]
+        w_tr = fit(tr)
+        mse = lambda pred: float(np.mean((pred - ho["y"].values) ** 2))  # noqa: E731
+        out["evaluation"][stat] = {
+            "n": n, "n_holdout": len(ho), "w_train": w_tr,
+            "holdout_mse_model_only": mse(ho["model"].values), "holdout_mse_line_only": mse(ho["line"].values),
+            "holdout_mse_blended": mse(w_tr * ho["model"].values + (1 - w_tr) * ho["line"].values),
+            "holdout_mse_prior": mse(PM.PROP_MODEL_WEIGHT * ho["model"].values + (1 - PM.PROP_MODEL_WEIGHT) * ho["line"].values),
+        }
+        ev = out["evaluation"][stat]
+        if stat != "pra":  # PRA is the sum of anchored pts/reb/ast draws, not anchored itself
+            # adopt the fitted weight only if it beat the prior on the out-of-time holdout
+            if ev["holdout_mse_blended"] < ev["holdout_mse_prior"]:
+                out["weights"][stat] = fit(d)
+                ev["decision"] = "fitted weight adopted (beat the prior on holdout)"
+            else:
+                out["weights"][stat] = PM.PROP_MODEL_WEIGHT
+                ev["decision"] = f"prior {PM.PROP_MODEL_WEIGHT} kept (fitted weight did not beat it on holdout)"
+    params = dict(mv.params or {})
+    params["prop_blend"] = out
+    mv.params = params
+    db.commit()
+    with _lock:
+        _cache.pop(mv.id, None)
     return out
 
 

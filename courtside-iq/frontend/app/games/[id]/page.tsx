@@ -247,7 +247,8 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                       <div className="mt-0.5 font-mono text-xs text-mist-300">
                         {s ? (
                           <>
-                            open {k === "h2h" ? american(s.open) : s.open} → now {k === "h2h" ? american(s.current) : s.current}{" "}
+                            open {k === "h2h" ? american(s.open) : s.open} → {s.closed ? "close" : "now"}{" "}
+                            {k === "h2h" ? american(s.closed && s.close != null ? s.close : s.current) : s.closed && s.close != null ? s.close : s.current}{" "}
                             <span className={cn(s.move ? "text-flare" : "text-mist-500")}>({signed(s.move, 1)})</span>
                           </>
                         ) : (

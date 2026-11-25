@@ -92,12 +92,17 @@ def movement(db: Session, game_id: int) -> dict:
         if (s.market, s.outcome) in (("spreads", "home"), ("totals", "over"), ("h2h", "home")):
             series[f"{s.market}"].append(dict(t=_aware(s.captured_at).isoformat(), book=books[s.sportsbook_id],
                                               line=s.line, price=s.price_american))
+    game = db.get(m.Game, game_id)
+    start = _aware(game.start_time) if game else None
+    started = bool(start and start <= datetime.now(timezone.utc))
     summary = {}
     for mk, pts in series.items():
         key = "price" if mk == "h2h" else "line"
         first, last = pts[0], pts[-1]
+        pre = [p for p in pts if start is None or datetime.fromisoformat(p["t"]) <= start]
         summary[mk] = dict(open=first[key], current=last[key], move=(last[key] - first[key]) if first[key] is not None else None,
-                           opened_at=first["t"], last_at=last["t"], n_snapshots=len(pts))
+                           opened_at=first["t"], last_at=last["t"], n_snapshots=len(pts),
+                           close=pre[-1][key] if (started and pre) else None, closed=started)
     return dict(series=series, summary=summary, n=len(snaps))
 
 

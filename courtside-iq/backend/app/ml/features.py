@@ -221,7 +221,9 @@ def build_features(games: pd.DataFrame, teams: pd.DataFrame, league: str) -> pd.
                 a_continuity=float(ac.get("roster_continuity", 0.5)),
                 same_conf=float(hi.get("conference") is not None and hi.get("conference") == ai.get("conference")),
             )
-        played = g.status == "final" and not (isinstance(g.home_points, float) and math.isnan(g.home_points))
+        has_score = not (isinstance(g.home_points, float) and math.isnan(g.home_points))
+        score_only = g.status == "final_no_box" and has_score  # final score known, box score not
+        played = (g.status == "final" and has_score) or score_only
         if played:
             f.update(
                 y_margin=g.home_points - g.away_points, y_total=g.home_points + g.away_points,
@@ -235,16 +237,24 @@ def build_features(games: pd.DataFrame, teams: pd.DataFrame, league: str) -> pd.
         # ---- fold the result into team state (after features were recorded) ----
         hr = {k: getattr(g, f"home_{k}") for k in ("points", "fgm", "fga", "fg3m", "fg3a", "ftm", "fta", "oreb", "dreb", "tov", "possessions", "h1_points")}
         ar = {k: getattr(g, f"away_{k}") for k in hr}
-        hf, af = four_factors(hr, ar), four_factors(ar, hr)
+        if score_only:
+            # No box score: efficiency from points over the possessions both teams were expected to
+            # play; pace and the four factors are left unchanged (no information about them).
+            poss_est = exp_pace
+            hf = dict(ortg=100 * hr["points"] / poss_est)
+            af = dict(ortg=100 * ar["points"] / poss_est)
+        else:
+            hf, af = four_factors(hr, ar), four_factors(ar, hr)
         for st, mine, theirs, is_home, opp_st in ((h, hf, af, True, a), (a, af, hf, False, h)):
             pre_opp_net = opp_st.shrunk_net()
             st.ortg += alpha * (mine["ortg"] - st.ortg) * (1 if st.n > 3 else 3)
             st.drtg += alpha * (theirs["ortg"] - st.drtg) * (1 if st.n > 3 else 3)
-            st.pace += alpha * (mine["pace"] - st.pace) * (1 if st.n > 3 else 2)
-            for key in ("efg", "tov", "orb", "ftr"):
-                setattr(st, key, getattr(st, key) + alpha * (mine[key] - getattr(st, key)))
-                dk = f"d_{key}"
-                setattr(st, dk, getattr(st, dk) + alpha * (theirs[key] - getattr(st, dk)))
+            if not score_only:
+                st.pace += alpha * (mine["pace"] - st.pace) * (1 if st.n > 3 else 2)
+                for key in ("efg", "tov", "orb", "ftr"):
+                    setattr(st, key, getattr(st, key) + alpha * (mine[key] - getattr(st, key)))
+                    dk = f"d_{key}"
+                    setattr(st, dk, getattr(st, dk) + alpha * (theirs[key] - getattr(st, dk)))
             net = mine["ortg"] - theirs["ortg"]
             st.recent.append(net)
             st.opp_net_sum += pre_opp_net

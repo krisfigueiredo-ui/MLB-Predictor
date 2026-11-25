@@ -24,9 +24,10 @@ FLOW_STATS = {"pts", "ast", "fg3m"}
 MIN_FEATURES = ["min_ewm", "min_last5", "min_season", "games", "rest", "blowout_risk", "team_injury", "is_home"]
 LEAGUE_PACE = {"NBA": 99.0, "CBB": 68.0}
 LEAGUE_ORTG = {"NBA": 113.0, "CBB": 104.0}
-# Weight on the model when a sportsbook line exists: mean = w*model + (1-w)*line. This is a
-# documented prior (no historical prop-line archive to fit it on yet); refit it once enough
-# settled prop predictions exist (details.model_only_mean is archived for that purpose).
+# Weight on the model when a sportsbook line exists: mean = w*model + (1-w)*line.
+# 0.5 is only the prior used until enough settled prop forecasts exist; after that,
+# services.modeling.fit_prop_blend fits a per-stat weight from the archive (pure model means
+# are stored in details.model_only_mean) and stores it on the props model version.
 PROP_MODEL_WEIGHT = 0.5
 
 
@@ -109,7 +110,9 @@ class PropsBundle:
     data_source: str
     n_train: int
 
-    def project(self, row: dict, n: int, seed: int, anchors: dict | None = None, w_model: float = PROP_MODEL_WEIGHT) -> dict:
+    def project(self, row: dict, n: int, seed: int, anchors: dict | None = None,
+                w_model: float | dict = PROP_MODEL_WEIGHT) -> dict:
+        """w_model: weight on the model mean when a line exists (float, or per-stat dict of fitted weights)."""
         X = pd.DataFrame([{k: row.get(k, np.nan) for k in MIN_FEATURES}])
         mu_min = float(np.clip(self.minutes_model.predict(X)[0], 0, 46))
         rates = _rates(row, self.league)
@@ -122,7 +125,8 @@ class PropsBundle:
             model_means[s] = rt * mu_min
             scale = 1.0
             if anchors and s in anchors and model_means[s] > 0.05:
-                scale = (w_model * model_means[s] + (1 - w_model) * anchors[s]) / model_means[s]
+                w = w_model.get(s, PROP_MODEL_WEIGHT) if isinstance(w_model, dict) else w_model
+                scale = (w * model_means[s] + (1 - w) * anchors[s]) / model_means[s]
             mu = np.maximum(1e-3, rt * scale * mins * (flow if s in FLOW_STATS else 1.0))
             r = self.dispersion[s]
             sims[s] = rng.negative_binomial(r, r / (r + mu))

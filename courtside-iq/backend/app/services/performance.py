@@ -129,3 +129,47 @@ def recent(db: Session, limit: int = 30, league: str | None = None) -> list[dict
     df = df.sort_values("start_time", ascending=False).head(limit)
     return [{k: (v.isoformat() if hasattr(v, "isoformat") else (None if isinstance(v, float) and np.isnan(v) else v))
              for k, v in r.items()} for r in df.to_dict("records")]
+
+
+def clv_report(db: Session, league: str | None = None) -> dict:
+    """Closing line value of archived pre-game forecasts vs the final pre-tip consensus.
+
+    spread: points gained on the selected side (archived line - closing line for that side)
+    total:  over -> close - archived; under -> archived - close
+    moneyline: closing no-vig probability of the side minus the implied probability of the
+               archived price (positive = the price was better than the close)
+    """
+    from .market import consensus
+    from .odds_math import implied_prob
+
+    df = official_predictions(db, league, include_pending=True)
+    if df.empty:
+        return dict(markets={}, n=0)
+    df = df[df["market"].isin(["spread", "total", "moneyline"])]
+    closes: dict[int, dict] = {}
+    rows = []
+    for r in df.itertuples():
+        if r.game_id not in closes:
+            closes[r.game_id] = consensus(db, r.game_id, as_of=r.start_time)
+        c = closes[r.game_id]
+        clv = None
+        if r.market == "spread" and r.line is not None and c.get("spread_home") is not None:
+            close_side = c["spread_home"] if r.selection == "home" else -c["spread_home"]
+            clv = r.line - close_side
+        elif r.market == "total" and r.line is not None and c.get("total") is not None:
+            clv = (c["total"] - r.line) if r.selection == "over" else (r.line - c["total"])
+        elif r.market == "moneyline" and r.price == r.price and r.price is not None and c.get("no_vig_home") is not None:
+            p_close = c["no_vig_home"] if r.selection == "home" else c["no_vig_away"]
+            clv = p_close - implied_prob(int(r.price))
+        if clv is not None:
+            rows.append(dict(market=r.market, clv=float(clv), result=r.result, start=r.start_time))
+    d = pd.DataFrame(rows)
+    if d.empty:
+        return dict(markets={}, n=0)
+    out = {}
+    for mk, g in d.groupby("market"):
+        se = float(g["clv"].std(ddof=1) / np.sqrt(len(g))) if len(g) > 1 else None
+        out[mk] = dict(n=int(len(g)), avg_clv=float(g["clv"].mean()), se=se, beat_close=float((g["clv"] > 0).mean()),
+                       matched_close=float((g["clv"] == 0).mean()), unit="probability" if mk == "moneyline" else "points")
+    return dict(markets=out, n=int(len(d)),
+                note="Forecast lines are frozen before tip-off; the closing line is the consensus of each book's last pre-tip snapshot.")

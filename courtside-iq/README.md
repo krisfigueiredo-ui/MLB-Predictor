@@ -19,7 +19,7 @@ courtside-iq/
 │   │   ├── scheduler.py       background refresh / forecast freezing / settlement
 │   │   └── cli.py             operations CLI
 │   ├── alembic/        migrations
-│   └── tests/          32 tests (run on SQLite and PostgreSQL + pgvector)
+│   └── tests/          36 tests (run on SQLite and PostgreSQL + pgvector)
 ├── frontend/           Next.js 15 · TypeScript · Tailwind · Radix (shadcn-style) · Framer Motion · ECharts · TanStack
 └── docker-compose.yml  Postgres+pgvector, Redis, API, worker, web
 ```
@@ -77,6 +77,10 @@ With keys configured, the scheduler pulls real games, scores and odds, freezes f
 | The Odds API v4 | `ODDS_API_KEY` | `/v4/sports/{basketball_nba,basketball_ncaab}/odds` (h2h, spreads, totals), `/events/{id}/odds` (`totals_h1`, `team_totals`, player props) | `x-requests-remaining` is tracked in provider health. Only bookmakers returned by the feed are shown (DraftKings, FanDuel, BetMGM, Caesars = `williamhill_us` by default). |
 | SportsDataIO | `SPORTSDATAIO_API_KEY` | configuration + health only | Endpoint mapping depends on your subscription; left for a subscriber to complete. |
 
+In live mode the scheduler also: pulls player box scores for finished NBA games and aggregates them into team box scores (so four factors and possessions update); refreshes the injury report every 30 minutes and writes each upcoming game's injury impact and lineup-change flag into its timestamped pre-game context; and pulls per-event markets (first-half totals, team totals, player props) hourly for games inside 12 hours. The same real game reported by the odds feed and the score feed is resolved to one row. Finals without a box score (including score-only CSV imports) still update offensive/defensive efficiency from points over expected possessions and are used as training targets.
+
+BALLDONTLIE field mapping follows its documented stat object (`min`, `fgm`, `fga`, …, `turnover`, `pts`) and tolerates common variants (`min` as "34" or "34:12", `tov`); per-quarter scores (`home_q1`…) are used for first-half totals only when present. The docs site wasn't reachable from the build sandbox to re-check these names, so the mapping is covered by tests on representative payloads and should be confirmed with a real key.
+
 Rate limiting (token bucket), exponential backoff on 429/5xx, response caching (Redis or in-memory), and a `provider_health` log are in `providers/base.py`. Mapping onto the schema, with name-based team matching for both leagues, is in `providers/sync.py`; it's tested against recorded payload shapes.
 
 ## Identity: teams, schools, players, logos, portraits
@@ -117,7 +121,7 @@ The ensemble beats both benchmarks, but the simulated market is sharp: for NBA s
 2. Per-minute rates are shrunk toward the season rate and adjusted for pace and opponent defense.
 3. Negative Binomial draws share a game-flow multiplier, so points, assists and threes are positively correlated; PRA is summed per draw.
 
-When a book line exists the mean is anchored 50/50 to the line. That weight is a documented prior, not a fitted value: there's no historical prop-line archive yet, and `details.model_only_mean` is archived so it can be refit later.
+When a book line exists the mean is anchored to it: `mean = w·model + (1−w)·line`, with `w` per stat. `w` starts at a 0.5 prior; once enough prop forecasts have settled, `fit_prop_blend` fits it on the oldest 70% of them (pure model means are archived in `details.model_only_mean`) and scores it on the newest 30%. A fitted weight is adopted only if it beats the prior on that holdout, and it applies to future forecasts only. On demo data the fitted weights are ≈0–0.2 for most stats (the simulated prop market is sharp); points kept the prior because the fitted weight lost on the holdout.
 
 ## Prediction archive and grading
 
@@ -125,6 +129,7 @@ When a book line exists the mean is anchored 50/50 to the line. That weight is a
 - Settlement writes a separate `settlements` row with the rule applied: moneyline includes OT, an exact landing is a push, first-half markets use first-half scores, and a prop on a player who didn't play is void.
 - Performance only counts the latest forecast made **before tip-off** for each game, market and player.
 - On first boot in demo mode, the current season is backfilled as a walk-forward backtest. The model is trained before the season starts, and market inputs are limited to snapshots ≥1 hour before tip, so closing lines never leak into earlier forecasts.
+- **Closing line value**: each archived spread, total and moneyline forecast is compared with the consensus of every book's last pre-tip snapshot (points gained, or no-vig probability vs the archived price), with standard errors. On demo data CLV is ≈0, as expected against a sharp market.
 - Diagnostics aggregate errors: pace and total bias, margin bias, calibration by market, minutes surprises on props, conference errors, and injury-news splits. Each finding carries its sample size and a 2·SE test. Models are never changed automatically.
 
 ## Data Management

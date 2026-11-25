@@ -113,7 +113,7 @@ function PropDetail({ p, stat }: { p: PropProjection; stat: string }) {
               <KV k="EV over / under" v={`${signed((m.ev_over ?? 0) * 100, 1)}% / ${signed((m.ev_under ?? 0) * 100, 1)}%`} />
               <KV k="Model-only mean" v={num(m.model_only_mean)} />
             </div>
-            <p className="text-[10.5px] text-mist-500">When a line exists the distribution is anchored 50/50 between the model mean and the line (documented prior); the pure model mean is shown for transparency.</p>
+            <p className="text-[10.5px] text-mist-500">When a line exists the distribution is anchored between the model mean and the line using per-stat weights fitted on settled forecasts (0.5 prior until enough exist; see Model Intelligence). The pure model mean is shown for transparency.</p>
           </div>
         )}
       </Panel>

@@ -43,6 +43,13 @@ def bootstrap() -> dict:
                 t0 = time.time()
                 out[f"backtest_{league}"] = modeling.backfill_current_season(db, league)
                 log.info("backtest %s in %.1fs", league, time.time() - t0)
+        from .services import settlement as _st
+
+        _st.settle_all(db)
+        for league in ("NBA", "CBB"):
+            if modeling.active_version(db, league, "props") is not None:
+                fit = modeling.fit_prop_blend(db, league)
+                out[f"prop_blend_{league}"] = fit.get("weights") or fit.get("status")
         from .services import settlement
 
         out["settled"] = settlement.settle_all(db)

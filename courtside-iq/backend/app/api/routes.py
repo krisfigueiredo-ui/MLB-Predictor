@@ -399,6 +399,11 @@ def perf_breakdown(by: str = "market", league: str | None = None, min_n: int = 5
     return _clean(performance.breakdown(db, by, league.upper() if league else None, min_n))
 
 
+@router.get("/performance/clv")
+def perf_clv(league: str | None = None, db: Session = Depends(get_db)):
+    return _clean(performance.clv_report(db, league.upper() if league else None))
+
+
 @router.get("/diagnostics")
 def diag(league: str | None = None, db: Session = Depends(get_db)):
     return _clean(diagnostics.analyze(db, league.upper() if league else None))
@@ -509,7 +514,7 @@ def tune(league: str, trials: int = Query(default=15, ge=3, le=100), db: Session
     from ..ml.game_model import tune_lightgbm
 
     ff = modeling.features_cache.get(db, league.upper())
-    return tune_lightgbm(ff[ff["is_historical_sim"] | (ff["status"] == "final")], league.upper(), trials)
+    return tune_lightgbm(ff[ff["y_margin"].notna()], league.upper(), trials)
 
 
 @router.get("/simulate/{game_id}")

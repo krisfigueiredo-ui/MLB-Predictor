@@ -288,7 +288,49 @@ function PropsModelCard({ m }: { m: any }) {
           </tbody>
         </table>
       </div>
+      <PropBlend blend={m.params?.prop_blend} />
     </Panel>
+  );
+}
+
+function PropBlend({ blend }: { blend: any }) {
+  if (!blend) return <p className="px-4 py-3 text-[11px] text-mist-500">Line anchoring uses the 0.5 prior until enough settled prop forecasts exist to fit per-stat weights.</p>;
+  const ev = Object.entries<any>(blend.evaluation ?? {});
+  return (
+    <div className="border-t border-line/60">
+      <div className="px-4 pt-3">
+        <div className="label">Line-anchoring weights (fitted from settled forecasts)</div>
+        <p className="mt-1 text-[11px] text-mist-500">
+          mean = w·model + (1−w)·line. w is fit on the oldest 70% of settled forecasts and scored on the newest 30%; a fitted w is adopted only if it beats the 0.5 prior on that holdout.
+          Fitted {blend.fitted_at ? new Date(blend.fitted_at).toLocaleString() : "—"}.
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[720px] text-[12.5px]">
+          <thead>
+            <tr className="border-b border-line/70">
+              {["Stat", "n", "w in use", "Holdout MSE model", "line", "prior 0.5", "fitted", "Decision"].map((h) => (
+                <th key={h} className="label px-3 py-2 text-left">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ev.map(([k, v]) => (
+              <tr key={k} className="border-b border-line/40 font-mono tabular text-mist-300">
+                <td className="px-3 py-2 font-sans text-mist">{k.toUpperCase()}</td>
+                <td className="px-3 py-2">{v.n}</td>
+                <td className="px-3 py-2 text-volt-300">{blend.weights?.[k] != null ? num(blend.weights[k], 3) : "—"}</td>
+                <td className="px-3 py-2">{num(v.holdout_mse_model_only, 2)}</td>
+                <td className="px-3 py-2">{num(v.holdout_mse_line_only, 2)}</td>
+                <td className="px-3 py-2">{num(v.holdout_mse_prior, 2)}</td>
+                <td className="px-3 py-2">{num(v.holdout_mse_blended, 2)}</td>
+                <td className="px-3 py-2 font-sans text-[11px] text-mist-500">{v.decision ?? v.status ?? (k === "pra" ? "sum of anchored PTS/REB/AST" : "")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

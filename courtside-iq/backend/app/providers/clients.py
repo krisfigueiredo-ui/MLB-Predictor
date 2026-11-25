@@ -42,11 +42,22 @@ class BallDontLie(Provider):
         p = [("per_page", 100)] + ([("cursor", cursor)] if cursor else [])
         return self.get("/v1/players/active", p, ttl=3600)
 
+    def _paged(self, path: str, params: list, ttl: int, max_pages: int = 20) -> list:
+        """Cursor pagination (meta.next_cursor)."""
+        out, cursor = [], None
+        for _ in range(max_pages):
+            page = self.get(path, params + ([("cursor", cursor)] if cursor else []), ttl=ttl)
+            out += page.get("data", [])
+            cursor = (page.get("meta") or {}).get("next_cursor")
+            if not cursor:
+                break
+        return out
+
     def stats(self, game_id: int):
-        return self.get("/v1/stats", [("game_ids[]", game_id), ("per_page", 100)], ttl=60)["data"]
+        return self._paged("/v1/stats", [("game_ids[]", game_id), ("per_page", 100)], ttl=60)
 
     def injuries(self):
-        return self.get("/v1/player_injuries", [("per_page", 100)], ttl=600)["data"]
+        return self._paged("/v1/player_injuries", [("per_page", 100)], ttl=600)
 
 
 class OddsAPI(Provider):

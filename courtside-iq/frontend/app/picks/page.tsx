@@ -200,6 +200,7 @@ function Performance({ lq }: { lq: string }) {
           </div>
         </Panel>
       </div>
+      <CLVPanel lq={lq} />
       <Panel>
         <PanelHeader
           eyebrow="Accuracy breakdown"
@@ -209,6 +210,39 @@ function Performance({ lq }: { lq: string }) {
         <BreakdownTable rows={b.data ?? []} loading={b.isLoading} />
       </Panel>
     </div>
+  );
+}
+
+function CLVPanel({ lq }: { lq: string }) {
+  const c = useApi<any>(`/api/performance/clv${lq ? `?${lq}` : ""}`);
+  const mk = Object.entries<any>(c.data?.markets ?? {});
+  return (
+    <Panel>
+      <PanelHeader eyebrow="Closing line value" title="Did forecasts get a better number than the close?" right={<span className="text-[11px] text-mist-500">CLV needs far fewer games than win rate to signal skill</span>} />
+      {!c.data ? (
+        <Skeleton className="m-4 h-24" />
+      ) : mk.length === 0 ? (
+        <Empty title="No priced forecasts with a closing line yet" />
+      ) : (
+        <div className="grid gap-px bg-line/40 md:grid-cols-3">
+          {mk.map(([k, v]) => (
+            <div key={k} className="bg-ink-850 p-4">
+              <div className="label">{MARKET_LABEL[k] ?? k}</div>
+              <div className={cn("mt-1 font-mono text-2xl font-semibold", v.se && v.avg_clv > 2 * v.se ? "text-gain" : v.se && v.avg_clv < -2 * v.se ? "text-loss" : "text-mist")}>
+                {v.unit === "probability" ? `${signed(v.avg_clv * 100, 2)} pp` : `${signed(v.avg_clv, 2)} pts`}
+              </div>
+              <div className="mt-1 text-[11px] text-mist-500">
+                ± {v.unit === "probability" ? `${num((v.se ?? 0) * 200, 2)} pp` : num(2 * (v.se ?? 0), 2)} (2·SE) · n={v.n}
+              </div>
+              <div className="mt-1 text-[11px] text-mist-400">
+                beat close {pct(v.beat_close, 0)} · matched {pct(v.matched_close, 0)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="px-4 py-2 text-[10.5px] text-mist-500">{c.data?.note}</p>
+    </Panel>
   );
 }
 

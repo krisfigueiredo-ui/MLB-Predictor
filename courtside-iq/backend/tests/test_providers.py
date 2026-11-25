@@ -50,13 +50,13 @@ class FakeBDL:
 def test_sync_odds_and_games_map_to_schema(db):
     n = sync.sync_odds(db, "NBA", FakeOdds())
     assert n == 4
-    g = db.scalar(select(m.Game).where(m.Game.source == "the_odds_api"))
+    g = next(x for x in db.scalars(select(m.Game).where(m.Game.is_demo.is_(False))) if (x.provider_ids or {}).get("the_odds_api") == "evt1")
     assert g.home_team.abbreviation == "BOS" and g.is_demo is False
     snaps = db.scalars(select(m.OddsSnapshot).where(m.OddsSnapshot.game_id == g.id)).all()
     assert {(s.market, s.outcome) for s in snaps} == {("spreads", "home"), ("spreads", "away"), ("totals", "over"), ("totals", "under")}
     assert sync.sync_games(db, "NBA", date(2026, 11, 21), FakeBDL()) == 1
-    live = db.scalar(select(m.Game).where(m.Game.source == "balldontlie"))
+    live = next(x for x in db.scalars(select(m.Game).where(m.Game.is_demo.is_(False))) if (x.provider_ids or {}).get("balldontlie") == "99001")
     assert live.status == "live" and live.period == 3 and live.home_score == 70
     # idempotent
     sync.sync_games(db, "NBA", date(2026, 11, 21), FakeBDL())
-    assert db.query(m.Game).filter(m.Game.source == "balldontlie").count() == 1
+    assert sum((x.provider_ids or {}).get("balldontlie") == "99001" for x in db.scalars(select(m.Game))) == 1

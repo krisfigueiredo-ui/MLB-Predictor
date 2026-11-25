@@ -17,7 +17,10 @@ from .config import get_settings
 from .db import SessionLocal
 
 log = logging.getLogger("courtside.scheduler")
-_state = dict(last_odds=0.0, last_cycle=None, errors=0)
+_state = dict(last_odds=0.0, last_injuries=0.0, last_cycle=None, errors=0)
+INJURY_SECONDS = 1800       # injury report refresh
+EVENT_MARKET_SECONDS = 3600  # per-game props / 1H / team totals (costs extra Odds API credits)
+EVENT_MARKET_WINDOW_H = 12
 
 
 def _aware(dt):
@@ -43,6 +46,42 @@ def archive_due(db, now: datetime) -> int:
             except Exception:
                 log.exception("archive failed for game %s", g.id)
     return n
+
+
+def _live_extras(db, c, now: datetime, force: bool) -> dict:
+    """Live-mode enrichment: box scores for finished games, injury reports, pre-game context
+    and per-event markets (first-half totals, team totals, player props)."""
+    from .providers import sync
+    from .providers.base import ProviderError
+
+    out: dict = {}
+    if c["balldontlie"].configured:
+        finals = db.scalars(select(m.Game).where(m.Game.is_demo.is_(False), m.Game.status == "final", m.Game.league == "NBA",
+                                                 m.Game.start_time >= now - timedelta(days=3),
+                                                 ~m.Game.id.in_(select(m.TeamGameStat.game_id)))).all()
+        for g in finals[:10]:
+            try:
+                out[f"box_{g.id}"] = sync.sync_box_scores(db, g, c["balldontlie"])
+            except ProviderError as exc:
+                out[f"box_{g.id}_error"] = str(exc)
+        if force or time.time() - _state["last_injuries"] > INJURY_SECONDS:
+            try:
+                out["injuries"] = sync.sync_injuries(db, c["balldontlie"])
+                _state["last_injuries"] = time.time()
+            except ProviderError as exc:
+                out["injuries_error"] = str(exc)
+    out["pregame_context"] = sync.refresh_pregame_context(db, now)
+    if c["the_odds_api"].configured:
+        soon = db.scalars(select(m.Game).where(m.Game.is_demo.is_(False), m.Game.status == "scheduled", m.Game.start_time > now,
+                                               m.Game.start_time <= now + timedelta(hours=EVENT_MARKET_WINDOW_H))).all()
+        for g in soon:
+            last = (g.provider_ids or {}).get("event_markets_at")
+            if not force and last and (now - datetime.fromisoformat(last)).total_seconds() < EVENT_MARKET_SECONDS:
+                continue
+            out[f"event_markets_{g.id}"] = sync.sync_event_markets(db, g.league, g, c["the_odds_api"])
+            g.provider_ids = {**(g.provider_ids or {}), "event_markets_at": now.isoformat()}
+        db.commit()
+    return out
 
 
 def run_cycle(force_odds: bool = False) -> dict:
@@ -73,6 +112,7 @@ def run_cycle(force_odds: bool = False) -> dict:
                         out[f"odds_{league}_error"] = str(exc)
             if c["the_odds_api"].configured and (force_odds or time.time() - _state["last_odds"] > s.odds_poll_seconds):
                 _state["last_odds"] = time.time()
+            out.update(_live_extras(db, c, now, force_odds))
         out["archived"] = archive_due(db, now)
         out["settled"] = settlement.settle_all(db)
     _state["last_cycle"] = now.isoformat()
