@@ -1,4 +1,0 @@
-# Heavier optional integrations. The app detects and uses them when installed.
-mlflow>=2.14      # experiment tracking (MLFLOW_TRACKING_URI)
-pymc>=5.15        # full Bayesian CBB rating model (otherwise conjugate empirical-Bayes shrinkage)
-voyageai>=0.2     # hosted embeddings (VOYAGE_API_KEY); otherwise local hashed embeddings

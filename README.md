@@ -118,8 +118,6 @@ Every push to `main` runs unit tests and packages `index.html`, `css/`, and the 
 
 ---
 
-## Also in this repository: COURTSIDE IQ
+## Related project: COURTSIDE IQ
 
-[`courtside-iq/`](courtside-iq/) contains COURTSIDE IQ, a separate NBA and college basketball analytics platform built with FastAPI and Next.js. It includes machine-learning game and player prop projections, sportsbook comparison, a graded prediction archive, a data import and cleaning pipeline, and an AI research assistant. The repository includes its dataset. See the [COURTSIDE IQ README](courtside-iq/README.md).
-
-![COURTSIDE IQ](courtside-iq/docs/screenshots/command-center.png)
+[COURTSIDE IQ](https://github.com/krisfigueiredo-ui/courtside-iq) is a separate NBA and college basketball analytics platform with machine-learning game and player prop projections, sportsbook comparison, a graded prediction archive, a data import and cleaning pipeline, and an AI research assistant. Live preview: https://krisfigueiredo-ui.github.io/courtside-iq/
