@@ -167,6 +167,22 @@ def project_game(db: Session, game: m.Game, n_sims: int | None = None, explain: 
             tt[side] = dict(line=ln, mean=float(x.mean()), p_over=float((x > ln).mean()), p_under=float((x < ln).mean()),
                             p_push=float((x == ln).mean()))
     summary["team_totals"] = tt
+    alts = market.alt_prices(db, game.id, as_of=as_of)
+    lad = GM.ladder(sims, cons.get("spread_home") if cons.get("spread_home") is not None else -float(pt["margin"][0]),
+                    cons.get("total") if cons.get("total") is not None else float(pt["total"][0]),
+                    extra_spreads=[k[1] if k[2] == "home" else -k[1] for k in alts if k[0] == "spread"],
+                    extra_totals=[k[1] for k in alts if k[0] == "total"])
+    for r in lad["spreads"]:
+        for side, line, p_win in (("home", r["line_home"], r["p_home"]), ("away", -r["line_home"], r["p_away"])):
+            bp = alts.get(("spread", float(line), side))
+            if bp:
+                r[f"book_{side}"] = dict(bp, ev=expected_value(p_win, bp["price"], r["p_push"]))
+    for r in lad["totals"]:
+        for side in ("over", "under"):
+            bp = alts.get(("total", r["line"], side))
+            if bp:
+                r[f"book_{side}"] = dict(bp, ev=expected_value(r[f"p_{side}"], bp["price"], r["p_push"]))
+    summary["ladder"] = lad
     out = dict(
         game_id=game.id, model_version=mv.version, model_data_source=mv.data_source, seed=settings.random_seed + game.id,
         projected=dict(margin=float(pt["margin"][0]), total=float(pt["total"][0]), h1_total=float(pt["h1_total"][0]),
@@ -279,7 +295,7 @@ def fit_prop_blend(db: Session, league: str, min_n: int = 120) -> dict:
     """Fit, per stat, the weight w on the pure model mean versus the sportsbook line,
     mean = w*model + (1-w)*line, by least squares on settled archived prop forecasts.
 
-    Honest evaluation: w is first fit on the oldest 70% of forecasts and scored on the newest
+    Evaluation: w is first fit on the oldest 70% of forecasts and scored on the newest
     30% (holdout MSE vs model-only and line-only); the weight stored for future use is then
     refit on all of them. Archived predictions are never rewritten.
     """

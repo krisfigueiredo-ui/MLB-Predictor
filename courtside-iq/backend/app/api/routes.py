@@ -502,6 +502,33 @@ def list_models(db: Session = Depends(get_db)):
                    for mv in db.scalars(select(m.ModelVersion).order_by(m.ModelVersion.id.desc()))])
 
 
+@router.get("/models/compare")
+def compare_models(league: str = "NBA", name: str = "game", db: Session = Depends(get_db)):
+    """Every version of a league's model side by side: held-out test metrics from training, and how
+    the forecasts each version actually archived have performed (settled, pre-game only)."""
+    versions = db.scalars(select(m.ModelVersion).where(m.ModelVersion.league == league.upper(), m.ModelVersion.name == name)
+                          .order_by(m.ModelVersion.id)).all()
+    df = performance.official_predictions(db, league.upper())
+    rows = []
+    for mv in versions:
+        t = (mv.metrics or {}).get("test", {})
+        live = None
+        if not df.empty:
+            d = df[df["model_version"] == mv.version]
+            if len(d):
+                live = performance._block(d)
+                live["markets"] = {k: performance._block(v) for k, v in d.groupby("market_group")}
+        rows.append(dict(id=mv.id, version=mv.version, trained_at=iso(mv.trained_at), is_active=mv.is_active, data_source=mv.data_source,
+                         n_train=mv.n_train, train_end=iso(mv.train_end),
+                         test=dict(margin_mae=(t.get("margin") or {}).get("mae"), total_mae=(t.get("total") or {}).get("mae"),
+                                   win_brier=(t.get("win_calibrated") or {}).get("brier"), win_ece=(t.get("win_calibrated") or {}).get("ece"),
+                                   n_test=(t.get("margin") or {}).get("n"),
+                                   props={k: v.get("mae") for k, v in t.items() if isinstance(v, dict) and "mae" in v} if name == "props" else None),
+                         archived=live))
+    return _clean(dict(league=league.upper(), name=name, versions=rows,
+                       note="Test metrics come from each version's own chronological hold-out; archived results are settled pre-game forecasts that version actually made."))
+
+
 @router.post("/models/train", dependencies=[Depends(require_admin)])
 def train(league: str, db: Session = Depends(get_db)):
     out = modeling.train_league(db, league.upper())

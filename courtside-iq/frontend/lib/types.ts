@@ -84,6 +84,20 @@ export interface Simulation {
   totals?: { line: number; p_over: number; p_push: number; p_under: number };
   h1?: { line: number; p_over: number; p_push: number; p_under: number };
   team_totals?: Record<string, { line: number; mean: number; p_over: number; p_under: number; p_push: number }>;
+  ladder?: Ladder;
+}
+
+export interface BookQuote {
+  price: number;
+  book: string;
+  captured_at: string;
+  ev: number;
+  is_demo?: boolean;
+}
+
+export interface Ladder {
+  spreads: { line_home: number; p_home: number; p_push: number; p_away: number; fair_home: number | null; fair_away: number | null; book_home?: BookQuote; book_away?: BookQuote }[];
+  totals: { line: number; p_over: number; p_push: number; p_under: number; fair_over: number | null; fair_under: number | null; book_over?: BookQuote; book_under?: BookQuote }[];
 }
 
 export interface Consensus {

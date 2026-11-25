@@ -53,7 +53,7 @@ export default function PropsLab() {
             </option>
           ))}
         </select>
-        {!hasLines && all.length > 0 && <span className="text-[11px] text-gold">No sportsbook prop lines posted yet for these games — showing model distributions only.</span>}
+        {!hasLines && all.length > 0 && <span className="text-[11px] text-gold">No sportsbook prop lines posted yet for these games. Showing model distributions only.</span>}
       </Panel>
       {q.isLoading && <Skeleton className="h-96" />}
       {!q.isLoading && all.length === 0 && (

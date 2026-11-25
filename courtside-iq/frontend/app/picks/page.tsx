@@ -377,9 +377,9 @@ function Journal() {
           }}
         >
           <label className="col-span-2 text-xs text-mist-400">
-            Game (optional — enables automatic settlement)
+            Game (optional, enables automatic settlement)
             <select className={input} value={f.game_id} onChange={(e) => setF({ ...f, game_id: e.target.value, league: games.data?.find((g) => g.id === Number(e.target.value))?.league ?? f.league })}>
-              <option value="">— custom / no linked game —</option>
+              <option value="">No linked game (custom pick)</option>
               {(games.data ?? []).map((g) => (
                 <option key={g.id} value={g.id}>
                   {g.league} · {g.away.abbr} @ {g.home.abbr} · {new Date(g.start_time).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}

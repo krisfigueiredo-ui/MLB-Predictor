@@ -144,7 +144,7 @@ export default function PlayerPage({ params }: { params: Promise<{ id: string }>
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Panel>
-              <PanelHeader eyebrow="Accountability" title={`Predicted vs actual — ${STAT_LABEL[stat] ?? stat}`} />
+              <PanelHeader eyebrow="Accountability" title={`Predicted vs actual: ${STAT_LABEL[stat] ?? stat}`} />
               <div className="p-2">
                 {actualVsPred.length ? (
                   <EChart

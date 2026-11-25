@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { C, EChart, baseAxis, tooltip } from "@/components/charts/EChart";
 import { EVChips, LineMovementChart, ModelVsVegas, StatusPill } from "@/components/game/game";
+import { LadderTable } from "@/components/game/Ladder";
 import { TeamCrest } from "@/components/identity/identity";
 import { Badge, Empty, KV, PageHeader, Panel, PanelHeader, Segmented, Skeleton, SourceStamp } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
@@ -155,6 +156,12 @@ export default function SpreadsPage() {
           </Panel>
         </div>
       )}
+      {selRow?.simulation.ladder && (
+        <Panel>
+          <PanelHeader eyebrow="Alternate lines" title={`${selRow.game.away.abbr} @ ${selRow.game.home.abbr}: simulated ladder vs posted alternates`} />
+          <LadderTable ladder={selRow.simulation.ladder} g={selRow.game} mainSpread={selRow.market.spread_home} mainTotal={selRow.market.total} />
+        </Panel>
+      )}
       <OddsCalculator />
     </div>
   );
@@ -191,7 +198,7 @@ function OddsCalculator() {
             Your prob. A (%)
             <input className={input} value={p} onChange={(e) => setP(e.target.value)} />
           </label>
-          <p className="col-span-3 text-[11px] text-mist-500">American odds. Probability is your own estimate (e.g. from the model). Research only — the platform never places wagers.</p>
+          <p className="col-span-3 text-[11px] text-mist-500">American odds. Probability is your own estimate (e.g. from the model). Research only: the platform never places wagers.</p>
         </div>
         <div className="grid grid-cols-2 gap-x-6">
           <KV k="Implied A / B" v={valid ? `${pct(ia)} / ${pct(ib)}` : "—"} />

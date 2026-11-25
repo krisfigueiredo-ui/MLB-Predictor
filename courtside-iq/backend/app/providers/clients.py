@@ -1,9 +1,9 @@
 """Concrete provider clients against documented endpoints.
 
-BALLDONTLIE  https://docs.balldontlie.io  — header `Authorization: <key>`
+BALLDONTLIE  https://docs.balldontlie.io  (header `Authorization: <key>`)
   NBA   /v1/teams, /v1/players/active, /v1/games?dates[]=, /v1/stats?game_ids[]=, /v1/player_injuries
   NCAAB /ncaab/v1/teams, /ncaab/v1/games?dates[]=   (requires an NCAAB-enabled tier)
-The Odds API v4  https://the-odds-api.com/liveapi/guides/v4/  — query `apiKey`
+The Odds API v4  https://the-odds-api.com/liveapi/guides/v4/  (query parameter `apiKey`)
   /v4/sports/{basketball_nba|basketball_ncaab}/odds?regions=us&markets=h2h,spreads,totals&oddsFormat=american
   /v4/sports/{sport}/events/{id}/odds?markets=totals_h1,team_totals,alternate_spreads,player_points,...
   /v4/sports/{sport}/scores?daysFrom=1

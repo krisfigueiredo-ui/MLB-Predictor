@@ -14,18 +14,18 @@ Diamond Signal is a browser-based MLB intelligence and model-audit workspace. It
 
 ## Product structure
 
-- **Slate** — a dense, sortable baseball board with compact mobile rows, model probability, market state, projected runs, source coverage, and a persistent desktop matchup inspector.
-- **Live** — active and completed games with score, inning, count, outs, base occupancy, live win-probability context, and the latest verified moment once a game feed is loaded.
-- **Picks** — ranked upcoming selections, frozen pregame probabilities, live tracking, explicit outcomes, and historical result windows backed only by stored prediction records.
-- **Standings** — MLB, league, and wild-card boards with division position, home/road records, last 10, streak, games back, and run differential.
-- **Players** — an on-demand directory populated from verified game rosters. Player drawers show bio, core season batting or pitching, recent hitting windows, and explicit unavailable states for unsupported advanced fields.
-- **Teams** — a club workspace for standings context, season offense, season pitching, current provider-returned availability, and today’s matchup.
-- **Game** — a full research workspace with Overview, Lineups, Matchup, Ballpark, Play-by-play, Moments, Model, and Market modes. Confirmed orders, bench/bullpen roles, verified events, and derived win-probability swings stay attached to the selected matchup.
-- **Ballpark Live** — a canvas-first, park-specific Three.js broadcast view with occupied stands, regulation-scale field geometry, eight camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
-- **Model** — a research-led pipeline view with prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
-- **Performance** — a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
-- **Market** — verified moneyline coverage, edge comparison, Kelly sizing, paper P/L, CLV readiness, and downloadable records. Risk controls live in one settings drawer.
-- **Data** — feed coverage, provenance, immutable prediction snapshots, legacy-history labeling, and snapshot export.
+- **Slate**: a dense, sortable baseball board with compact mobile rows, model probability, market state, projected runs, source coverage, and a persistent desktop matchup inspector.
+- **Live**: active and completed games with score, inning, count, outs, base occupancy, live win-probability context, and the latest verified moment once a game feed is loaded.
+- **Picks**: ranked upcoming selections, frozen pregame probabilities, live tracking, explicit outcomes, and historical result windows backed only by stored prediction records.
+- **Standings**: MLB, league, and wild-card boards with division position, home/road records, last 10, streak, games back, and run differential.
+- **Players**: an on-demand directory populated from verified game rosters. Player drawers show bio, core season batting or pitching, recent hitting windows, and explicit unavailable states for unsupported advanced fields.
+- **Teams**: a club workspace for standings context, season offense, season pitching, current provider-returned availability, and today’s matchup.
+- **Game**: a full research workspace with Overview, Lineups, Matchup, Ballpark, Play-by-play, Moments, Model, and Market modes. Confirmed orders, bench/bullpen roles, verified events, and derived win-probability swings stay attached to the selected matchup.
+- **Ballpark Live**: a canvas-first, park-specific Three.js broadcast view with occupied stands, regulation-scale field geometry, eight camera presets, score and win-probability overlays, an event timeline, and a 2D SVG fallback.
+- **Model**: a research-led pipeline view with prospective metrics, raw-versus-calibrated output, model dispersion, rolling-origin methodology, shadow-model status, and feature-ablation readiness.
+- **Performance**: a chart-led research view with selectable rolling metrics, calibration bands, bankroll curve, model-version comparison, and the paper-trading log.
+- **Market**: verified moneyline coverage, edge comparison, Kelly sizing, paper P/L, CLV readiness, and downloadable records. Risk controls live in one settings drawer.
+- **Data**: feed coverage, provenance, immutable prediction snapshots, legacy-history labeling, and snapshot export.
 
 ## Modeling and validation
 
@@ -97,7 +97,7 @@ npm install
 npm test
 ```
 
-The test suite currently contains **225 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, exactly-once result logging, frozen-history reconciliation, verified legacy-result normalization, team and home/away performance summaries, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
+The test suite contains **242 tests across 16 files**. It covers the existing prediction, Elo, Poisson, betting, calibration, persistence, injury, situational, ESPN parsing, and training modules plus the probability pipeline, rolling-origin validation, prior-only calibration, immutable snapshots, exactly-once result logging, frozen-history reconciliation, verified legacy-result normalization, team and home/away performance summaries, lineup/player/play normalization, recent-form aggregation, standings honesty, signal ranking, 30 explicit stadium assemblies, responsive application shell, deployment packaging, and 2D fallback. The required browser review captures are indexed in [Visual QA](docs/VISUAL-QA.md).
 
 Key directories:
 
@@ -120,4 +120,6 @@ Every push to `main` runs unit tests and packages `index.html`, `css/`, and the 
 
 ## Also in this repository: COURTSIDE IQ
 
-[`courtside-iq/`](courtside-iq/) contains **COURTSIDE IQ**, a separate NBA and college basketball analytics platform (FastAPI + Next.js) with ML projections, sportsbook comparison, player props, a prediction archive, data import/cleaning and a Claude research assistant. See [`courtside-iq/README.md`](courtside-iq/README.md).
+[`courtside-iq/`](courtside-iq/) contains COURTSIDE IQ, a separate NBA and college basketball analytics platform built with FastAPI and Next.js. It includes machine-learning game and player prop projections, sportsbook comparison, a graded prediction archive, a data import and cleaning pipeline, and an AI research assistant. The repository includes its dataset. See the [COURTSIDE IQ README](courtside-iq/README.md).
+
+![COURTSIDE IQ](courtside-iq/docs/screenshots/command-center.png)

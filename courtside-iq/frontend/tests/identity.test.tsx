@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { PlayerPortrait, RosterBadge, TeamCrest, readableOn } from "@/components/identity/identity";
+import { PlayerPortrait, RosterBadge, TeamCrest, displayColor, pairColors, readableOn } from "@/components/identity/identity";
 import type { Player, Team } from "@/lib/types";
 
 const celtics: Team = {
@@ -35,5 +35,14 @@ describe("identity system", () => {
     expect(container.querySelector("text:last-of-type")?.textContent).toBe("7");
     render(<RosterBadge player={p} />);
     expect(screen.getByText(/seed roster/i)).toBeInTheDocument();
+  });
+
+  it("keeps team colours visible and distinguishable on the dark UI", () => {
+    const wizards = { primary: "#002B5C", secondary: "#E31837" };
+    const jazz = { primary: "#002B5C", secondary: "#F9A01B" };
+    expect(displayColor(celtics)).toBe("#007A33");
+    expect(displayColor(wizards)).toBe("#E31837"); // navy primary too dark -> visible secondary
+    const [a, h] = pairColors(wizards, jazz);
+    expect(a).not.toBe(h);
   });
 });

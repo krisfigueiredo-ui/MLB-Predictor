@@ -11,7 +11,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", displ
 const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "COURTSIDE IQ — Basketball Intelligence Terminal", template: "%s · COURTSIDE IQ" },
+  title: { default: "COURTSIDE IQ | Basketball Intelligence Terminal", template: "%s · COURTSIDE IQ" },
   description: "NBA and college basketball projections, market comparison, player props, trends and model accountability.",
 };
 

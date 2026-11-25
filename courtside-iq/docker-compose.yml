@@ -1,4 +1,4 @@
-# COURTSIDE IQ — full stack.  `cp .env.example .env` then `docker compose up --build`.
+# COURTSIDE IQ full stack: `cp .env.example .env`, then `docker compose up --build`.
 # Without provider keys the stack starts in clearly-labelled DEMO mode.
 services:
   db:

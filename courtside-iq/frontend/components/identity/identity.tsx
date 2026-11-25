@@ -31,6 +31,35 @@ function trimColor(t: Pick<Team, "primary" | "secondary">) {
   return d < 0.08 ? readableOn(t.primary) : t.secondary;
 }
 
+function lighten(hex: string, amt: number) {
+  const h = hex.replace("#", "");
+  const c = [0, 2, 4].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) + (255 - parseInt(h.slice(i, i + 2), 16)) * amt));
+  return `#${c.map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function distance(a: string, b: string) {
+  const pa = [0, 2, 4].map((i) => parseInt(a.replace("#", "").slice(i, i + 2), 16));
+  const pb = [0, 2, 4].map((i) => parseInt(b.replace("#", "").slice(i, i + 2), 16));
+  return Math.sqrt(pa.reduce((acc, v, i) => acc + (v - pb[i]) ** 2, 0));
+}
+
+/** A team colour that stays visible on the dark UI: very dark primaries fall back to the secondary
+ *  colour (when that is visible) or a lightened primary. */
+export function displayColor(t: Pick<Team, "primary" | "secondary">) {
+  if (luminance(t.primary) >= 0.035) return t.primary;
+  if (luminance(t.secondary) >= 0.035 && luminance(t.secondary) <= 0.85) return t.secondary;
+  return lighten(t.primary, 0.45);
+}
+
+/** Display colours for two teams shown side by side, guaranteed to be distinguishable. */
+export function pairColors(away: Pick<Team, "primary" | "secondary">, home: Pick<Team, "primary" | "secondary">): [string, string] {
+  const a = displayColor(away);
+  let h = displayColor(home);
+  if (distance(a, h) < 90) h = luminance(home.secondary) >= 0.035 && distance(a, home.secondary) >= 90 ? home.secondary : "#22D3EE";
+  if (distance(a, h) < 90) return ["#FF8A3D", "#2F7BFF"];
+  return [a, h];
+}
+
 export function TeamCrest({ team, size = 28, className, ring = true }: { team: Pick<Team, "abbr" | "primary" | "secondary" | "logo" | "league" | "name">; size?: number; className?: string; ring?: boolean }) {
   const id = useId().replace(/:/g, "");
   if (team.logo?.url) {

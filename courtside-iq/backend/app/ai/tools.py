@@ -12,7 +12,7 @@ from ..services import diagnostics, market, modeling, performance, trends
 from . import rag
 
 TOOLS = [
-    dict(name="search_documents", description="Semantic search over methodology docs, model cards and indexed notes. Use for 'how does the model work' questions.",
+    dict(name="search_documents", description="Semantic search over methodology docs, model cards, daily performance digests, game recaps, diagnostics and league leaders. Use for 'how does the model work', 'what happened on <date>' or recap questions; then verify numbers with the structured tools.",
          input_schema=dict(type="object", properties=dict(query=dict(type="string"), k=dict(type="integer")), required=["query"], additionalProperties=False)),
     dict(name="find_games", description="List games by date (YYYY-MM-DD, UTC), league (NBA/CBB) and optional team text. Returns ids, teams, status, scores.",
          input_schema=dict(type="object", properties=dict(date=dict(type="string"), league=dict(type="string"), team=dict(type="string"),

@@ -52,9 +52,11 @@ def live_state(league: str, start: datetime, now: datetime, final_home: int, fin
     return dict(status="live", period=period, clock=f"{secs // 60}:{secs % 60:02d}", home=h, away=a, frac=frac)
 
 
-def tick(db: Session, now: datetime | None = None) -> dict:
+def tick(db: Session, now: datetime | None = None, catch_up_days: int | None = None) -> dict:
+    """Advance the demo feed to `now`. `catch_up_days` widens both windows, which is used on startup
+    after loading a snapshot taken earlier, so games played in the meantime are resolved."""
     now = now or datetime.now(timezone.utc)
-    window_start = now - timedelta(hours=3)
+    window_start = now - timedelta(hours=3) - timedelta(days=catch_up_days or 0)
     changed = dict(live=0, final=0, snapshots=0)
     games = db.scalars(select(m.Game).where(m.Game.is_demo.is_(True), m.Game.is_historical_sim.is_(False),
                                             m.Game.status != "final", m.Game.start_time <= now,
@@ -86,7 +88,7 @@ def tick(db: Session, now: datetime | None = None) -> dict:
     # odds snapshots whose scheduled capture time has now passed
     books = {b.key: b.id for b in db.scalars(select(m.Sportsbook))}
     upcoming = db.scalars(select(m.Game).where(m.Game.is_demo.is_(True), m.Game.is_historical_sim.is_(False),
-                                               m.Game.start_time > now - timedelta(minutes=30),
+                                               m.Game.start_time > now - timedelta(minutes=30) - timedelta(days=catch_up_days or 0),
                                                m.Game.start_time <= now + timedelta(hours=max(SNAP_OFFSETS_H))))
     for g in upcoming:
         out = db.get(m.DemoOutcome, g.id)

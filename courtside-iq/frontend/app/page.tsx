@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 
 import { C, EChart, baseAxis, tooltip } from "@/components/charts/EChart";
 import { MatchupCard, PropCard, StatusPill } from "@/components/game/game";
-import { TeamCrest } from "@/components/identity/identity";
+import { pairColors, TeamCrest } from "@/components/identity/identity";
 import { Badge, Empty, PageHeader, Panel, PanelHeader, ResultBadge, Segmented, Skeleton, SourceStamp, Stat } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
 import { cn, MARKET_LABEL, num, pct, signed, spreadLine } from "@/lib/format";
@@ -298,8 +298,8 @@ function Comparison({ rows }: { rows: BoardRow[] }) {
                 {
                   type: "radar",
                   data: [
-                    { name: g.away.name, value: axes.map((a) => norm(a.k, f[`a_${a.k}`] ?? f[`a_${a.k === "pace" ? "pace" : a.k}`], a.inv)), lineStyle: { color: g.away.primary === "#000000" ? C.mist4 : g.away.primary }, itemStyle: { color: g.away.primary === "#000000" ? C.mist4 : g.away.primary }, areaStyle: { opacity: 0.18 } },
-                    { name: g.home.name, value: axes.map((a) => norm(a.k, f[`h_${a.k}`], a.inv)), lineStyle: { color: C.volt }, itemStyle: { color: C.volt }, areaStyle: { opacity: 0.18 } },
+                    { name: g.away.name, value: axes.map((a) => norm(a.k, f[`a_${a.k}`], a.inv)), lineStyle: { color: pairColors(g.away, g.home)[0] }, itemStyle: { color: pairColors(g.away, g.home)[0] }, areaStyle: { opacity: 0.18 } },
+                    { name: g.home.name, value: axes.map((a) => norm(a.k, f[`h_${a.k}`], a.inv)), lineStyle: { color: pairColors(g.away, g.home)[1] }, itemStyle: { color: pairColors(g.away, g.home)[1] }, areaStyle: { opacity: 0.18 } },
                   ],
                 },
               ],

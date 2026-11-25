@@ -20,6 +20,10 @@
 6. **SSE**: `/api/stream/ticker` is a long-lived response. Disable proxy buffering (the API sends `X-Accel-Buffering: no`) and allow idle timeouts above 60s. The frontend falls back to 20s polling automatically.
 7. **Scaling**: the API is stateless apart from an in-process feature cache; scale it horizontally. Keep one worker so forecasts aren't frozen twice.
 
+## Demo data
+
+In demo mode an empty database is populated from `backend/data/demo_snapshot` on first start (see [DATA.md](DATA.md)). Set `USE_DEMO_SNAPSHOT=false` to regenerate the data with the simulator instead.
+
 ## Switching from demo to live data
 
 1. Set provider keys and restart. `/api/status` reports `mode: live`, and provider health appears in Settings.

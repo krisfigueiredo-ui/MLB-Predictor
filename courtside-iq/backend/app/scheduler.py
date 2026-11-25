@@ -115,6 +115,11 @@ def run_cycle(force_odds: bool = False) -> dict:
             out.update(_live_extras(db, c, now, force_odds))
         out["archived"] = archive_due(db, now)
         out["settled"] = settlement.settle_all(db)
+        if out["settled"] or time.time() - _state.get("last_index", 0) > 3600:
+            from .ai import rag
+
+            out["indexed"] = rag.index_dynamic(db)
+            _state["last_index"] = time.time()
     _state["last_cycle"] = now.isoformat()
     return out
 

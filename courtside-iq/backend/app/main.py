@@ -28,10 +28,17 @@ def bootstrap() -> dict:
     with SessionLocal() as db:
         seed.seed_registry(db)
         if s.demo_mode:
-            out["demo"] = seed.generate_demo_data(db, s.random_seed)
+            from .data_mgmt import snapshot
             from .services import demo_feed
+            from sqlalchemy import func, select
 
-            demo_feed.tick(db)
+            from . import models as m
+
+            if not db.scalar(select(func.count(m.Game.id))) and s.use_demo_snapshot and snapshot.available():
+                out["demo"] = {"snapshot": snapshot.load(db)}  # the dataset committed with the repository
+            else:
+                out["demo"] = seed.generate_demo_data(db, s.random_seed)
+            out["demo_catch_up"] = demo_feed.tick(db, catch_up_days=3650)
         for league in ("NBA", "CBB"):
             if modeling.active_version(db, league) is None:
                 try:
@@ -53,7 +60,7 @@ def bootstrap() -> dict:
         from .services import settlement
 
         out["settled"] = settlement.settle_all(db)
-        out["indexed"] = rag.index_core(db)
+        out["indexed"] = rag.index_core(db) + rag.index_dynamic(db)
     return out
 
 

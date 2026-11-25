@@ -1,4 +1,4 @@
-"""COURTSIDE AI — Claude research assistant over verified database records.
+"""COURTSIDE AI: research assistant (Anthropic Claude) over verified database records.
 
 Claude interprets; the Python models compute. The assistant runs a Messages API tool-use
 loop on our own read-only tools (they query this application's database, so the loop is

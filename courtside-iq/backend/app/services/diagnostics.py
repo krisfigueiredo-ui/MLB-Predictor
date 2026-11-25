@@ -24,7 +24,7 @@ def _flag(errors: np.ndarray, label: str, unit: str) -> dict:
     se = float(np.std(errors, ddof=1) / np.sqrt(n)) if n > 1 else float("inf")
     sig = n >= MIN_N and abs(mean) > 2 * se
     return dict(label=label, n=n, mean_error=mean, se=se, systematic=bool(sig), unit=unit,
-                verdict=("systematic bias (|mean| > 2·SE) — candidate for feature/calibration work" if sig else
+                verdict=("systematic bias (|mean| > 2·SE); candidate for feature or calibration work" if sig else
                          "insufficient sample" if n < MIN_N else "consistent with noise"))
 
 

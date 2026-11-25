@@ -1,7 +1,7 @@
 """League-specific game models.
 
 Primary: LightGBM + CatBoost regressors (averaged) for margin, total and first-half total.
-Benchmark: XGBoost (same targets) — reported, never served.
+Benchmark: XGBoost (same targets), reported but never served.
 Probabilities: Monte Carlo over a bivariate normal on (margin, total) whose covariance is
 estimated from out-of-sample residuals, then win probability is isotonic-calibrated on a
 held-out chronological calibration fold.
@@ -150,6 +150,39 @@ def summarize_sims(s: dict, spread_home: float | None, total_line: float | None,
     return out
 
 
+def _fair_decimal(p_win: float, p_push: float) -> float | None:
+    """Break-even decimal odds for a bet that wins w.p. p_win and pushes (stake back) w.p. p_push."""
+    p_loss = 1 - p_win - p_push
+    return None if p_win <= 0 else 1 + p_loss / p_win
+
+
+def ladder(s: dict, center_spread: float, center_total: float, extra_spreads=(), extra_totals=()) -> dict:
+    """Price alternate lines straight from the simulated outcomes.
+
+    spreads: home line L (home covers when margin + L > 0); the away side is -L.
+    totals:  line T (over when total > T). Integer lines carry push probability.
+    """
+    margin, total = s["margin"], s["total"]
+    c_s = round(center_spread * 2) / 2
+    c_t = round(center_total * 2) / 2
+    s_lines = sorted({c_s + k for k in np.arange(-6, 6.5, 1.0)} | {float(x) for x in extra_spreads})
+    t_lines = sorted({c_t + k for k in np.arange(-10, 10.5, 2.0)} | {float(x) for x in extra_totals})
+    spreads = []
+    for L in s_lines:
+        adj = margin + L
+        ph, pp = float((adj > 0).mean()), float((adj == 0).mean())
+        pa = 1 - ph - pp
+        spreads.append(dict(line_home=float(L), p_home=ph, p_push=pp, p_away=pa,
+                            fair_home=_fair_decimal(ph, pp), fair_away=_fair_decimal(pa, pp)))
+    totals = []
+    for T in t_lines:
+        po, pp = float((total > T).mean()), float((total == T).mean())
+        pu = 1 - po - pp
+        totals.append(dict(line=float(T), p_over=po, p_push=pp, p_under=pu,
+                           fair_over=_fair_decimal(po, pp), fair_under=_fair_decimal(pu, pp)))
+    return dict(spreads=spreads, totals=totals)
+
+
 def _hist(x: np.ndarray, width: int) -> list[dict]:
     lo, hi = np.floor(np.percentile(x, 0.5)), np.ceil(np.percentile(x, 99.5))
     edges = np.arange(lo, hi + width, width)
@@ -199,6 +232,30 @@ def walk_forward(df: pd.DataFrame, feats: list[str], n_folds: int = 4, seed: int
                         margin=M.regression_metrics(pm, te["y_margin"].values),
                         total=M.regression_metrics(pt, te["y_total"].values),
                         win=M.classification_metrics(pw, te["y_home_win"].values)))
+    return out
+
+
+def season_backtest(df: pd.DataFrame, feats: list[str], seed: int = 0) -> list[dict]:
+    """Performance across seasons: for each season after the first, train the residual learners on
+    every earlier season only and evaluate on that whole season."""
+    if "season" not in df:
+        return []
+    seasons = sorted(df["season"].dropna().unique())
+    out = []
+    for i in range(1, len(seasons)):
+        tr, te = df[df["season"] < seasons[i]], df[df["season"] == seasons[i]]
+        if len(tr) < 200 or len(te) < 50:
+            continue
+        mm = _lgb({"random_state": seed}).fit(tr[feats], tr["y_margin"] - tr["naive_margin"])
+        mt = _lgb({"random_state": seed}).fit(tr[feats], tr["y_total"] - tr["naive_total"])
+        pm = te["naive_margin"].values + mm.predict(te[feats])
+        pt = te["naive_total"].values + mt.predict(te[feats])
+        sig = float(np.std(tr["y_margin"] - tr["naive_margin"] - mm.predict(tr[feats])))
+        out.append(dict(season=str(seasons[i]), n_train=int(len(tr)), n_test=int(len(te)),
+                        margin=M.regression_metrics(pm, te["y_margin"].values),
+                        total=M.regression_metrics(pt, te["y_total"].values),
+                        baseline_margin=M.regression_metrics(te["naive_margin"].values, te["y_margin"].values),
+                        win=M.classification_metrics(norm.cdf(pm / max(sig, 1e-6)), te["y_home_win"].values)))
     return out
 
 
@@ -276,6 +333,7 @@ def train_game_model(df: pd.DataFrame, league: str, data_source: str, seed: int 
         residuals=dict(sigma_margin=sm, sigma_total=st, sigma_h1=sh, rho=rho),
         market_blend=dict(fit=blend, test=_blend_eval(te, pm, pt, sm, st, blend)),
         walk_forward=walk_forward(df, feats, seed=seed),
+        by_season=season_backtest(df, feats, seed=seed),
         feature_importance=_importance(models, feats),
     )
     now = datetime.now(timezone.utc)

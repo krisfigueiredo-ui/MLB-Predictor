@@ -20,10 +20,34 @@ def latest_by_book(db: Session, game_id: int, as_of: datetime | None = None) -> 
     q = select(m.OddsSnapshot).where(m.OddsSnapshot.game_id == game_id)
     if as_of is not None:
         q = q.where(m.OddsSnapshot.captured_at <= as_of)
+    q = q.where(m.OddsSnapshot.market.notlike("alternate_%"))
     latest: dict[tuple, m.OddsSnapshot] = {}
     for s in db.scalars(q.order_by(m.OddsSnapshot.captured_at)):
         latest[(s.sportsbook_id, s.market, s.outcome)] = s
     return latest
+
+
+def alt_prices(db: Session, game_id: int, as_of: datetime | None = None) -> dict:
+    """Best available price per alternate line: {(kind, line, side): {price, book, captured_at}}.
+    kind is "spread" (line from that side's perspective) or "total"."""
+    q = select(m.OddsSnapshot).where(m.OddsSnapshot.game_id == game_id, m.OddsSnapshot.market.like("alternate_%"))
+    if as_of is not None:
+        q = q.where(m.OddsSnapshot.captured_at <= as_of)
+    latest: dict[tuple, m.OddsSnapshot] = {}
+    for s in db.scalars(q.order_by(m.OddsSnapshot.captured_at)):
+        latest[(s.sportsbook_id, s.market, s.outcome, s.line)] = s
+    books = {b.id: b.name for b in db.scalars(select(m.Sportsbook))}
+    out: dict[tuple, dict] = {}
+    for (bid, mk, oc, line), s in latest.items():
+        kind = "spread" if mk == "alternate_spreads" else "total"
+        key = (kind, float(line), oc)
+        dec = 1 + (s.price_american / 100 if s.price_american > 0 else 100 / -s.price_american)
+        if key not in out or dec > out[key]["_dec"]:
+            out[key] = dict(price=s.price_american, book=books.get(bid), captured_at=_aware(s.captured_at).isoformat(), _dec=dec,
+                            is_demo=s.is_demo)
+    for v in out.values():
+        v.pop("_dec")
+    return out
 
 
 def consensus(db: Session, game_id: int, as_of: datetime | None = None) -> dict:

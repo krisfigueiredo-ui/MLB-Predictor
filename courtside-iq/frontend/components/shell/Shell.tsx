@@ -210,7 +210,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 lg:px-6">{children}</main>
         <footer className="border-t border-line/60 px-6 py-4 text-[11px] text-mist-500">
           COURTSIDE IQ is research software. Forecasts are probabilistic estimates, not guarantees, and nothing here is betting or financial advice. Team names and colours identify
-          franchises and schools; no trademarked logos are bundled — licensed assets can be registered in Settings.
+          franchises and schools; no trademarked logos are bundled; licensed assets can be registered in Settings.
         </footer>
       </div>
       <AIPanel open={ai} onClose={() => setAI(false)} />

@@ -337,7 +337,7 @@ def sync_event_markets(db: Session, league: str, game: m.Game, client: OddsAPI |
     eid = (game.provider_ids or {}).get("the_odds_api")
     if not eid:
         return 0
-    markets = "totals_h1,team_totals" + ("," + ",".join(PROP_MARKETS) if league == "NBA" else "")
+    markets = "totals_h1,team_totals,alternate_spreads,alternate_totals" + ("," + ",".join(PROP_MARKETS) if league == "NBA" else "")
     try:
         ev = client.event_odds(league, eid, markets)
     except ProviderError as exc:
@@ -356,6 +356,17 @@ def sync_event_markets(db: Session, league: str, game: m.Game, client: OddsAPI |
                 for oc in mk["outcomes"]:
                     db.add(m.OddsSnapshot(game_id=game.id, sportsbook_id=book.id, market="h1_totals", outcome=oc["name"].lower(),
                                           line=oc.get("point"), price_american=int(oc["price"]), captured_at=ts, source="the_odds_api"))
+                    n += 1
+            elif mk["key"] in ("alternate_spreads", "alternate_totals"):
+                for oc in mk["outcomes"]:
+                    if mk["key"] == "alternate_spreads":
+                        side = "home" if oc.get("name") == ev["home_team"] else "away" if oc.get("name") == ev["away_team"] else None
+                    else:
+                        side = oc.get("name", "").lower() if oc.get("name", "").lower() in ("over", "under") else None
+                    if side is None or oc.get("point") is None:
+                        continue
+                    db.add(m.OddsSnapshot(game_id=game.id, sportsbook_id=book.id, market=mk["key"], outcome=side, line=float(oc["point"]),
+                                          price_american=int(oc["price"]), captured_at=ts, source="the_odds_api"))
                     n += 1
             elif mk["key"] == "team_totals":
                 for oc in mk["outcomes"]:

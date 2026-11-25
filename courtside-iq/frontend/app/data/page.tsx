@@ -91,7 +91,7 @@ export default function DataCenter() {
             >
               <FileSpreadsheet className="h-8 w-8 text-volt-300" />
               <div className="text-sm font-medium text-mist">{file ? file.name : "Drop a file or click to browse"}</div>
-              <div className="text-[11px] text-mist-500">{file ? `${(file.size / 1024).toFixed(1)} KB` : "CSV · XLSX · JSON — games, player stats, odds, predictions, picks"}</div>
+              <div className="text-[11px] text-mist-500">{file ? `${(file.size / 1024).toFixed(1)} KB` : "CSV · XLSX · JSON: games, player stats, odds, predictions, picks"}</div>
               <input ref={inputRef} type="file" accept=".csv,.xlsx,.json" className="hidden" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
             </div>
             <div className="grid grid-cols-3 gap-2">

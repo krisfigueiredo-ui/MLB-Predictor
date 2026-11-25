@@ -9,7 +9,7 @@ Leakage guarantees
 
 Feature families: opponent-adjusted efficiency (ORtg/DRtg), pace, four factors (eFG%, TOV%,
 ORB%, FTr) on both ends, recent form (last 5/10), home/away splits, rest, travel, injuries,
-lineup changes, strength of schedule, and — for CBB — conference strength, nonconference
+lineup changes, strength of schedule and, for CBB, conference strength, nonconference
 performance, neutral sites, roster continuity and sample-size-aware Bayesian shrinkage.
 """
 from __future__ import annotations
@@ -115,7 +115,7 @@ def build_features(games: pd.DataFrame, teams: pd.DataFrame, league: str) -> pd.
     """games: one row per game with columns
     id, start_time, season, home_team_id, away_team_id, neutral_site, status, pregame_context,
     home_* / away_* box columns (points, fgm, fga, fg3m, fg3a, ftm, fta, oreb, dreb, tov,
-    possessions, h1_points) — NaN for unplayed games.
+    possessions, h1_points); NaN for unplayed games.
     teams: id, lat, lon, conference, conf_strength.
     Returns one row per game: id + features + targets (NaN for unplayed).
     """

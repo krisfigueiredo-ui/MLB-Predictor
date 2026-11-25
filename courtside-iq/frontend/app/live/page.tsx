@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 
 import { C, EChart, baseAxis, tooltip } from "@/components/charts/EChart";
 import { LineMovementChart, StatusPill } from "@/components/game/game";
-import { TeamCrest } from "@/components/identity/identity";
+import { pairColors, TeamCrest } from "@/components/identity/identity";
 import { Badge, DemoBadge, Empty, LiveDot, PageHeader, Panel, PanelHeader, ProbBar, Segmented, Skeleton, SourceStamp, Stat } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
 import { cn, num, pct, periodLabel, signed } from "@/lib/format";
@@ -93,7 +93,7 @@ function LiveCard({ r, active, onClick }: { r: BoardRow & { live?: any }; active
       {l && (
         <>
           <div className="px-4">
-            <ProbBar left={1 - l.live_win_prob_home} right={l.live_win_prob_home} leftColor={g.away.primary} rightColor={g.home.primary} leftLabel={pct(1 - l.live_win_prob_home, 0)} rightLabel={pct(l.live_win_prob_home, 0)} />
+            <ProbBar left={1 - l.live_win_prob_home} right={l.live_win_prob_home} leftColor={pairColors(g.away, g.home)[0]} rightColor={pairColors(g.away, g.home)[1]} leftLabel={pct(1 - l.live_win_prob_home, 0)} rightLabel={pct(l.live_win_prob_home, 0)} />
           </div>
           <div className="mt-3 grid grid-cols-3 divide-x divide-line/60 border-t border-line/60 text-center">
             <div className="px-2 py-2">

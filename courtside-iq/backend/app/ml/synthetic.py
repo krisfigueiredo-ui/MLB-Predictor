@@ -1,4 +1,4 @@
-"""Synthetic basketball league simulator — DEMO MODE ONLY.
+"""Synthetic basketball league simulator (demo mode only).
 
 Generates internally consistent schedules, possession-level box scores, injuries,
 player game logs and sportsbook-style markets from latent team strengths, so that every

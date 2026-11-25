@@ -6,7 +6,8 @@ import { use, useState } from "react";
 
 import { C } from "@/components/charts/EChart";
 import { DistributionChart, EVChips, LineMovementChart, ModelVsVegas, PropCard, ShapBars, StatusPill, WinGauge } from "@/components/game/game";
-import { TeamCrest } from "@/components/identity/identity";
+import { LadderTable } from "@/components/game/Ladder";
+import { pairColors, TeamCrest } from "@/components/identity/identity";
 import { Badge, DemoBadge, Empty, ErrorState, KV, Panel, PanelHeader, ProbBar, ResultBadge, Segmented, Skeleton, SourceStamp, Stat, Tip } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
 import { american, cn, dateTime, MARKET_LABEL, num, pct, signed, spreadLine, STAT_LABEL } from "@/lib/format";
@@ -66,8 +67,8 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
             <ProbBar
               left={live ? 1 - live.live_win_prob_home : p.simulation.win_prob_away}
               right={live ? live.live_win_prob_home : p.simulation.win_prob_home}
-              leftColor={g.away.primary}
-              rightColor={g.home.primary}
+              leftColor={pairColors(g.away, g.home)[0]}
+              rightColor={pairColors(g.away, g.home)[1]}
               leftLabel={`${g.away.abbr} ${pct(live ? 1 - live.live_win_prob_home : p.simulation.win_prob_away)}`}
               rightLabel={`${pct(live ? live.live_win_prob_home : p.simulation.win_prob_home)} ${g.home.abbr}`}
             />
@@ -195,6 +196,13 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
               )}
             </Panel>
           </div>
+
+          {p.simulation.ladder && (
+            <Panel>
+              <PanelHeader eyebrow="Alternate lines" title="Price any line from the simulation" icon={<Sigma className="h-4 w-4 text-gold" />} />
+              <LadderTable ladder={p.simulation.ladder} g={g} mainSpread={p.market.spread_home} mainTotal={p.market.total} />
+            </Panel>
+          )}
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Panel>

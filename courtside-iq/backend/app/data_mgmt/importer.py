@@ -295,7 +295,7 @@ def run_import(db: Session, filename: str, content: bytes, kind: str | None = No
         if k == "odds" and clean.get("captured_at") and clean.get("game_date"):
             if clean["captured_at"] > clean["game_date"]:
                 counts["odds_after_start"] += 1
-                issues.append(dict(field="captured_at", severity="warning", msg="odds captured after game start (live/closing) — excluded from pregame modelling"))
+                issues.append(dict(field="captured_at", severity="warning", msg="odds captured after game start (live/closing); excluded from pregame modelling"))
         if k == "player_stats":
             for fld, hi in (("minutes", 60), ("pts", 100), ("reb", 40), ("ast", 30)):
                 x = clean.get(fld)

@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     odds_poll_seconds: int = 300
     enable_scheduler: bool = True
 
+    # Demo data: load the committed dataset (backend/data/demo_snapshot) when present instead of
+    # regenerating it with the simulator.
+    use_demo_snapshot: bool = True
+
     # Modelling
     monte_carlo_sims: int = 10_000
     random_seed: int = 20261118

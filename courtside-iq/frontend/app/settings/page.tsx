@@ -105,7 +105,7 @@ export default function SettingsPage() {
         <Panel>
           <PanelHeader eyebrow="AI" title="COURTSIDE AI controls" />
           <div className="p-4">
-            <KV k="Status" v={<Badge tone={d.ai_enabled ? "gain" : "gold"}>{d.ai_enabled ? "enabled" : "disabled — no key"}</Badge>} />
+            <KV k="Status" v={<Badge tone={d.ai_enabled ? "gain" : "gold"}>{d.ai_enabled ? "enabled" : "disabled (no API key)"}</Badge>} />
             <KV k="Model" v={<span className="font-mono">{d.ai_model ?? "claude-opus-5-5 (when enabled)"}</span>} />
             <p className="mt-2 text-[11px] leading-relaxed text-mist-500">
               Set <code className="font-mono">ANTHROPIC_API_KEY</code> (and optionally <code className="font-mono">ANTHROPIC_MODEL</code>, <code className="font-mono">AI_EFFORT</code>) on the API server. The assistant only has read-only tools; it cannot place wagers,
@@ -202,7 +202,7 @@ function AssetRegistry({ token }: { token: string }) {
                 ))}
               </tbody>
             </table>
-            {!assets.data?.length && <div className="px-3 py-4 text-center text-xs text-mist-500">No licensed assets registered — original crests and avatars are in use.</div>}
+            {!assets.data?.length && <div className="px-3 py-4 text-center text-xs text-mist-500">No licensed assets registered. Original crests and avatars are in use.</div>}
           </div>
         </div>
       </div>

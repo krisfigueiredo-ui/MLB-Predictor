@@ -202,12 +202,34 @@ def _demo_odds(gid, start, mk, books: dict, rng, now, closing_only=False) -> lis
             if not closing_only:
                 rows += [dict(base, market="h1_totals", outcome="over", line=h1, price_american=j()),
                          dict(base, market="h1_totals", outcome="under", line=h1, price_american=j())]
+                if key == "draftkings" and off <= 4:
+                    rows += _demo_alt_rows(base, bs, bt, sigma)
                 tt_h = round(((bt - bs) / 2) * 2) / 2
                 tt_a = round(((bt + bs) / 2) * 2) / 2
                 rows += [dict(base, market="team_totals", outcome="home_over", line=tt_h, price_american=j()),
                          dict(base, market="team_totals", outcome="home_under", line=tt_h, price_american=j()),
                          dict(base, market="team_totals", outcome="away_over", line=tt_a, price_american=j()),
                          dict(base, market="team_totals", outcome="away_under", line=tt_a, price_american=j())]
+    return rows
+
+
+def _demo_alt_rows(base: dict, bs: float, bt: float, sigma: float) -> list[dict]:
+    """Alternate spreads/totals priced off the book's own main line (normal approximation + vig)."""
+    from scipy.stats import norm
+
+    rows = []
+    mu_m = -bs  # market-implied home margin
+    sig_t = sigma * 1.1
+    for d in (-6, -3, 3, 6):
+        L = bs + d
+        p_home = float(norm.cdf((mu_m + L) / sigma))
+        rows += [dict(base, market="alternate_spreads", outcome="home", line=L, price_american=_price(p_home)),
+                 dict(base, market="alternate_spreads", outcome="away", line=-L, price_american=_price(1 - p_home))]
+    for d in (-10, -5, 5, 10):
+        T = bt + d
+        p_over = float(1 - norm.cdf((T - bt) / sig_t))
+        rows += [dict(base, market="alternate_totals", outcome="over", line=T, price_american=_price(p_over)),
+                 dict(base, market="alternate_totals", outcome="under", line=T, price_american=_price(1 - p_over))]
     return rows
 
 

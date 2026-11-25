@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 import { C, EChart, baseAxis, tooltip } from "@/components/charts/EChart";
-import { PlayerPortrait, TeamCrest } from "@/components/identity/identity";
+import { pairColors, PlayerPortrait, TeamCrest } from "@/components/identity/identity";
 import { Badge, DemoBadge, LiveDot, ProbBar, Tip } from "@/components/ui/primitives";
 import { american, cn, featureLabel, num, pct, periodLabel, signed, spreadLine, STAT_LABEL, timeShort } from "@/lib/format";
 import type { BoardRow, Explain, Game, PropProjection, Simulation, Team, VsMarket } from "@/lib/types";
@@ -65,7 +65,7 @@ export function MatchupCard({ row, index = 0 }: { row: BoardRow; index?: number 
           </div>
         </div>
         <div className="px-4">
-          <ProbBar left={s.win_prob_away} right={s.win_prob_home} leftColor={g.away.primary} rightColor={g.home.primary} />
+          <ProbBar left={s.win_prob_away} right={s.win_prob_home} leftColor={pairColors(g.away, g.home)[0]} rightColor={pairColors(g.away, g.home)[1]} />
         </div>
         <div className="mt-3 grid grid-cols-3 divide-x divide-line/60 border-t border-line/60">
           <MiniMetric label="Spread" vegas={sp ? spreadLine(sp.market_line_home) : "—"} model={spreadLine(row.projected.spread_home)} edge={sp?.line_diff} />
@@ -250,6 +250,7 @@ export function ShapBars({ items, title }: { items: Explain[]; title?: string })
 }
 
 export function WinGauge({ p, home, away, size = 180 }: { p: number; home: Team; away: Team; size?: number }) {
+  const [ac, hc] = pairColors(away, home);
   return (
     <EChart
       height={size}
@@ -263,15 +264,15 @@ export function WinGauge({ p, home, away, size = 180 }: { p: number; home: Team;
             max: 100,
             radius: "100%",
             center: ["50%", "62%"],
-            progress: { show: true, width: 12, roundCap: true, itemStyle: { color: home.primary } },
-            axisLine: { lineStyle: { width: 12, color: [[1, away.primary + "66"]] }, roundCap: true },
+            progress: { show: true, width: 14, roundCap: true, itemStyle: { color: hc } },
+            axisLine: { lineStyle: { width: 14, color: [[1, ac + "55"]] }, roundCap: true },
             pointer: { show: false },
             axisTick: { show: false },
             splitLine: { show: false },
             axisLabel: { show: false },
             anchor: { show: false },
             title: { show: true, offsetCenter: [0, "34%"], color: C.mist4, fontSize: 11 },
-            detail: { valueAnimation: true, offsetCenter: [0, "-4%"], formatter: "{value}%", color: C.mist, fontSize: 26, fontWeight: 700, fontFamily: "var(--font-display)" },
+            detail: { valueAnimation: true, offsetCenter: [0, "-4%"], formatter: "{value}%", color: C.mist, fontSize: 32, fontWeight: 700, fontFamily: "Space Grotesk, Inter, sans-serif" },
             data: [{ value: Math.round(p * 1000) / 10, name: `${home.abbr} win probability` }],
           },
         ],

@@ -34,7 +34,7 @@ def games_df(db: Session, league: str, include_demo: bool = True) -> pd.DataFram
             for k in BOX:
                 r[f"{side}_{k}"] = float(getattr(s, k)) if (s is not None and getattr(s, k) is not None) else float("nan")
             if s is None and g.status == "final" and g.home_score is not None:
-                # final score without a box score (e.g. imported results) — points only
+                # final score without a box score (e.g. imported results): points only
                 r[f"{side}_points"] = float(g.home_score if home else g.away_score)
                 h1 = g.home_h1 if home else g.away_h1
                 r[f"{side}_h1_points"] = float(h1) if h1 is not None else float("nan")

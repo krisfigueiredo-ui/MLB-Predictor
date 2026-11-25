@@ -79,6 +79,7 @@ export default function ModelIntelligence() {
       </Panel>
 
       {game ? <GameModelCard m={game} /> : !models.isLoading && <Panel><Empty title="No trained model for this league" /></Panel>}
+      <VersionComparison league={league} />
       {props && <PropsModelCard m={props} />}
       <SimulationExplorer league={league} />
     </div>
@@ -215,7 +216,7 @@ function GameModelCard({ m }: { m: any }) {
               </table>
               <p className="text-[11px] leading-relaxed text-mist-500">
                 Against-the-spread and over/under probabilities combine the model with the pre-game market line (weight fit by MSE on the calibration fold; never on test data). A low model weight
-                means the market already contains most of the information the model has — reported as-is rather than tuned away.
+                means the market line already contains most of the information the model has.
               </p>
             </div>
           ) : (
@@ -223,6 +224,7 @@ function GameModelCard({ m }: { m: any }) {
           )}
         </Panel>
       </div>
+      <SeasonPanel rows={mt.by_season ?? []} />
       <Panel>
         <PanelHeader eyebrow="Training configuration" title="Splits & hyperparameters" />
         <div className="grid gap-6 p-4 md:grid-cols-3">
@@ -249,12 +251,128 @@ function GameModelCard({ m }: { m: any }) {
   );
 }
 
+function SeasonPanel({ rows }: { rows: any[] }) {
+  if (!rows.length)
+    return (
+      <Panel>
+        <PanelHeader eyebrow="Performance across seasons" title="Season-by-season backtest" />
+        <Empty title="Needs at least two seasons of history">Retrain after importing more seasons to see this.</Empty>
+      </Panel>
+    );
+  return (
+    <Panel>
+      <PanelHeader eyebrow="Performance across seasons" title="Train on all earlier seasons, test on the next" />
+      <div className="grid gap-4 p-2 lg:grid-cols-[1fr_420px]">
+        <EChart
+          height={240}
+          option={{
+            grid: { left: 44, right: 44, top: 28, bottom: 26 },
+            legend: { top: 0, textStyle: { color: C.mist4, fontSize: 11 } },
+            tooltip: { ...tooltip },
+            xAxis: { type: "category", data: rows.map((r) => r.season), ...baseAxis },
+            yAxis: [{ type: "value", scale: true, name: "MAE", ...baseAxis }, { type: "value", scale: true, name: "Brier", ...baseAxis }],
+            series: [
+              { name: "Margin MAE (model)", type: "bar", data: rows.map((r) => r.margin.mae), itemStyle: { color: C.volt, borderRadius: [3, 3, 0, 0] } },
+              { name: "Margin MAE (baseline)", type: "bar", data: rows.map((r) => r.baseline_margin.mae), itemStyle: { color: C.mist5, borderRadius: [3, 3, 0, 0] } },
+              { name: "Total MAE", type: "bar", data: rows.map((r) => r.total.mae), itemStyle: { color: C.cyan, borderRadius: [3, 3, 0, 0] } },
+              { name: "Win Brier", type: "line", yAxisIndex: 1, data: rows.map((r) => r.win.brier), lineStyle: { color: C.flare }, itemStyle: { color: C.flare } },
+            ],
+          }}
+        />
+        <table className="w-full self-start text-[12.5px]">
+          <thead>
+            <tr className="border-b border-line/70">
+              {["Season", "Train", "Test", "Margin MAE", "Total MAE", "Win hit"].map((h) => (
+                <th key={h} className="label px-2 py-2 text-left">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.season} className="border-b border-line/40 font-mono tabular text-mist-300">
+                <td className="px-2 py-1.5 font-sans text-mist">{r.season}</td>
+                <td className="px-2 py-1.5">{r.n_train}</td>
+                <td className="px-2 py-1.5">{r.n_test}</td>
+                <td className="px-2 py-1.5">{num(r.margin.mae, 2)}</td>
+                <td className="px-2 py-1.5">{num(r.total.mae, 2)}</td>
+                <td className="px-2 py-1.5">{pct(r.win.hit_rate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
+  );
+}
+
+function VersionComparison({ league }: { league: string }) {
+  const [name, setName] = useState<"game" | "props">("game");
+  const c = useApi<any>(`/api/models/compare?league=${league}&name=${name}`);
+  const vs = c.data?.versions ?? [];
+  return (
+    <Panel>
+      <PanelHeader
+        eyebrow="Model version comparison"
+        title="Held-out metrics and archived results by version"
+        right={<Segmented size="sm" value={name} onChange={setName} options={[{ value: "game", label: "Game model" }, { value: "props", label: "Props model" }]} />}
+      />
+      {!c.data ? (
+        <Skeleton className="m-4 h-32" />
+      ) : vs.length === 0 ? (
+        <Empty title="No versions yet" />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[860px] text-[12.5px]">
+            <thead>
+              <tr className="border-b border-line/70">
+                {(name === "game"
+                  ? ["Version", "Trained", "Rows", "Test margin MAE", "Test total MAE", "Test win Brier", "Archived n", "Archived win %", "Archived Brier", "Status"]
+                  : ["Version", "Trained", "Rows", "Test PTS MAE", "Test REB MAE", "Test AST MAE", "Archived n", "Archived win %", "Archived Brier", "Status"]
+                ).map((h) => (
+                  <th key={h} className="label px-3 py-2 text-left">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {vs.map((v: any) => (
+                <tr key={v.id} className={cn("border-b border-line/40 font-mono tabular text-mist-300", v.is_active && "bg-volt/[0.05]")}>
+                  <td className="px-3 py-2 text-mist">{v.version}</td>
+                  <td className="px-3 py-2">{dateTime(v.trained_at)}</td>
+                  <td className="px-3 py-2">{v.n_train?.toLocaleString()}</td>
+                  {name === "game" ? (
+                    <>
+                      <td className="px-3 py-2">{num(v.test.margin_mae, 2)}</td>
+                      <td className="px-3 py-2">{num(v.test.total_mae, 2)}</td>
+                      <td className="px-3 py-2">{num(v.test.win_brier, 3)}</td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-3 py-2">{num(v.test.props?.pts, 2)}</td>
+                      <td className="px-3 py-2">{num(v.test.props?.reb, 2)}</td>
+                      <td className="px-3 py-2">{num(v.test.props?.ast, 2)}</td>
+                    </>
+                  )}
+                  <td className="px-3 py-2">{v.archived?.decided ?? 0}</td>
+                  <td className="px-3 py-2">{pct(v.archived?.win_pct)}</td>
+                  <td className="px-3 py-2">{num(v.archived?.brier, 3)}</td>
+                  <td className="px-3 py-2">{v.is_active ? <Badge tone="volt">active</Badge> : <Badge>retired</Badge>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="px-4 py-2 text-[10.5px] text-mist-500">{c.data?.note} Retrain to add a challenger version; earlier versions and their forecasts are kept.</p>
+    </Panel>
+  );
+}
+
 function PropsModelCard({ m }: { m: any }) {
   const t = m.metrics?.test ?? {};
   const stats = ["pts", "reb", "ast", "fg3m", "stl", "blk", "pra"].filter((s) => t[s]);
   return (
     <Panel>
-      <PanelHeader eyebrow={m.version} title="Player props model — held-out evaluation" right={<Badge>{m.metrics?.n_eval_sample} sampled test rows</Badge>} />
+      <PanelHeader eyebrow={m.version} title="Player props model: held-out evaluation" right={<Badge>{m.metrics?.n_eval_sample} sampled test rows</Badge>} />
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-[12.5px]">
           <thead>

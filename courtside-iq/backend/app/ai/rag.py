@@ -121,3 +121,80 @@ def index_core(db: Session) -> int:
         n += 1
     db.commit()
     return n
+
+
+def index_dynamic(db: Session, days: int = 14) -> int:
+    """Index generated, record-backed documents: daily performance digests, recent game recaps,
+    diagnostics findings and league leaders. Every document is built only from database rows and
+    links back to the page that shows them."""
+    from datetime import timedelta
+
+    import pandas as pd
+
+    from ..services import diagnostics, performance, trends
+
+    n = 0
+    df = performance.official_predictions(db)
+    if not df.empty:
+        cutoff = df["start_time"].max() - pd.Timedelta(days=days)
+        recent = df[df["start_time"] >= cutoff].copy()
+        recent["day"] = recent["start_time"].dt.strftime("%Y-%m-%d")
+        for day, d in recent.groupby("day"):
+            dec = d[d["result"].isin(["win", "loss"])]
+            wins = int((dec["result"] == "win").sum())
+            lines = [f"Daily digest for games on {day}: {len(d)} settled pre-game forecasts, record {wins}-{len(dec) - wins}-"
+                     f"{int((d['result'] == 'push').sum())} ({wins / max(1, len(dec)):.1%} of decided)."]
+            for mk, g in d.groupby("market_group"):
+                gd = g[g["result"].isin(["win", "loss"])]
+                if len(gd):
+                    lines.append(f"{mk}: {int((gd['result'] == 'win').sum())}-{int((gd['result'] == 'loss').sum())}, "
+                                 f"avg predicted {gd['predicted_prob'].mean():.1%}.")
+            err = d.dropna(subset=["actual_value", "predicted_value"])
+            err = err[err["market"].isin(["total", "spread"])].assign(abs_err=lambda x: (x["predicted_value"] - x["actual_value"]).abs())
+            for r in err.sort_values("abs_err", ascending=False).head(3).itertuples():
+                lines.append(f"Large miss: {r.away} @ {r.home} ({r.league}) {r.market} projected {r.predicted_value:.1f}, actual "
+                             f"{r.actual_value:.0f} (game id {r.game_id}).")
+            if d["is_demo"].any():
+                lines.append("These results come from synthetic demo data.")
+            upsert(db, "daily_digest", day, f"Daily performance digest {day}", "\n".join(lines), "/picks")
+            n += 1
+        # game recaps
+        for gid, g in recent.groupby("game_id"):
+            game = db.get(m.Game, int(gid))
+            if game is None or game.home_score is None:
+                continue
+            ht, at = game.home_team, game.away_team
+            parts = [f"Game recap: {at.display_name} at {ht.display_name}, {game.start_time:%Y-%m-%d} ({game.league}). "
+                     f"Final {at.abbreviation} {game.away_score} - {ht.abbreviation} {game.home_score}."]
+            for r in g[g["player_id"].isna()].itertuples():
+                parts.append(f"{r.market}: model took {r.selection}{'' if r.line is None or r.line != r.line else f' {r.line}'} at "
+                             f"{r.predicted_prob:.0%} (projection {r.predicted_value:.1f}) -> {r.result} (actual {r.actual_value:.0f}).")
+            props = g[g["player_id"].notna()]
+            if len(props):
+                parts.append(f"Player props: {int((props['result'] == 'win').sum())} won, {int((props['result'] == 'loss').sum())} lost.")
+            if game.is_demo:
+                parts.append("Synthetic demo game.")
+            upsert(db, "game_recap", str(gid), f"Recap {at.abbreviation} @ {ht.abbreviation} {game.start_time:%Y-%m-%d}", " ".join(parts),
+                   f"/games/{gid}")
+            n += 1
+    for league in ("NBA", "CBB"):
+        dg = diagnostics.analyze(db, league)
+        if dg.get("findings"):
+            txt = [f"{league} model diagnostics (aggregated, sample sizes included):"]
+            for f in dg["findings"]:
+                txt.append(f"{f.get('label')}: mean error {f['mean_error']:+.3f} {f.get('unit', '')} (n={f['n']}, SE {f.get('se') or 0:.3f}) - {f['verdict']}.")
+            for c in dg.get("conference_errors", [])[:6]:
+                txt.append(f"Conference {c['conference']}: total MAE {c['mae']:.1f}, bias {c['bias']:+.1f} (n={c['n']}).")
+            upsert(db, "diagnostics", league, f"{league} diagnostics", "\n".join(txt), "/picks")
+            n += 1
+        rows = trends.league_table(db, league)
+        if rows:
+            top = sorted(rows, key=lambda r: -r["net"])[:6]
+            fast = sorted(rows, key=lambda r: -r["pace"])[:6]
+            txt = [f"{league} season-to-date leaders ({rows[0]['season']}).",
+                   "Best net rating: " + "; ".join(f"{r['name']} {r['net']:+.1f} (ORtg {r['ortg']:.1f}, DRtg {r['drtg']:.1f}, {r['games']} games)" for r in top) + ".",
+                   "Fastest pace: " + "; ".join(f"{r['name']} {r['pace']:.1f} poss/game" for r in fast) + "."]
+            upsert(db, "league_leaders", league, f"{league} leaders", "\n".join(txt), "/nba" if league == "NBA" else "/cbb")
+            n += 1
+    db.commit()
+    return n
